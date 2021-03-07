@@ -61,6 +61,9 @@ class Common {
         window.addEventListener('mousemove', (e) => {
             this.mouseMovement(e)
         })
+        window.addEventListener('wheel', (e) => {
+            this.onMouseWheel(e)
+        })
     }
 
     setSize() {
@@ -75,6 +78,10 @@ class Common {
     mouseMovement(e) {
         this.mouse.x = ( e.clientX - this.windowHalf.x )
 	    this.mouse.y = ( e.clientY - this.windowHalf.x )
+    }
+
+    onMouseWheel(e) {
+        this.camera.position.z += e.deltaY * 0.1
     }
 
     resize() {
