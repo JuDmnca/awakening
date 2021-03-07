@@ -2,32 +2,28 @@ import Common from './Common'
 import Plane from './Plane'
 
 export default class Scene {
-    constructor(props){
-        this.props = props;
+    constructor(props) {
+        this.props = props
         this.init()
     }
 
-    init()
-    {
+    init() {
         Common.init(this.props.$canvas)
         this.water = new Plane()
         window.addEventListener('resize', this.resize.bind(this))
         this.loop()
     }
 
-    resize()
-    {
+    resize() {
         Common.resize()
     }
 
-    loop()
-    {
+    loop() {
         this.render()
         requestAnimationFrame(this.loop.bind(this))
     }
 
-    render()
-    {
+    render() {
         Common.render()
     }
 }
