@@ -88,8 +88,8 @@ class Common {
         this.time.delta = this.clock.getDelta()
         this.time.total += this.delta
 
-        this.target.x = ( 1 - this.mouse.x ) * 0.002;
-        this.target.y = ( 1 - this.mouse.y ) * 0.002;
+        this.target.x = ( 1 - this.mouse.x ) * 0.0005;
+        this.target.y = ( 1 - this.mouse.y ) * 0.0005;
 
         this.camera.rotation.x += 0.05 * ( this.target.y - this.camera.rotation.x )
         this.camera.rotation.y += 0.05 * ( this.target.x - this.camera.rotation.y )
