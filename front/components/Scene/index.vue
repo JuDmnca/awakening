@@ -9,12 +9,10 @@
 
     export default {
         name: 'scene',
-        data()
-        {
+        data() {
             return {}
         },
-        mounted()
-        {
+        mounted() {
             new Scene({
                 $canvas: this.$refs.canvas
             })
