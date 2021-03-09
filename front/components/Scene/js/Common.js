@@ -1,16 +1,18 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import gsap from 'gsap'
+import Path from './Path'
 
 class Common {
     constructor() {
         this.scene = null
         this.camera = null
         this.renderer = null
+        this.progression = null
         this.mouse = new THREE.Vector2()
         this.target = new THREE.Vector2()
         this.windowHalf = new THREE.Vector2()
-
+        
         this.size = {
             windowW: null,
             windowH: null
@@ -53,8 +55,8 @@ class Common {
         // this.axesHelper = new THREE.AxesHelper( 5 )
         // this.scene.add( this.axesHelper )
 
-        this.controls = new OrbitControls( this.camera, this.renderer.domElement )
-        this.controls.enableZoom = false
+        // this.controls = new OrbitControls( this.camera, this.renderer.domElement )
+        // this.controls.enableZoom = false
         // this.controls.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
 		// this.controls.dampingFactor = 0.05
 
@@ -64,6 +66,9 @@ class Common {
         window.addEventListener('wheel', (e) => {
             this.onMouseWheel(e)
         })
+
+        Path.init()
+        
     }
 
     setSize() {
@@ -77,11 +82,12 @@ class Common {
 
     mouseMovement(e) {
         this.mouse.x = ( e.clientX - this.windowHalf.x )
-	    this.mouse.y = ( e.clientY - this.windowHalf.x )
+        this.mouse.y = ( e.clientY - this.windowHalf.y )
     }
 
     onMouseWheel(e) {
         this.camera.position.z += e.deltaY * 0.1
+        this.progression += (e.deltaY / 10) * 0.1 
     }
 
     resize() {
@@ -93,17 +99,20 @@ class Common {
 
     render() {
         this.time.delta = this.clock.getDelta()
-        this.time.total += this.delta
+        this.time.total += this.time.delta
+
+        Path.render(this.progression)
 
         this.target.x = ( 1 - this.mouse.x ) * 0.0005;
         this.target.y = ( 1 - this.mouse.y ) * 0.0005;
 
-        this.camera.rotation.x += 0.05 * ( this.target.y - this.camera.rotation.x )
-        this.camera.rotation.y += 0.05 * ( this.target.x - this.camera.rotation.y )
+        // console.log(this.target.y)
+        Path.splineCamera.rotation.x += 0.5 * ( this.target.y - this.camera.rotation.x )
+        Path.splineCamera.rotation.y += 0.5 * ( this.target.x - this.camera.rotation.y )
 
         // this.controls.update()
 
-        this.renderer.render(this.scene, this.camera)
+        this.renderer.render(this.scene, Path.splineCamera)
     }
 }
 
