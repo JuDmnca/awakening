@@ -68,7 +68,8 @@ class Common {
         })
 
         Path.init()
-        
+
+        this.scene.add(Path.splineCamera) 
     }
 
     setSize() {
@@ -88,6 +89,9 @@ class Common {
     onMouseWheel(e) {
         this.camera.position.z += e.deltaY * 0.1
         this.progression += (e.deltaY / 10) * 0.1 
+
+        // Remove the error if backwards scroll at the beginning
+        this.progression < 0 ? this.progression = 0 : this.progression
     }
 
     resize() {
