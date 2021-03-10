@@ -23,13 +23,13 @@ class Path {
         this.tubeGeometry = null
         this.mesh = null
 
-        this.material = new THREE.MeshLambertMaterial({ color: 0xff00ff })
+        this.material = new THREE.MeshLambertMaterial({ color: 0xff00ff, opacity: 0 })
 
         this.params = {
-            scale: 4,
-            extrusionSegments: 100,
-            radius: 2,
-            radiusSegments: 2,
+            scale: 1,
+            extrusionSegments: 1,
+            radius: 1,
+            radiusSegments: 1,
             closed: true,
             animationView: false,
             lookAhead: false,
@@ -81,10 +81,10 @@ class Path {
         mesh = new THREE.Mesh( geometry, this.material )
     }
 
-    render(clock) {
-        const time = clock
+    render(progression) {
+    
         const looptime = 20
-        const t = ( time % looptime ) / looptime
+        const t = ( progression % looptime ) / looptime
 
         this.tubeGeometry.parameters.path.getPointAt( t, this.position )
         this.position.multiplyScalar( this.params.scale )
