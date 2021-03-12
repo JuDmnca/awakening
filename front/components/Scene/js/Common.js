@@ -2,6 +2,7 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import gsap from 'gsap'
 import Path from './Path'
+import Desert from './Desert'
 
 class Common {
     constructor() {
@@ -24,6 +25,8 @@ class Common {
             total: null,
             delta: null
         }
+
+        this.light = null
     }
 
     init($canvas) {
@@ -66,10 +69,20 @@ class Common {
         window.addEventListener('wheel', (e) => {
             this.onMouseWheel(e)
         })
+        window.addEventListener('resize', () => {
+            this.resize()
+        })
 
         Path.init()
-
         this.scene.add(Path.splineCamera) 
+
+        const desert = new Desert()
+        desert.init(this.scene)
+
+        this.light = new THREE.SpotLight('white', 3.5, 200)
+        this.light.position.z = 100
+        this.light.position.y = 50
+        this.scene.add(this.light)
     }
 
     setSize() {
@@ -96,8 +109,8 @@ class Common {
 
     resize() {
         this.setSize()
-        this.camera.aspect = this.size.windowW / this.size.windowH
-        this.camera.updateProjectionMatrix()
+        Path.splineCamera.aspect = this.size.windowW / this.size.windowH
+        Path.splineCamera.updateProjectionMatrix()
         this.renderer.setSize(this.size.windowW, this.size.windowH)
     }
 
@@ -107,12 +120,12 @@ class Common {
 
         Path.render(this.progression)
 
-        this.target.x = ( 1 - this.mouse.x ) * 0.0005;
-        this.target.y = ( 1 - this.mouse.y ) * 0.0005;
+        this.target.x = ( 1 - this.mouse.x ) * 0.002;
+        this.target.y = ( 1 - this.mouse.y ) * 0.002;
 
         // console.log(this.target.y)
-        Path.splineCamera.rotation.x += 0.5 * ( this.target.y - this.camera.rotation.x )
-        Path.splineCamera.rotation.y += 0.5 * ( this.target.x - this.camera.rotation.y )
+        Path.splineCamera.rotation.x += 0.5 * ( this.target.y - Path.splineCamera.rotation.x )
+        Path.splineCamera.rotation.y += 0.5 * ( this.target.x - Path.splineCamera.rotation.y )
 
         // this.controls.update()
 
