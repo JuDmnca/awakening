@@ -1,3 +1,5 @@
+import webpack from 'webpack'
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -38,10 +40,13 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ['three/examples/jsm/controls/OrbitControls'],
+    transpile: ['three/examples/jsm/controls/OrbitControls', 'three/examples/jsm/loaders/GLTFLoader', 'three/examples/jsm/loaders/FBXLoader'],
+
     extend (config, ctx) {
       if (!!config.module) {
         config.module.rules.push({ test: /\.(vert|frag)$/i, use: ["raw-loader"] });
+        config.module.rules.push({ test: /\.(glb|gltf)$/, use: ["file-loader"] });
+        config.module.rules.push({ test: /\.(fbx|obj)$/, use: ["file-loader"] });
       }
     }
   }
