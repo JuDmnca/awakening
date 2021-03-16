@@ -13,7 +13,9 @@ class Common {
         this.mouse = new THREE.Vector2()
         this.target = new THREE.Vector2()
         this.windowHalf = new THREE.Vector2()
-        
+        this.raycaster = new THREE.Raycaster()
+        this.mouseR = new THREE.Vector2()
+
         this.size = {
             windowW: null,
             windowH: null
@@ -74,7 +76,7 @@ class Common {
         })
 
         Path.init()
-        this.scene.add(Path.splineCamera) 
+        this.scene.add(Path.splineCamera)
 
         const desert = new Desert()
         desert.init(this.scene)
@@ -101,7 +103,7 @@ class Common {
 
     onMouseWheel(e) {
         this.camera.position.z += e.deltaY * 0.1
-        this.progression += (e.deltaY / 10) * 0.1 
+        this.progression += (e.deltaY / 10) * 0.1
 
         // Remove the error if backwards scroll at the beginning
         this.progression < 0 ? this.progression = 0 : this.progression
@@ -118,13 +120,29 @@ class Common {
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
 
+        this.mouseR.x = this.mouse.x * 2 - 1;
+        this.mouseR.y = this.mouse.y * 2 + 1;
+
+        this.raycaster.setFromCamera( this.mouseR, Path.splineCamera );
+        let intersects = []
+        if (this.scene.children[3]) {
+            intersects = this.raycaster.intersectObjects( this.scene.children[3].children );
+        }
+
+        for ( let i = 0; i < intersects.length; i ++ ) {
+            if (intersects[ i ].object.name === 'fleur_jaune2001') {
+                console.log(intersects[ i ])
+                intersects[ i ].object.material.color.set( 0xff0000 );
+            }
+        }
+
         Path.render(this.progression)
 
         this.target.x = ( 1 - this.mouse.x ) * 0.002;
         this.target.y = ( 1 - this.mouse.y ) * 0.002;
 
         // console.log(this.target.y)
-        Path.splineCamera.rotation.x += 0.5 * ( this.target.y - Path.splineCamera.rotation.x )
+        // Path.splineCamera.rotation.x += 0.5 * ( this.target.y - Path.splineCamera.rotation.x )
         Path.splineCamera.rotation.y += 0.5 * ( this.target.x - Path.splineCamera.rotation.y )
 
         // this.controls.update()
