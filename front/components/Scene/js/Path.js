@@ -65,7 +65,7 @@ class Path {
 
         // const folderCamera = gui.addFolder( 'Camera' )
         // folderCamera.add( this.params, 'animationView' ).onChange( () => {
-            
+
         // })
     }
 
@@ -80,7 +80,7 @@ class Path {
     }
 
     render(progression) {
-    
+
         const looptime = 20
         const t = ( progression % looptime ) / looptime
 

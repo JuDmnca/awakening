@@ -84,6 +84,9 @@ class Common {
         this.scene.add(this.light)
 
         this.scene.add(this.myCube.cube)
+
+        // Set max distance for raycaster
+        this.raycaster.far = 10
     }
 
     setSize() {
@@ -122,6 +125,7 @@ class Common {
     handleClick() {
         if (this.intersects.length > 0) {
             console.log('clickkkkkkkkk')
+            console.log(Path.splineCamera)
         }
     }
 
