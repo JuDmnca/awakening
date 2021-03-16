@@ -13,6 +13,7 @@ class Common {
         this.target = new THREE.Vector2()
         this.windowHalf = new THREE.Vector2()
         this.raycaster = new THREE.Raycaster()
+        this.intersects = []
 
         this.size = {
             windowW: null,
@@ -67,6 +68,9 @@ class Common {
         window.addEventListener('resize', () => {
             this.resize()
         })
+        window.addEventListener('click', () => {
+            this.handleClick()
+        })
 
         Path.init()
         this.scene.add(Path.splineCamera)
@@ -115,18 +119,24 @@ class Common {
         this.renderer.setSize(this.size.windowW, this.size.windowH)
     }
 
+    handleClick() {
+        if (this.intersects.length > 0) {
+            console.log('clickkkkkkkkk')
+        }
+    }
+
     render() {
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
 
-        let intersects = []
+        this.intersects = []
 
         if (this.scene.children) {
-            intersects = this.raycaster.intersectObjects( this.scene.children );
+            this.intersects = this.raycaster.intersectObjects( this.scene.children );
         }
 
-        for ( let i = 0; i < intersects.length; i ++ ) {
-            console.log(intersects[ i ].object)
+        for ( let i = 0; i < this.intersects.length; i ++ ) {
+            // console.log(this.intersects[ i ].object)
         }
 
         Path.render(this.progression)
