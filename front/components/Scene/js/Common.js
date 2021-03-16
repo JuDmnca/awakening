@@ -1,9 +1,8 @@
 import * as THREE from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import gsap from 'gsap'
 import Path from './Path'
 import Desert from './Desert'
-
+import Cube from './Cube'
 class Common {
     constructor() {
         this.scene = null
@@ -14,7 +13,6 @@ class Common {
         this.target = new THREE.Vector2()
         this.windowHalf = new THREE.Vector2()
         this.raycaster = new THREE.Raycaster()
-        this.mouseR = new THREE.Vector2()
 
         this.size = {
             windowW: null,
@@ -29,6 +27,8 @@ class Common {
         }
 
         this.light = null
+
+        this.myCube = new Cube()
     }
 
     init($canvas) {
@@ -43,7 +43,6 @@ class Common {
             500
         )
         this.camera.position.set(0, 0, 50)
-        // this.camera.lookAt(this.scene.position)
 
         this.renderer = new THREE.WebGLRenderer({
             canvas: $canvas
@@ -51,7 +50,6 @@ class Common {
 
         this.renderer.setPixelRatio(window.devicePixelRatio)
 
-        // this.renderer.setClearColor(0xFFF2F5)
         this.renderer.setSize(this.size.windowW, this.size.windowH)
 
         this.clock = new THREE.Clock()
@@ -59,11 +57,6 @@ class Common {
 
         // this.axesHelper = new THREE.AxesHelper( 5 )
         // this.scene.add( this.axesHelper )
-
-        // this.controls = new OrbitControls( this.camera, this.renderer.domElement )
-        // this.controls.enableZoom = false
-        // this.controls.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
-		// this.controls.dampingFactor = 0.05
 
         window.addEventListener('mousemove', (e) => {
             this.mouseMovement(e)
@@ -85,6 +78,8 @@ class Common {
         this.light.position.z = 100
         this.light.position.y = 50
         this.scene.add(this.light)
+
+        this.scene.add(this.myCube.cube)
     }
 
     setSize() {
@@ -99,6 +94,10 @@ class Common {
     mouseMovement(e) {
         this.mouse.x = ( e.clientX - this.windowHalf.x )
         this.mouse.y = ( e.clientY - this.windowHalf.y )
+        this.raycaster.setFromCamera({
+            x: (e.clientX / this.renderer.domElement.clientWidth) * 2 - 1,
+            y: -(e.clientY / this.renderer.domElement.clientHeight) * 2 + 1
+        }, Path.splineCamera);
     }
 
     onMouseWheel(e) {
@@ -120,20 +119,14 @@ class Common {
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
 
-        this.mouseR.x = this.mouse.x * 2 - 1;
-        this.mouseR.y = this.mouse.y * 2 + 1;
-
-        this.raycaster.setFromCamera( this.mouseR, Path.splineCamera );
         let intersects = []
-        if (this.scene.children[3]) {
-            intersects = this.raycaster.intersectObjects( this.scene.children[3].children );
+
+        if (this.scene.children) {
+            intersects = this.raycaster.intersectObjects( this.scene.children );
         }
 
         for ( let i = 0; i < intersects.length; i ++ ) {
-            if (intersects[ i ].object.name === 'fleur_jaune2001') {
-                console.log(intersects[ i ])
-                intersects[ i ].object.material.color.set( 0xff0000 );
-            }
+            console.log(intersects[ i ].object)
         }
 
         Path.render(this.progression)
@@ -141,11 +134,8 @@ class Common {
         this.target.x = ( 1 - this.mouse.x ) * 0.002;
         this.target.y = ( 1 - this.mouse.y ) * 0.002;
 
-        // console.log(this.target.y)
         // Path.splineCamera.rotation.x += 0.5 * ( this.target.y - Path.splineCamera.rotation.x )
         Path.splineCamera.rotation.y += 0.5 * ( this.target.x - Path.splineCamera.rotation.y )
-
-        // this.controls.update()
 
         this.renderer.render(this.scene, Path.splineCamera)
     }

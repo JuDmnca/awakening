@@ -14,7 +14,7 @@ export default class Plane {
             darkBlue: {value: new THREE.Color("#146a85")}
         }
 
-        this.geometry = new THREE.PlaneGeometry( 10, 10, 10, 10 )
+        this.geometry = new THREE.PlaneGeometry( 1, 1, 1, 1 )
         this.material = new THREE.RawShaderMaterial( {
             vertexShader,
             fragmentShader,
@@ -24,9 +24,9 @@ export default class Plane {
         this.plane = new THREE.Mesh( this.geometry, this.material )
         // this.plane.rotation.x = - Math.PI / 2
         // this.plane.rotation.z = 3 * Math.PI / 4
-
-        this.axesHelper = new THREE.AxesHelper( 5 )
-        this.plane.add( this.axesHelper )
+        this.plane.position.x = 69.95803833007812
+        this.plane.position.y = -11.2
+        this.plane.position.z = -4.220249652862549
 
         Common.scene.add( this.plane )
     }
