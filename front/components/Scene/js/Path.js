@@ -14,9 +14,7 @@ class Path {
         this.lookAt = new THREE.Vector3()
 
         this.pipeSpline = new THREE.CatmullRomCurve3([
-            new THREE.Vector3( 0, 0, 50 ), new THREE.Vector3( -5, 0, 40 ),
-            new THREE.Vector3( 0, 0, 30 ), new THREE.Vector3( 0, -5, 20 ),
-            new THREE.Vector3( 0, 0, 10 ), new THREE.Vector3( 0, 0, 0 )
+            new THREE.Vector3( 76, -11, 20 ),new THREE.Vector3( 68, -11, -10 )
         ])
 
         this.parent = null
