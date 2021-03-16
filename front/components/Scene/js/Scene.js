@@ -1,5 +1,6 @@
 import Common from './Common'
 import Plane from './Plane'
+import Cube from './Cube'
 
 export default class Scene {
     constructor(props) {
@@ -9,7 +10,6 @@ export default class Scene {
 
     init() {
         Common.init(this.props.$canvas)
-        this.water = new Plane()
         window.addEventListener('resize', this.resize.bind(this))
         this.loop()
     }
