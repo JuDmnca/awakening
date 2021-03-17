@@ -145,11 +145,20 @@ class Common {
     }
 
     updateScene() {
-        this.scene.remove(this.scene0)
         this.currentScene++
-        this.land.load(this.currentScene, this.scene1)
-        this.scene1.rotation.y = Math.PI / 2
-        this.scene.add(this.scene1)
+        switch (this.currentScene) {
+            case 1:
+                this.scene.remove(this.scene0)
+                this.land.load(this.currentScene, this.scene1)
+                this.scene1.rotation.y = Math.PI / 2
+                this.scene.add(this.scene1)
+              break;
+            // case 2:
+            //     this.scene.remove(this.scene1)
+            //     this.land.load(this.currentScene, this.scene2)
+            //     this.scene.add(this.scene2)
+            //   break;
+          }
     }
 
     render() {
