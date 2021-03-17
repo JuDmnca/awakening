@@ -1,15 +1,16 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import model from '../../../assets/models/desert_scaled.gltf'
-class Desert {
-    constructor() {
+
+class Loader {
+    constructor(props) {
         this.loader = null
+        this.props = props
     }
 
     init(scene) {
         this.loader = new GLTFLoader()
 
-        this.loader.load( model, function ( gltf ) {
+        this.loader.load( this.props.model, function ( gltf ) {
 
             gltf.scene.position.x = 0
             gltf.scene.position.y = 0
@@ -25,4 +26,4 @@ class Desert {
     }
 }
 
-export default Desert
+export default Loader
