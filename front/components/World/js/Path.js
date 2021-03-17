@@ -12,7 +12,7 @@ class Path {
         this.normal = new THREE.Vector3()
         this.position = new THREE.Vector3()
         this.lookAt = new THREE.Vector3()
-        this.vectorsCurve = [new THREE.Vector3( 76, -11, 20 ),new THREE.Vector3( 68, -11, -10 )]
+        this.vectorsCurve = [new THREE.Vector3( 76, -11, 20 ), new THREE.Vector3( 68, -11, -10 ), new THREE.Vector3( 75, -10, -10 )]
         this.pipeSpline = new THREE.CatmullRomCurve3(this.vectorsCurve)
 
         this.parent = null
@@ -75,11 +75,6 @@ class Path {
 
     addGeometry( geometry ) {
         mesh = new THREE.Mesh( geometry, this.material )
-    }
-
-    updateTube() {
-        this.pipeSpline = new THREE.CatmullRomCurve3(this.vectorsCurve)
-        this.tubeGeometry.path = this.pipeSpline
     }
 
     render(progression) {

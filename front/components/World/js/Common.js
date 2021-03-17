@@ -115,6 +115,8 @@ class Common {
 
         // Remove the error if backwards scroll at the beginning
         this.progression < 0 ? this.progression = 0 : this.progression
+        this.progression > 15 ? this.progression = 0 : this.progression
+        console.log(this.progression)
     }
 
     resize() {
@@ -128,8 +130,7 @@ class Common {
         if (this.intersects.length > 0) {
             console.log('clickkkkkkkkk')
             console.log(Path.splineCamera)
-            Path.vectorsCurve.push(new THREE.Vector3( 75, -10, -10 ))
-            Path.updateTube
+            gsap.to(this, {progression: 19.99, duration: 2.5, ease: "power3.out"} )
         }
     }
 
