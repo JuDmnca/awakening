@@ -1,6 +1,7 @@
 <template>
     <section class="scene">
         <canvas id="canvas" ref="canvas"></canvas>
+        <FormsQuestion />
     </section>
 </template>
 
