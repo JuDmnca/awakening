@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import Path from './Path'
 import Land from './Land'
 import Cube from './Cube'
+import { Group } from "three"
 
 class Common {
     constructor() {
@@ -15,6 +16,12 @@ class Common {
         this.windowHalf = new THREE.Vector2()
         this.raycaster = new THREE.Raycaster()
         this.intersects = []
+        this.scene0 = new THREE.Group()
+        this.scene1 = new THREE.Group()
+        this.scene2 = new THREE.Group()
+        this.scene3 = new THREE.Group()
+        this.currentScene = 0
+        this.land = new Land()
 
         this.size = {
             windowW: null,
@@ -76,9 +83,10 @@ class Common {
         Path.init()
         this.scene.add(Path.splineCamera)
 
-        const land = new Land()
-        land.init()
-        land.load(0, this.scene)
+        // Load for first scene
+        this.land.init()
+        this.land.load(0, this.scene0)
+        this.scene.add(this.scene0)
 
         this.light = new THREE.SpotLight('white', 3.5, 200)
         this.light.position.z = 100
@@ -116,7 +124,6 @@ class Common {
         // Remove the error if backwards scroll at the beginning
         this.progression < 0 ? this.progression = 0 : this.progression
         this.progression > 15 ? this.progression = 0 : this.progression
-        console.log(this.progression)
     }
 
     resize() {
@@ -131,7 +138,18 @@ class Common {
             console.log('clickkkkkkkkk')
             console.log(Path.splineCamera)
             gsap.to(this, {progression: 19.99, duration: 2.5, ease: "power3.out"} )
+            setTimeout(() => {
+                this.updateScene()
+            }, 1000)
         }
+    }
+
+    updateScene() {
+        this.scene.remove(this.scene0)
+        this.currentScene++
+        this.land.load(this.currentScene, this.scene1)
+        this.scene1.rotation.y = Math.PI / 2
+        this.scene.add(this.scene1)
     }
 
     render() {
