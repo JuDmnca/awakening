@@ -1,7 +1,7 @@
 <template>
     <section class="scene">
         <canvas id="canvas" ref="canvas"></canvas>
-        <FormsQuestion />
+        <FormsQuestion v-if="isVisible" />
     </section>
 </template>
 
@@ -12,6 +12,11 @@
         name: 'scene',
         data() {
             return {}
+        },
+        computed: {
+            isVisible() {
+                return false
+            }
         },
         mounted() {
             new Scene({
