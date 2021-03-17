@@ -1,16 +1,16 @@
 <template>
   <div>
-    <Scene />
+    <World />
     <Nuxt />
   </div>
 </template>
 
 <script>
-  import Scene from '~/components/Scene/index'
+  import World from '~/components/World/index'
 
   export default {
     components: {
-      Scene
+      World
     }
   }
 </script>
