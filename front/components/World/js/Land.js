@@ -14,7 +14,7 @@ class Land {
     }
 
     load(idScene, scene) {
-        this.model = new Loader(this.models[idScene])
+        this.model = new Loader({model: this.models[idScene]})
         this.model.init(scene)
     }
 }
