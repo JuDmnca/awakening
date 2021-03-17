@@ -11,9 +11,11 @@ class Land {
 
     init() {
         this.models.push(modelDesert)
+        this.models.push(modelDesert)
     }
 
     load(idScene, scene) {
+        console.log( this.models[idScene])
         this.model = new Loader({model: this.models[idScene]})
         this.model.init(scene)
     }
