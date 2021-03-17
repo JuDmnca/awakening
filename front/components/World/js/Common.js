@@ -128,6 +128,8 @@ class Common {
         if (this.intersects.length > 0) {
             console.log('clickkkkkkkkk')
             console.log(Path.splineCamera)
+            Path.vectorsCurve.push(new THREE.Vector3( 75, -10, -10 ))
+            Path.updateTube
         }
     }
 
