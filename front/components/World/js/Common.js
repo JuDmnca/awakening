@@ -1,8 +1,9 @@
 import * as THREE from "three"
 import gsap from 'gsap'
 import Path from './Path'
-import Desert from './Desert'
+import Land from './Land'
 import Cube from './Cube'
+
 class Common {
     constructor() {
         this.scene = null
@@ -75,8 +76,9 @@ class Common {
         Path.init()
         this.scene.add(Path.splineCamera)
 
-        const desert = new Desert()
-        desert.init(this.scene)
+        const land = new Land()
+        land.init()
+        land.load(0, this.scene)
 
         this.light = new THREE.SpotLight('white', 3.5, 200)
         this.light.position.z = 100
