@@ -46,8 +46,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ['three/examples/jsm/controls/OrbitControls', 'three/examples/jsm/loaders/GLTFLoader', 'three/examples/jsm/loaders/FBXLoader'],
-
+    transpile: ['three/examples/jsm/controls/OrbitControls', 'three/examples/jsm/loaders/GLTFLoader'],
     extend (config, ctx) {
       if (!!config.module) {
         config.module.rules.push({ test: /\.(vert|frag)$/i, use: ["raw-loader"] });
