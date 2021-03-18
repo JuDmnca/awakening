@@ -27,7 +27,7 @@ export default {
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: [
-    '/components/',
+    '~/components/',
     {
       path: '~/components/Forms/',
       prefix: 'Forms'
@@ -42,6 +42,24 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: "AIzaSyCZCKxvIEkCNEYl0kDX2yzqedG-MVBm_G8",
+          authDomain: "awakening-55bb0.firebaseapp.com",
+          databaseURL: "https://awakening-55bb0-default-rtdb.firebaseio.com",
+          projectId: "awakening-55bb0",
+          storageBucket: "awakening-55bb0.appspot.com",
+          messagingSenderId: "502680403739",
+          appId: "1:502680403739:web:a6140bb864f5c0b5da9dbe",
+          measurementId: "G-PX3DCLFETZ"
+        },
+        services: {
+          database: true
+        }
+      }
+    ]
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
