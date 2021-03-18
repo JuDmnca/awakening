@@ -1,7 +1,4 @@
 import * as THREE from 'three'
-
-// import * as dat from '~/plugins/dat.gui/build/dat.gui'
-
 class Path {
     constructor() {
         this.splineCamera = null
