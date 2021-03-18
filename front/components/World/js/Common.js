@@ -22,6 +22,7 @@ class Common {
         this.scene3 = new THREE.Group()
         this.currentScene = 0
         this.land = new Land()
+        this.gui = null
 
         this.size = {
             windowW: null,
@@ -97,6 +98,12 @@ class Common {
 
         // Set max distance for raycaster
         this.raycaster.far = 10
+
+        // Gui
+        if(process.client) {
+           this.gui = require('three/examples/jsm/libs/dat.gui.module')
+        }
+        console.log('gui : ', this.gui)
     }
 
     setSize() {
