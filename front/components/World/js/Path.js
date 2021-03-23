@@ -9,12 +9,15 @@ class Path {
         this.normal = new THREE.Vector3()
         this.position = new THREE.Vector3()
         this.lookAt = new THREE.Vector3()
-        this.pipeSpline = new THREE.CubicBezierCurve3(
-            new THREE.Vector3(0, 1, 20),
-            new THREE.Vector3(0, 1, 15),
-            new THREE.Vector3(-5, 1, 17), // Point max
-            new THREE.Vector3(5, 1, -7), // Point du focus
-        )
+        this.points = [
+            new THREE.Vector3(0, 2, 20),
+            new THREE.Vector3(2, 2, 15),
+            new THREE.Vector3(-3, 2, 10), // Point max
+            new THREE.Vector3(3, 3, -0.8), // Point avant la plongée
+            new THREE.Vector3(3, 2, -1), // LAST POINT
+            new THREE.Vector3(3, 1.5, -1.2)
+        ]
+        this.pipeSpline = new THREE.CatmullRomCurve3(this.points)
 
         this.parent = null
         this.tubeGeometry = null
@@ -52,10 +55,6 @@ class Path {
         this.tubeGeometry = new THREE.TubeGeometry(extrudePath, this.params.extrusionSegments, this.params.radius, this.params.radiusSegments, this.params.closed, )
     }
 
-    addGeometry( geometry ) {
-        mesh = new THREE.Mesh( geometry, this.material )
-    }
-
     render(progression) {
 
         const looptime = 20
@@ -75,12 +74,13 @@ class Path {
         this.binormal.multiplyScalar(pickt - pick).add(this.tubeGeometry.binormals[ pick ])
 
         this.tubeGeometry.parameters.path.getTangentAt(t, this.direction)
-        const offset = -1
+        // const offset = -1
 
         this.normal.copy( this.binormal ).cross( this.direction )
-        this.position.add( this.normal.clone().multiplyScalar( offset ))
+        // this.position.add( this.normal.clone().multiplyScalar( offset ))
 
         this.splineCamera.position.copy( this.position )
+        console.log(this.splineCamera.position)
 
         this.tubeGeometry.parameters.path.getPointAt( (t + 30 / this.tubeGeometry.parameters.path.getLength() ) % 1, this.lookAt)
         // this.lookAt.multiplyScalar( this.params.scale )
