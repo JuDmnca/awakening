@@ -1,10 +1,7 @@
 import * as THREE from "three"
 import gsap from 'gsap'
 import Path from './Path'
-import Cube from './Desert/Cube'
 import Desert from './Desert/Desert'
-import MainGui from "./Helpers/MainGui"
-
 class Common {
     constructor() {
         this.scene = null
@@ -32,8 +29,6 @@ class Common {
         }
 
         this.light = null
-
-        this.myCube = new Cube()
     }
 
     init($canvas) {
@@ -87,13 +82,8 @@ class Common {
         this.light.position.y = 50
         this.scene.add(this.light)
 
-        this.scene.add(this.myCube.cube)
-
         // Set max distance for raycaster
         // this.raycaster.far = 10
-
-        // GUI
-        MainGui.init(this.myCube)
     }
 
     setSize() {
