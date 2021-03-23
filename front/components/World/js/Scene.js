@@ -1,7 +1,4 @@
 import Common from './Common'
-import Plane from './Plane'
-import Cube from './Cube'
-
 export default class Scene {
     constructor(props) {
         this.props = props

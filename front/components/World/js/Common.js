@@ -1,9 +1,8 @@
 import * as THREE from "three"
 import gsap from 'gsap'
 import Path from './Path'
-import Land from './Land'
-import Cube from './Cube'
-import { Group } from "three"
+import Cube from './Desert/Cube'
+import Desert from './Desert/Desert'
 import MainGui from "./Helpers/MainGui"
 
 class Common {
@@ -17,12 +16,8 @@ class Common {
         this.windowHalf = new THREE.Vector2()
         this.raycaster = new THREE.Raycaster()
         this.intersects = []
-        this.scene0 = new THREE.Group()
-        this.scene1 = new THREE.Group()
-        this.scene2 = new THREE.Group()
-        this.scene3 = new THREE.Group()
         this.currentScene = 0
-        this.land = new Land()
+        this.desert = new Desert()
 
         this.size = {
             windowW: null,
@@ -85,9 +80,7 @@ class Common {
         this.scene.add(Path.splineCamera)
 
         // Load for first scene
-        this.land.init()
-        this.land.load(0, this.scene0)
-        this.scene.add(this.scene0)
+        this.desert.init(this.scene)
 
         this.light = new THREE.SpotLight('white', 3.5, 200)
         this.light.position.z = 100
@@ -139,31 +132,30 @@ class Common {
 
     handleClick() {
         if (this.intersects.length > 0) {
-            console.log('clickkkkkkkkk')
             console.log(Path.splineCamera)
             gsap.to(this, {progression: 19.99, duration: 2.5, ease: "power3.out"} )
-            setTimeout(() => {
-                this.updateScene()
-            }, 1000)
+            // setTimeout(() => {
+            //     this.updateScene()
+            // }, 1000)
         }
     }
 
-    updateScene() {
-        this.currentScene++
-        switch (this.currentScene) {
-            case 1:
-                this.scene.remove(this.scene0)
-                this.land.load(this.currentScene, this.scene1)
-                this.scene1.rotation.y = Math.PI / 2
-                this.scene.add(this.scene1)
-              break;
-            // case 2:
-            //     this.scene.remove(this.scene1)
-            //     this.land.load(this.currentScene, this.scene2)
-            //     this.scene.add(this.scene2)
-            //   break;
-          }
-    }
+    // updateScene() {
+    //     this.currentScene++
+    //     switch (this.currentScene) {
+    //         case 1:
+    //             this.scene.remove(this.scene0)
+    //             this.land.load(this.currentScene, this.scene1)
+    //             this.scene1.rotation.y = Math.PI / 2
+    //             this.scene.add(this.scene1)
+    //           break;
+    //         // case 2:
+    //         //     this.scene.remove(this.scene1)
+    //         //     this.land.load(this.currentScene, this.scene2)
+    //         //     this.scene.add(this.scene2)
+    //         //   break;
+    //       }
+    // }
 
     render() {
         this.time.delta = this.clock.getDelta()
