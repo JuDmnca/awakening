@@ -1,6 +1,7 @@
 import Land from '../Land'
 import Cube from './Cube'
-import modelDesert from '../../../../assets/models/desert_scaled.gltf'
+// import modelDesert from '../../../../assets/models/desert_scaled.gltf'
+import modelDesert from '../../../../assets/models/desert_test.glb'
 import MainGui from "../Helpers/MainGui"
 
 class Desert {
