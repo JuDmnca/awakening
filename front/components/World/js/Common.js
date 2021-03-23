@@ -110,7 +110,7 @@ class Common {
 
         // Remove the error if backwards scroll at the beginning
         this.progression < 0 ? this.progression = 0 : this.progression
-        this.progression > 15 ? this.progression = 0 : this.progression
+        this.progression > 10 ? this.progression = 0 : this.progression
     }
 
     resize() {
@@ -123,7 +123,7 @@ class Common {
     handleClick() {
         console.log(Path.splineCamera)
         if (this.intersects.length > 0) {
-            gsap.to(this, {progression: 19.99, duration: 2.5, ease: "power3.out"} )
+            gsap.to(this, {progression: 19.9999, duration: 2.5, ease: "power3.out"} )
             // setTimeout(() => {
             //     this.updateScene()
             // }, 1000)
