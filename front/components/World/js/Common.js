@@ -131,8 +131,8 @@ class Common {
     }
 
     handleClick() {
+        console.log(Path.splineCamera)
         if (this.intersects.length > 0) {
-            console.log(Path.splineCamera)
             gsap.to(this, {progression: 19.99, duration: 2.5, ease: "power3.out"} )
             // setTimeout(() => {
             //     this.updateScene()
