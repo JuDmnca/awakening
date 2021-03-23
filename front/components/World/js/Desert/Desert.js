@@ -10,6 +10,7 @@ import * as THREE from 'three'
 class Desert {
   constructor(props) {
     this.props = props
+    this.hold = false
     this.land = new Land()
     this.myCube = new Cube()
     this.raycaster = new Raycaster()
@@ -17,9 +18,9 @@ class Desert {
     this.pathVectors = [
       new THREE.Vector3(0, 2, 20),
       new THREE.Vector3(2, 2, 15),
-      new THREE.Vector3(-3, 2, 10), 
+      new THREE.Vector3(-3, 2, 10),
       new THREE.Vector3(3, 3, -0.8), // Point avant la plongée
-      new THREE.Vector3(3, 2, -1), 
+      new THREE.Vector3(3, 2, -1),
       new THREE.Vector3(3, 1.5, -1.2) // Point plongée
     ]
     this.path = new Path({pathVectors: this.pathVectors})
@@ -42,6 +43,18 @@ class Desert {
     window.addEventListener('click', () => {
       this.handleClick()
     })
+    window.addEventListener('mousedown', (e) => {
+      e.preventDefault()
+      this.showCursorTimer(e.target)
+    })
+    window.addEventListener('mouseup', (e) => {
+      e.preventDefault()
+      this.hideCursorTimer()
+    })
+    // FOR LATER : TOUCH INTERACTION
+    // window.addEventListener('touchstart', (e) => {
+    //   this.hold(e)
+    // })
   }
 
   handleClick() {
@@ -51,6 +64,25 @@ class Desert {
         //     this.updateScene()
         // }, 1000)
     }
+  }
+
+  showCursorTimer (t) {
+    const circle = document.body.querySelector('.cursor-timer')
+    if (!this.hold) {
+      this.hold = true
+      gsap.to(circle, {opacity: 1, duration: 1})
+      gsap.to(circle, {x: 500, duration: 3})
+    } else {
+      gsap.to(circle, {opacity: 1, duration: 1})
+      gsap.to(circle, {x: 500, duration: 3})
+    }
+  }
+
+  hideCursorTimer () {
+    this.hold = false
+    const circle = document.body.querySelector('.cursor-timer')
+    gsap.to(circle, {opacity: 0, duration: 1})
+    gsap.to(circle, {x: 0, duration: 1, overwrite: "auto"})
   }
 
   render(scene) {
