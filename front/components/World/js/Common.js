@@ -2,6 +2,7 @@ import * as THREE from "three"
 import gsap from 'gsap'
 import Path from './Path'
 import Desert from './Desert/Desert'
+
 class Common {
     constructor() {
         this.scene = null
@@ -11,8 +12,6 @@ class Common {
         this.mouse = new THREE.Vector2()
         this.target = new THREE.Vector2()
         this.windowHalf = new THREE.Vector2()
-        this.raycaster = new THREE.Raycaster()
-        this.intersects = []
         this.currentScene = 0
         this.desert = new Desert()
 
@@ -35,14 +34,6 @@ class Common {
         this.setSize()
 
         this.scene = new THREE.Scene()
-
-        this.camera = new THREE.PerspectiveCamera(
-            45,
-            this.size.windowW / this.size.windowH,
-            0.1,
-            500
-        )
-        this.camera.position.set(0, 0, 50)
 
         this.renderer = new THREE.WebGLRenderer({
             canvas: $canvas
@@ -67,23 +58,16 @@ class Common {
         window.addEventListener('resize', () => {
             this.resize()
         })
-        window.addEventListener('click', () => {
-            this.handleClick()
-        })
-
-        Path.init()
-        this.scene.add(Path.splineCamera)
 
         // Load for first scene
-        this.desert.init(this.scene)
+        this.desert.init(this.scene, this.renderer)
+        this.camera = this.desert.path.splineCamera
+        this.scene.add(this.camera)
 
         this.light = new THREE.SpotLight('white', 3.5, 200)
         this.light.position.z = 100
         this.light.position.y = 50
         this.scene.add(this.light)
-
-        // Set max distance for raycaster
-        // this.raycaster.far = 10
     }
 
     setSize() {
@@ -98,10 +82,6 @@ class Common {
     mouseMovement(e) {
         this.mouse.x = ( e.clientX - this.windowHalf.x )
         this.mouse.y = ( e.clientY - this.windowHalf.y )
-        this.raycaster.setFromCamera({
-            x: (e.clientX / this.renderer.domElement.clientWidth) * 2 - 1,
-            y: -(e.clientY / this.renderer.domElement.clientHeight) * 2 + 1
-        }, Path.splineCamera);
     }
 
     onMouseWheel(e) {
@@ -111,23 +91,15 @@ class Common {
         // Remove the error if backwards scroll at the beginning
         this.progression < 0 ? this.progression = 0 : this.progression
         this.progression > 10 ? this.progression = 0 : this.progression
+        
+        this.desert.progression = this.progression
     }
 
     resize() {
         this.setSize()
-        Path.splineCamera.aspect = this.size.windowW / this.size.windowH
-        Path.splineCamera.updateProjectionMatrix()
+        this.camera.aspect = this.size.windowW / this.size.windowH
+        this.camera.updateProjectionMatrix()
         this.renderer.setSize(this.size.windowW, this.size.windowH)
-    }
-
-    handleClick() {
-        console.log(Path.splineCamera)
-        if (this.intersects.length > 0) {
-            gsap.to(this, {progression: 19.9999, duration: 2.5, ease: "power3.out"} )
-            // setTimeout(() => {
-            //     this.updateScene()
-            // }, 1000)
-        }
     }
 
     // updateScene() {
@@ -151,25 +123,15 @@ class Common {
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
 
-        this.intersects = []
-
-        if (this.scene.children) {
-            this.intersects = this.raycaster.intersectObjects( this.scene.children );
-        }
-
-        for ( let i = 0; i < this.intersects.length; i ++ ) {
-            // console.log(this.intersects[ i ].object)
-        }
-
-        Path.render(this.progression)
+        this.desert.render(this.scene)
 
         this.target.x = ( 1 - this.mouse.x ) * 0.002;
         this.target.y = ( 1 - this.mouse.y ) * 0.002;
 
-        // Path.splineCamera.rotation.x += 0.5 * ( this.target.y - Path.splineCamera.rotation.x )
-        Path.splineCamera.rotation.y += 0.5 * ( this.target.x - Path.splineCamera.rotation.y )
+        this.camera.rotation.x += 0.5 * ( this.target.y - this.camera.rotation.x )
+        this.camera.rotation.y += 0.5 * ( this.target.x - this.camera.rotation.y )
 
-        this.renderer.render(this.scene, Path.splineCamera)
+        this.renderer.render(this.scene, this.camera)
     }
 }
 

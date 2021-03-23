@@ -1,6 +1,8 @@
 import * as THREE from 'three'
+
 class Path {
-    constructor() {
+    constructor(props) {
+        this.props = props
         this.splineCamera = null
         this.cameraParams = null
 
@@ -9,15 +11,7 @@ class Path {
         this.normal = new THREE.Vector3()
         this.position = new THREE.Vector3()
         this.lookAt = new THREE.Vector3()
-        this.points = [
-            new THREE.Vector3(0, 2, 20),
-            new THREE.Vector3(2, 2, 15),
-            new THREE.Vector3(-3, 2, 10), // Point max
-            new THREE.Vector3(3, 3, -0.8), // Point avant la plongée
-            new THREE.Vector3(3, 2, -1), // LAST POINT
-            new THREE.Vector3(3, 1.5, -1.2)
-        ]
-        this.pipeSpline = new THREE.CatmullRomCurve3(this.points)
+        this.pipeSpline = new THREE.CatmullRomCurve3(this.props.pathVectors)
 
         this.parent = null
         this.tubeGeometry = null
@@ -80,7 +74,7 @@ class Path {
         // this.position.add( this.normal.clone().multiplyScalar( offset ))
 
         this.splineCamera.position.copy( this.position )
-        console.log(this.splineCamera.position)
+        // console.log(this.splineCamera.position)
 
         this.tubeGeometry.parameters.path.getPointAt( (t + 30 / this.tubeGeometry.parameters.path.getLength() ) % 1, this.lookAt)
         // this.lookAt.multiplyScalar( this.params.scale )
@@ -92,4 +86,4 @@ class Path {
     }
 }
 
-export default new Path()
+export default Path
