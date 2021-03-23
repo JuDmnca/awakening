@@ -10,7 +10,12 @@ class Path {
         this.position = new THREE.Vector3()
         this.lookAt = new THREE.Vector3()
         this.vectorsCurve = [new THREE.Vector3( 76, -11, 20 ), new THREE.Vector3( 68, -11, -10 ), new THREE.Vector3( 75, -10, -10 )]
-        this.pipeSpline = new THREE.CatmullRomCurve3(this.vectorsCurve)
+        this.pipeSpline = new THREE.CubicBezierCurve3(
+            new THREE.Vector3(76, -11, 20 ),
+            new THREE.Vector3(78, -11, 15),
+            new THREE.Vector3(68, -11, 10), // Point max
+            new THREE.Vector3(70, -11, 2), // Point du focus
+        )
 
         this.parent = null
         this.tubeGeometry = null
