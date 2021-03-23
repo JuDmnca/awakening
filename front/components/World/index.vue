@@ -2,6 +2,7 @@
     <section class="scene">
         <canvas id="canvas" ref="canvas"></canvas>
         <FormsQuestion v-if="isVisible" />
+        <span class="cursor-timer"></span>
     </section>
 </template>
 
@@ -25,7 +26,15 @@
         }
     }
 </script>
-<style>
 
+<style>
+.cursor-timer {
+    width: 20px;
+    height: 20px;
+    opacity: 0;
+    background-color: yellow;
+    position: absolute;
+    top: 0;
+}
 </style>
 
