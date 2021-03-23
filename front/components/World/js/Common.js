@@ -90,7 +90,7 @@ class Common {
         this.scene.add(this.myCube.cube)
 
         // Set max distance for raycaster
-        this.raycaster.far = 10
+        // this.raycaster.far = 10
 
         // GUI
         MainGui.init(this.myCube)
