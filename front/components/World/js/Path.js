@@ -9,12 +9,11 @@ class Path {
         this.normal = new THREE.Vector3()
         this.position = new THREE.Vector3()
         this.lookAt = new THREE.Vector3()
-        this.vectorsCurve = [new THREE.Vector3( 76, -11, 20 ), new THREE.Vector3( 68, -11, -10 ), new THREE.Vector3( 75, -10, -10 )]
         this.pipeSpline = new THREE.CubicBezierCurve3(
-            new THREE.Vector3(76, -11, 20 ),
-            new THREE.Vector3(78, -11, 15),
-            new THREE.Vector3(68, -11, 10), // Point max
-            new THREE.Vector3(70, -11, 2), // Point du focus
+            new THREE.Vector3(0, 1, 20),
+            new THREE.Vector3(0, 1, 15),
+            new THREE.Vector3(-5, 1, 17), // Point max
+            new THREE.Vector3(5, 1, -7), // Point du focus
         )
 
         this.parent = null
@@ -45,28 +44,6 @@ class Path {
         this.splineCamera = new THREE.PerspectiveCamera(this.cameraParams.fov, this.cameraParams.aspect, this.cameraParams.near, this.cameraParams.far)
 
         this.addTube()
-
-        // const gui = new dat.GUI( { width: 400 } )
-
-        // const folderGeometry = gui.addFolder( 'Geometry' )
-
-        // folderGeometry.add( this.params, 'extrusionSegments', 50, 500).step(50).onChange( () => {
-        //     this.addTube()
-        // })
-
-        // folderGeometry.add( this.params, 'radiusSegments', 2, 12 ).step( 1 ).onChange( () => {
-        //     this.addTube()
-        // })
-
-        // folderGeometry.add( this.params, 'closed').onChange( () => {
-        //     this.addTube()
-        // })
-        // folderGeometry.open()
-
-        // const folderCamera = gui.addFolder( 'Camera' )
-        // folderCamera.add( this.params, 'animationView' ).onChange( () => {
-
-        // })
     }
 
     addTube() {
@@ -98,10 +75,10 @@ class Path {
         this.binormal.multiplyScalar(pickt - pick).add(this.tubeGeometry.binormals[ pick ])
 
         this.tubeGeometry.parameters.path.getTangentAt(t, this.direction)
-        const offset = 15
+        const offset = -1
 
         this.normal.copy( this.binormal ).cross( this.direction )
-        // this.position.add( this.normal.clone().multiplyScalar( offset ))
+        this.position.add( this.normal.clone().multiplyScalar( offset ))
 
         this.splineCamera.position.copy( this.position )
 
