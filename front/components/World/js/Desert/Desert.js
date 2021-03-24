@@ -22,8 +22,6 @@ class Desert {
     this.props = props
     this.hold = false
     this.land = new Land({texture: sandTexture})
-    this.myCube = new Cube()
-    this.flower = null
     this.raycaster = new Raycaster()
     this.intersects = []
     this.intersected = null
@@ -39,16 +37,20 @@ class Desert {
     this.progression = null
     this.cubeLight = new THREE.PointLight(0xffff00, 0, 15)
     this.group = new THREE.Group()
+    this.flowerPosition = {x: -5, y: 0, z: 0}
+    this.flower = null
+    this.myCube = null
   }
 
   init(scene, renderer) {
     this.land.load(this.group, modelDesert)
 
-    this.group.add(this.myCube.cube)
 
     // Flower
-    this.flower = new Flower(this.group)
-    console.log('flower : ', this.flower)
+    this.flower = new Flower({scene: this.group, position: this.flowerPosition})
+    
+    // Cube
+    this.myCube = new Cube({scene: this.group, position: {x: -0.8, y: 0, z: 12}})
 
     // Lights
     this.group.add( this.cubeLight );
