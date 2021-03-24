@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 
+// Futur composant flower
 class Cube {
     constructor() {
         this.init()
@@ -9,8 +10,8 @@ class Cube {
         this.geometry = new THREE.BoxGeometry(2, 2, 2)
         // this.material = new THREE.MeshNormalMaterial()
         this.material = new THREE.MeshStandardMaterial({
-            color: 0xff3333,
-            wireframe: true,
+            color: "grey",
+            // wireframe: true,
             flatShading: true
         })
         this.material.color.convertSRGBToLinear()
