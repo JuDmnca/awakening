@@ -92,6 +92,7 @@ class Desert {
 
   handleCubeHover() {
     if (this.intersects.length > 0) {
+      document.body.style.cursor = "pointer"
       this.intersected = this.intersects[0].object
       this.intersected.currentHex = this.intersected.material.emissive.getHex()
       this.intersected.material.emissive.setHex( 0xcccc00 )
@@ -100,6 +101,7 @@ class Desert {
       this.cubeLight.position.set( this.intersected.position.x, this.intersected.position.y + 1, this.intersected.position.z );
       this.cubeLight.intensity = 1
     } else if (this.intersected) {
+      document.body.style.cursor = "initial"
       this.intersected.material.emissive.setHex("default")
       this.cubeLight.intensity = 0
     }
