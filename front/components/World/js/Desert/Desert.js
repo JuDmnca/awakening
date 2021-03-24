@@ -26,12 +26,16 @@ class Desert {
     ]
     this.path = new Path({pathVectors: this.pathVectors})
     this.progression = null
+    this.cubeLight = new THREE.PointLight(0x00ff00, 0, 15)
   }
 
   init(scene, renderer) {
     this.land.load(scene, modelDesert)
 
     scene.add(this.myCube.cube)
+
+    // Lights
+    scene.add( this.cubeLight );
 
     // GUI
     MainGui.init(this.myCube)
@@ -72,8 +76,13 @@ class Desert {
       this.intersected = this.intersects[0].object
       this.intersected.currentHex = this.intersected.material.emissive.getHex()
       this.intersected.material.emissive.setHex( 0x00ff00 )
+
+      // Emissive cubeLight of cube on hover
+      this.cubeLight.position.set( this.intersected.position.x, this.intersected.position.y, this.intersected.position.z );
+      this.cubeLight.intensity = 1
     } else if (this.intersected) {
       this.intersected.material.emissive.setHex("default")
+      this.cubeLight.intensity = 0
     }
   }
 
