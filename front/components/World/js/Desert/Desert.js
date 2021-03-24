@@ -1,11 +1,19 @@
 import Land from '../Land'
 import Cube from './Cube'
-import modelDesert from '../../../../assets/models/desert_test.glb'
+import Flower from './Flower'
+import modelDesert from '../../../../assets/models/desert.glb'
 import MainGui from "../Helpers/MainGui"
 import Raycaster from "../Raycaster"
 import Path from "../Path"
 import gsap from 'gsap'
 import * as THREE from 'three'
+
+let store
+if (process.browser) {
+  window.onNuxtReady(({$store}) => {
+    store = $store
+  })
+}
 
 class Desert {
   constructor(props) {
@@ -13,6 +21,7 @@ class Desert {
     this.hold = false
     this.land = new Land()
     this.myCube = new Cube()
+    this.flower = null
     this.raycaster = new Raycaster()
     this.intersects = []
     this.intersected = null
@@ -33,6 +42,9 @@ class Desert {
     this.land.load(scene, modelDesert)
 
     scene.add(this.myCube.cube)
+
+    // Flower
+    this.flower = new Flower(scene)
 
     // Lights
     scene.add( this.cubeLight );
@@ -91,7 +103,7 @@ class Desert {
     if (!this.hold) {
       this.hold = true
       gsap.to(circle, {opacity: 1, duration: 1})
-      gsap.to(circle, {x: 500, duration: 3})
+      gsap.to(circle, {x: 500, duration: 3, onComplete: this.increaseCounter})
     } else {
       gsap.to(circle, {opacity: 1, duration: 1})
       gsap.to(circle, {x: 500, duration: 3})
@@ -103,6 +115,14 @@ class Desert {
     const circle = document.body.querySelector('.cursor-timer')
     gsap.to(circle, {opacity: 0, duration: 1})
     gsap.to(circle, {x: 0, duration: 1, overwrite: "auto"})
+  }
+
+  increaseCounter () {
+    store.commit('desert/increaseCounter')
+    console.log(store.state.desert.counter)
+    if (store.state.desert.counter === 3) {
+      console.log('Interaction done !')
+    }
   }
 
   render(scene) {
