@@ -8,7 +8,7 @@ class Land {
     }
 
     load(scene, model) {
-        this.model = new Loader({model: model})
+        this.model = new Loader({model: model, texture: this.props.texture})
         this.model.init(scene)
     }
 }
