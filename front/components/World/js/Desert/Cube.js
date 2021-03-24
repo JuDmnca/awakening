@@ -2,25 +2,31 @@ import * as THREE from 'three'
 
 // Futur composant flower
 class Cube {
-    constructor() {
-        this.init()
+    constructor(props) {
+        this.props = props
+        this.scene = props.scene
+        this.init(this.scene)
     }
 
-    init() {
+    init(scene) {
         this.geometry = new THREE.BoxGeometry(2, 2, 2)
         // this.material = new THREE.MeshNormalMaterial()
         this.material = new THREE.MeshStandardMaterial({
             color: "grey",
             // wireframe: true,
-            flatShading: true
+            flatShading: true,
+            opacity: 0,
+            transparent: true,
         })
         this.material.color.convertSRGBToLinear()
 
         this.cube = new THREE.Mesh( this.geometry, this.material )
+        this.cube.opacity = 0
+        this.cube.position.x = this.props.position.x
+        this.cube.position.y = this.props.position.y
+        this.cube.position.z = this.props.position.z
 
-        this.cube.position.x = 4
-        this.cube.position.y = 0
-        this.cube.position.z = -1
+        scene.add(this.cube)
     }
 }
 

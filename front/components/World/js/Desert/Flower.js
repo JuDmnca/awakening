@@ -5,13 +5,15 @@ import modelFlower from '../../../../assets/models/flower_2.gltf'
 
 class Flower {
     constructor(props) {
-        this.scene = props
+        this.props = props
+        this.scene = props.scene
         this.model = null
         this.init(this.scene)
     }
 
     init(scene) {
-        this.model = new Loader({model: modelFlower, position: {x: -5, y: 0, z: 0}})
+        const position = this.props.position
+        this.model = new Loader({model: modelFlower, position: position})
         this.model.init(scene)
     }
 }
