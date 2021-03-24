@@ -21,7 +21,7 @@ class Loader {
                 const texture = new THREE.TextureLoader().load( sand );
 
                 // immediately use the texture for material creation
-                const material = new THREE.MeshBasicMaterial( { map: texture } );
+                const material = new THREE.MeshPhongMaterial( { map: texture } );
                 gltf.scene.children[4].material = material
             }
 
