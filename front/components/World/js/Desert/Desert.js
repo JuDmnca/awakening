@@ -38,18 +38,20 @@ class Desert {
     this.path = new Path({pathVectors: this.pathVectors})
     this.progression = null
     this.cubeLight = new THREE.PointLight(0xffff00, 0, 15)
+    this.group = new THREE.Group()
   }
 
   init(scene, renderer) {
-    this.land.load(scene, modelDesert)
+    this.land.load(this.group, modelDesert)
 
-    scene.add(this.myCube.cube)
+    this.group.add(this.myCube.cube)
 
     // Flower
-    this.flower = new Flower(scene)
+    this.flower = new Flower(this.group)
+    console.log('flower : ', this.flower)
 
     // Lights
-    scene.add( this.cubeLight );
+    this.group.add( this.cubeLight );
 
     // GUI
     MainGui.init(this.myCube)
@@ -74,6 +76,7 @@ class Desert {
     // window.addEventListener('touchstart', (e) => {
     //   this.hold(e)
     // })
+    scene.add(this.group)
   }
 
   handleClick() {
@@ -127,8 +130,8 @@ class Desert {
     }
   }
 
-  render(scene) {
-    this.intersects = this.raycaster.render(scene)
+  render() {
+    this.intersects = this.raycaster.render(this.group)
     this.handleCubeHover()
     this.path.render(this.progression)
   }
