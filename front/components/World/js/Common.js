@@ -91,7 +91,7 @@ class Common {
         // Remove the error if backwards scroll at the beginning
         this.progression < 0 ? this.progression = 0 : this.progression
         this.progression > 10 ? this.progression = 10 : this.progression
-        
+
         this.desert.progression = this.progression
     }
 
@@ -128,7 +128,7 @@ class Common {
         this.target.x = ( 1 - this.mouse.x ) * 0.002;
         this.target.y = ( 1 - this.mouse.y ) * 0.002;
 
-        this.camera.rotation.x += 0.5 * ( this.target.y - this.camera.rotation.x )
+        this.camera.rotation.x += 0.1 * ( this.target.y - this.camera.rotation.x )
         this.camera.rotation.y += 0.5 * ( this.target.x - this.camera.rotation.y )
 
         this.renderer.render(this.scene, this.camera)
