@@ -8,6 +8,8 @@ import Path from "../Path"
 import gsap from 'gsap'
 import * as THREE from 'three'
 
+const sandTexture = require("../../../../assets/textures/sand.png")
+
 let store
 if (process.browser) {
   window.onNuxtReady(({$store}) => {
@@ -19,7 +21,7 @@ class Desert {
   constructor(props) {
     this.props = props
     this.hold = false
-    this.land = new Land()
+    this.land = new Land({texture: sandTexture})
     this.myCube = new Cube()
     this.flower = null
     this.raycaster = new Raycaster()
