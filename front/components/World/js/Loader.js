@@ -1,5 +1,6 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as THREE from 'three'
+
 class Loader {
     constructor(props) {
         this.loader = null
@@ -8,13 +9,16 @@ class Loader {
 
     init(scene) {
         this.loader = new GLTFLoader()
+
         const textureImported = this.props.texture
+
+        const position = this.props.position
 
         this.loader.load( this.props.model, function ( gltf ) {
 
-            gltf.scene.position.x = 0
-            gltf.scene.position.y = 0
-            gltf.scene.position.z = 0
+            gltf.scene.position.x = position.x
+            gltf.scene.position.y = position.y
+            gltf.scene.position.z = position.z
             
             if(textureImported){
                 const texture = new THREE.TextureLoader().load( textureImported );
