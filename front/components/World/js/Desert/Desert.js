@@ -15,6 +15,7 @@ class Desert {
     this.myCube = new Cube()
     this.raycaster = new Raycaster()
     this.intersects = []
+    this.intersected = null
     this.pathVectors = [
       new THREE.Vector3(0, 2, 20),
       new THREE.Vector3(2, 2, 15),
@@ -66,6 +67,16 @@ class Desert {
     }
   }
 
+  handleCubeHover() {
+    if (this.intersects.length > 0) {
+      this.intersected = this.intersects[0].object
+      this.intersected.currentHex = this.intersected.material.emissive.getHex()
+      this.intersected.material.emissive.setHex( 0x00ff00 )
+    } else if (this.intersected) {
+      this.intersected.material.emissive.setHex("default")
+    }
+  }
+
   showCursorTimer (t) {
     const circle = document.body.querySelector('.cursor-timer')
     if (!this.hold) {
@@ -87,6 +98,7 @@ class Desert {
 
   render(scene) {
     this.intersects = this.raycaster.render(scene)
+    this.handleCubeHover()
     this.path.render(this.progression)
   }
 }
