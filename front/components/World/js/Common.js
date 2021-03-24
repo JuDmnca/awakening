@@ -90,7 +90,7 @@ class Common {
 
         // Remove the error if backwards scroll at the beginning
         this.progression < 0 ? this.progression = 0 : this.progression
-        this.progression > 10 ? this.progression = 0 : this.progression
+        this.progression > 10 ? this.progression = 10 : this.progression
         
         this.desert.progression = this.progression
     }
