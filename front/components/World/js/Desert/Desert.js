@@ -36,12 +36,12 @@ class Desert {
     ]
     this.path = new Path({pathVectors: this.pathVectors})
     this.progression = null
-    this.cubeLight = new THREE.PointLight(0xffff00, 0, 15)
+    this.cubeLight = new THREE.PointLight(0xffff00, 0, 5)
     this.group = new THREE.Group()
     this.flowerPosition = {x: -5, y: 0, z: 0}
     this.flower = null
     this.flowerOffsets = {
-      x: 0,
+      x: 10,
       y: 0,
       z: 0
     }
@@ -53,28 +53,28 @@ class Desert {
   init(scene, renderer) {
     this.land.load(this.group, modelDesert)
 
+    // Cube - Hover zone for flowers
+    this.myCube = new Cube({scene: this.flowerGroup, position: {x: 2.5, y: 0, z: -1.5}})
+
     // Flower
     // this.flower = new Flower({scene: this.group, position: this.flowerPosition})
 
     // Flower group
-    for(let nbFlowers = 0; nbFlowers <= 200; nbFlowers++) {
+    for(let nbFlowers = 0; nbFlowers <= 15; nbFlowers++) {
       new Flower({
         scene: this.flowerGroup, 
         position: {
-          x: - this.noise.get(this.flowerOffsets.x + 10) * 10,
+          x: - this.noise.get(this.flowerOffsets.x) * 3, // 3 is for the distance between flowers
           y: 0,
-          z: - this.noise.get(this.flowerOffsets.z) * 10
+          z: this.noise.get(this.flowerOffsets.z) * 3 - 15.5 // 3 is for the distance between flowers and 15.5 is for positionning
         },
-        scaleY: this.noise.get(this.flowerOffsets.y)
+        scaleY: this.noise.get(this.flowerOffsets.y + 10) // Min = 0.5 and Max = 1
       })
-      this.flowerOffsets.x += 0.1
-      this.flowerOffsets.y += 0.01
-      this.flowerOffsets.z += 0.1
+      this.flowerOffsets.x += 2 // To be not too organic
+      this.flowerOffsets.y += 0.1
+      this.flowerOffsets.z += 2 // To be not too organic
     }
-    scene.add(this.flowerGroup)
-    
-    // Cube
-    this.myCube = new Cube({scene: this.group, position: {x: 0, y: 0, z: 5}})
+    this.group.add(this.flowerGroup)
 
     // Lights
     this.group.add( this.cubeLight );
@@ -122,7 +122,8 @@ class Desert {
       this.intersected.material.emissive.setHex( 0xcccc00 )
 
       // Emissive cubeLight of cube on hover
-      this.cubeLight.position.set( this.intersected.position.x, this.intersected.position.y + 1, this.intersected.position.z );
+      const lightAltitude = 3
+      this.cubeLight.position.set( this.intersected.position.x, this.intersected.position.y + lightAltitude, this.intersected.position.z );
       this.cubeLight.intensity = 1
     } else if (this.intersected) {
       document.body.style.cursor = "initial"

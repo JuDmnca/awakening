@@ -21,7 +21,7 @@ class Raycaster {
 
     render(scene) {
         if (scene.children) {
-            this.intersects = this.raycaster.intersectObjects( scene.children );
+            this.intersects = this.raycaster.intersectObjects( scene.children[0].children )
         }
 
         for ( let i = 0; i < this.intersects.length; i ++ ) {
