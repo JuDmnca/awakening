@@ -9,7 +9,7 @@ class Cube {
     }
 
     init(scene) {
-        this.geometry = new THREE.BoxGeometry(2, 2, 2)
+        this.geometry = new THREE.BoxGeometry(10, 1, 1)
         // this.material = new THREE.MeshNormalMaterial()
         this.material = new THREE.MeshStandardMaterial({
             color: "grey",

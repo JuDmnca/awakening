@@ -7,6 +7,7 @@ import Raycaster from "../Raycaster"
 import Path from "../Path"
 import gsap from 'gsap'
 import * as THREE from 'three'
+import perlinNoise3d from 'perlin-noise-3d'
 
 const sandTexture = require("../../../../assets/textures/sand.png")
 
@@ -39,18 +40,42 @@ class Desert {
     this.group = new THREE.Group()
     this.flowerPosition = {x: -5, y: 0, z: 0}
     this.flower = null
+    this.flowerOffsets = {
+      x: 0,
+      y: 0,
+      z: 0
+    }
     this.myCube = null
+    this.noise = new perlinNoise3d()
+    this.noiseStep = 0
+    this.flowerGroup = new THREE.Group()
   }
 
   init(scene, renderer) {
     this.land.load(this.group, modelDesert)
 
-
     // Flower
-    this.flower = new Flower({scene: this.group, position: this.flowerPosition})
+    // this.flower = new Flower({scene: this.group, position: this.flowerPosition})
+
+    // Flower group
+    for(let nbFlowers = 0; nbFlowers <= 200; nbFlowers++) {
+      new Flower({
+        scene: this.flowerGroup, 
+        position: {
+          x: - this.noise.get(this.flowerOffsets.x + 10) * 10,
+          y: 0,
+          z: - this.noise.get(this.flowerOffsets.z) * 10
+        },
+        scaleY: this.noise.get(this.flowerOffsets.y)
+      })
+      this.flowerOffsets.x += 0.1
+      this.flowerOffsets.y += 0.01
+      this.flowerOffsets.z += 0.1
+    }
+    scene.add(this.flowerGroup)
     
     // Cube
-    this.myCube = new Cube({scene: this.group, position: {x: -0.8, y: 0, z: 12}})
+    this.myCube = new Cube({scene: this.group, position: {x: 0, y: 0, z: 5}})
 
     // Lights
     this.group.add( this.cubeLight );
