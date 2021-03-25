@@ -13,7 +13,7 @@ class Flower {
 
     init(scene) {
         const position = this.props.position
-        this.model = new Loader({model: modelFlower, position: position})
+        this.model = new Loader({model: modelFlower, position: position, scaleY: this.props.scaleY})
         this.model.init(scene)
     }
 }

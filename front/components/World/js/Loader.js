@@ -14,11 +14,17 @@ class Loader {
 
         const position = this.props.position
 
+        const scaleY = this.props.scaleY
+
         this.loader.load( this.props.model, function ( gltf ) {
 
             gltf.scene.position.x = position.x
             gltf.scene.position.y = position.y
             gltf.scene.position.z = position.z
+
+            if(scaleY) {
+                gltf.scene.scale.y = scaleY
+            }
             
             if(textureImported){
                 const texture = new THREE.TextureLoader().load( textureImported );
