@@ -25,13 +25,22 @@ class Loader {
             if(scaleY) {
                 gltf.scene.scale.y = scaleY
             }
-            
+
             if(textureImported){
                 const texture = new THREE.TextureLoader().load( textureImported );
 
                 // immediately use the texture for material creation
                 const material = new THREE.MeshPhongMaterial( { map: texture } );
-                gltf.scene.children[4].material = material
+                switch (textureImported) {
+                    case '/_nuxt/assets/textures/sand.png':
+                        gltf.scene.children[4].material = material
+                    break;
+                    case '/_nuxt/assets/textures/petale.png':
+                        for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 2) ; nbChildren++) {
+                            gltf.scene.children[nbChildren].material = material
+                        }
+                    break;
+                }
             }
 
             scene.add( gltf.scene );

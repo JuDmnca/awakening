@@ -3,6 +3,8 @@ import Loader from '../Loader'
 // import modelFlower from '../../../../assets/models/flower.glb'
 import modelFlower from '../../../../assets/models/flower_2.gltf'
 
+const petaleTexture = require("../../../../assets/textures/petale.png")
+
 class Flower {
     constructor(props) {
         this.props = props
@@ -13,7 +15,7 @@ class Flower {
 
     init(scene) {
         const position = this.props.position
-        this.model = new Loader({model: modelFlower, position: position, scaleY: this.props.scaleY})
+        this.model = new Loader({model: modelFlower, position: position, scaleY: this.props.scaleY, texture: petaleTexture})
         this.model.init(scene)
     }
 }
