@@ -47,7 +47,6 @@ class Desert {
     }
     this.myCube = null
     this.noise = new perlinNoise3d()
-    this.noiseStep = 0
     this.flowerGroup = new THREE.Group()
   }
 
