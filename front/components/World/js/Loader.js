@@ -31,15 +31,13 @@ class Loader {
 
                 // immediately use the texture for material creation
                 const material = new THREE.MeshPhongMaterial( { map: texture } );
-                switch (textureImported) {
-                    case '/_nuxt/assets/textures/sand.png':
-                        gltf.scene.children[4].material = material
-                    break;
-                    case '/_nuxt/assets/textures/petale.png':
-                        for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 2) ; nbChildren++) {
-                            gltf.scene.children[nbChildren].material = material
-                        }
-                    break;
+                if (textureImported.includes('sand')) {
+                    gltf.scene.children[4].material = material
+                } else if (textureImported.includes('petale')) {
+                    for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 2) ; nbChildren++) {
+                        material.shininess = 0
+                        gltf.scene.children[nbChildren].material = material
+                    }
                 }
             }
 
