@@ -62,7 +62,7 @@ class Desert {
     // Flower group
     for(let nbFlowers = 0; nbFlowers <= 15; nbFlowers++) {
       new Flower({
-        scene: this.flowerGroup, 
+        scene: this.flowerGroup,
         position: {
           x: - this.noise.get(this.flowerOffsets.x) * 3, // 3 is for the distance between flowers
           y: 0,

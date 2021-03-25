@@ -3,12 +3,20 @@ import gsap from 'gsap'
 import Path from './Path'
 import Desert from './Desert/Desert'
 
+let store
+if (process.browser) {
+  window.onNuxtReady(({$store}) => {
+    store = $store
+  })
+}
+
 class Common {
     constructor() {
         this.scene = null
         this.camera = null
         this.renderer = null
         this.progression = null
+        this.canMove = null
         this.mouse = new THREE.Vector2()
         this.target = new THREE.Vector2()
         this.windowHalf = new THREE.Vector2()
