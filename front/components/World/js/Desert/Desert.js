@@ -39,8 +39,8 @@ class Desert {
     this.path = new Path({pathVectors: this.pathVectors})
     this.progression = null
     this.cubeLight = new THREE.PointLight(0xffff00, 0, 5)
-    this.group = new THREE.Group()
-    this.flowerPosition = {x: -4, y: 0, z: -14.5}
+    this.desertGroup = new THREE.Group()
+    this.flowerPosition = {x: -4, y: 0, z: -12}
     this.flower = null
     this.flowerOffsets = {
       x: 10,
@@ -53,14 +53,14 @@ class Desert {
   }
 
   init(scene, renderer) {
-    this.land.load(this.group, modelDesert)
+    this.land.load(this.desertGroup, modelDesert)
 
     // Cube - Hover zone for flowers
     this.myCube = new Cube({scene: this.flowerGroup, position: {x: 0, y: 0, z: -1.5}})
 
     // Flower
     this.flower = new Flower({scene: this.flowerGroup, position: this.flowerPosition})
-    scene.add(this.flower.init())
+    this.flowerGroup.add(this.flower.init())
 
     console.log(scene)
 
@@ -79,10 +79,13 @@ class Desert {
     //   this.flowerOffsets.y += 0.1
     //   this.flowerOffsets.z += 2 // To be not too organic
     // }
-    this.group.add(this.flowerGroup)
+
+    this.flowerGroup.position.z = -2
+
+    this.desertGroup.add(this.flowerGroup)
 
     // Lights
-    this.group.add( this.cubeLight );
+    this.desertGroup.add( this.cubeLight );
 
     // GUI
     MainGui.init(this.myCube)
@@ -107,7 +110,7 @@ class Desert {
     // window.addEventListener('touchstart', (e) => {
     //   this.hold(e)
     // })
-    scene.add(this.group)
+    scene.add(this.desertGroup)
   }
 
   handleClick() {
@@ -165,7 +168,7 @@ class Desert {
   }
 
   render() {
-    this.intersects = this.raycaster.render(this.group)
+    this.intersects = this.raycaster.render(this.desertGroup)
     this.handleCubeHover()
     this.path.render(this.progression)
     this.flower.update()
