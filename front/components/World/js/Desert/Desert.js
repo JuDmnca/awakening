@@ -25,9 +25,11 @@ class Desert {
     this.props = props
     this.hold = false
     this.land = new Land({texture: sandTexture})
+
     this.raycaster = new Raycaster()
     this.intersects = []
     this.intersected = null
+
     this.pathVectors = [
       new THREE.Vector3(0, 2, 20),
       new THREE.Vector3(2, 2, 15),
@@ -38,18 +40,21 @@ class Desert {
     ]
     this.path = new Path({pathVectors: this.pathVectors})
     this.progression = null
-    this.cubeLight = new THREE.PointLight(0xffff00, 0, 5)
+
     this.desertGroup = new THREE.Group()
-    this.flowerPosition = {x: -4, y: 0, z: -12}
+
+    this.myCube = null
+    this.cubeLight = new THREE.PointLight(0xffff00, 0, 5)
+
+    this.flowerGroup = new THREE.Group()
     this.flower = null
     this.flowerOffsets = {
       x: 10,
       y: 0,
       z: 0
     }
-    this.myCube = null
+
     this.noise = new perlinNoise3d()
-    this.flowerGroup = new THREE.Group()
   }
 
   init(scene, renderer) {
@@ -59,10 +64,8 @@ class Desert {
     this.myCube = new Cube({scene: this.flowerGroup, position: {x: 0, y: 0, z: -1.5}})
 
     // Flower
-    this.flower = new Flower({scene: this.flowerGroup, position: this.flowerPosition})
+    this.flower = new Flower()
     this.flowerGroup.add(this.flower.init())
-
-    console.log(scene)
 
     // Flower group
     // for(let nbFlowers = 0; nbFlowers <= 15; nbFlowers++) {
@@ -88,7 +91,7 @@ class Desert {
     this.desertGroup.add( this.cubeLight );
 
     // GUI
-    MainGui.init(this.myCube)
+    // MainGui.init(this.myCube)
     this.raycaster.init(this.path, renderer)
 
     // Path
@@ -115,10 +118,7 @@ class Desert {
 
   handleClick() {
     if (this.intersects.length > 0) {
-        gsap.to(this, {progression: 19.9999, duration: 2.5, ease: "power3.out"} )
-        // setTimeout(() => {
-        //     this.updateScene()
-        // }, 1000)
+      gsap.to(this, {progression: 19.9999, duration: 2.5, ease: "power3.out"} )
     }
   }
 
@@ -164,6 +164,14 @@ class Desert {
     console.log(store.state.desert.counter)
     if (store.state.desert.counter === 3) {
       console.log('Interaction done !')
+    }
+  }
+
+  isFixedView () {
+    if (this.progression > 19) {
+      return true
+    } else {
+      return false
     }
   }
 

@@ -50,24 +50,19 @@ class Loader {
     initObject () {
         this.loader = new GLTFLoader()
         const materialImported = this.material
-        const position = this.props.position
-        const scaleY = this.props.scaleY
 
         const object = new THREE.Object3D()
 
         this.loader.load( this.props.model, function ( gltf ) {
 
-            gltf.scene.position.x = position.x
-            gltf.scene.position.y = position.y
-            gltf.scene.position.z = position.z
-
-            if(scaleY) {
-                gltf.scene.scale.y = scaleY
-            }
-
             for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 2) ; nbChildren++) {
                 gltf.scene.children[nbChildren].material = materialImported
             }
+            const box = new THREE.Box3().setFromObject( gltf.scene );
+            box.getCenter( gltf.scene.position );
+            gltf.scene.position.multiplyScalar( - 1 );
+            gltf.scene.position.y = 0.1;
+
             object.add(gltf.scene)
 
         }, undefined, function ( error ) {
