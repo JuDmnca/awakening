@@ -50,7 +50,6 @@ class Flower extends THREE.Object3D {
 
     update() {
         if (store && store.state.desert.rotation != null) {
-          console.log(this.flowerObject)
             let distRotation = store.state.desert.rotation.clone().sub(this.flowerObject.rotation.toVector3());
             let distRotationMatrix = this._createRotationMatrix(distRotation);
 
