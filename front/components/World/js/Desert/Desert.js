@@ -32,15 +32,15 @@ class Desert {
       new THREE.Vector3(0, 2, 20),
       new THREE.Vector3(2, 2, 15),
       new THREE.Vector3(-3, 2, 10),
-      new THREE.Vector3(3, 3, -0.8), // Point avant la plongée
-      new THREE.Vector3(3, 2, -1),
-      new THREE.Vector3(3, 1.5, -1.2) // Point plongée
+      new THREE.Vector3(0, 3, -0.8), // Point avant la plongée
+      new THREE.Vector3(0, 2, -1),
+      new THREE.Vector3(0, 1.5, -1.2) // Point plongée
     ]
     this.path = new Path({pathVectors: this.pathVectors})
     this.progression = null
     this.cubeLight = new THREE.PointLight(0xffff00, 0, 5)
     this.group = new THREE.Group()
-    this.flowerPosition = {x: -5, y: 0, z: 0}
+    this.flowerPosition = {x: -4, y: 0, z: -14.5}
     this.flower = null
     this.flowerOffsets = {
       x: 10,
@@ -56,32 +56,29 @@ class Desert {
     this.land.load(this.group, modelDesert)
 
     // Cube - Hover zone for flowers
-    this.myCube = new Cube({scene: this.flowerGroup, position: {x: 2.5, y: 0, z: -1.5}})
+    this.myCube = new Cube({scene: this.flowerGroup, position: {x: 0, y: 0, z: -1.5}})
 
     // Flower
-    // this.flower = new Flower({scene: this.group, position: this.flowerPosition})
+    this.flower = new Flower({scene: this.flowerGroup, position: this.flowerPosition})
+    scene.add(this.flower.init())
+
+    console.log(scene)
 
     // Flower group
     // for(let nbFlowers = 0; nbFlowers <= 15; nbFlowers++) {
-    for(let nbFlowers = 0; nbFlowers <= 0; nbFlowers++) {
-      new Flower({
-        scene: this.flowerGroup,
-        // position: {
-        //   x: - this.noise.get(this.flowerOffsets.x) * 3, // 3 is for the distance between flowers
-        //   y: 0,
-        //   z: this.noise.get(this.flowerOffsets.z) * 3 - 15.5 // 3 is for the distance between flowers and 15.5 is for positionning
-        // },
-        position: {
-          x: -1.5, // 3 is for the distance between flowers
-          y: 0,
-          z: - 14.5 // 3 is for the distance between flowers and 15.5 is for positionning
-        },
-        scaleY: this.noise.get(this.flowerOffsets.y + 10) // Min = 0.5 and Max = 1
-      })
-      this.flowerOffsets.x += 2 // To be not too organic
-      this.flowerOffsets.y += 0.1
-      this.flowerOffsets.z += 2 // To be not too organic
-    }
+    //   new Flower({
+    //     scene: this.flowerGroup,
+    //     position: {
+    //       x: - this.noise.get(this.flowerOffsets.x) * 3, // 3 is for the distance between flowers
+    //       y: 0,
+    //       z: this.noise.get(this.flowerOffsets.z) * 3 - 15.5 // 3 is for the distance between flowers and 15.5 is for positionning
+    //     },
+    //     scaleY: this.noise.get(this.flowerOffsets.y + 10) // Min = 0.5 and Max = 1
+    //   })
+    //   this.flowerOffsets.x += 2 // To be not too organic
+    //   this.flowerOffsets.y += 0.1
+    //   this.flowerOffsets.z += 2 // To be not too organic
+    // }
     this.group.add(this.flowerGroup)
 
     // Lights
@@ -171,6 +168,7 @@ class Desert {
     this.intersects = this.raycaster.render(this.group)
     this.handleCubeHover()
     this.path.render(this.progression)
+    this.flower.update()
   }
 }
 

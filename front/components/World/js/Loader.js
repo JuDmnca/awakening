@@ -5,6 +5,7 @@ class Loader {
     constructor(props) {
         this.loader = null
         this.props = props
+        this.material = this.props.material
     }
 
     init(scene) {
@@ -35,21 +36,47 @@ class Loader {
                     gltf.scene.children[4].material = material
                     // gltf.scene.children[4].scale.x *= 0.2
                     // gltf.scene.children[4].scale.z *= 0.2
-                } else if (textureImported.includes('petale')) {
-                    for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 2) ; nbChildren++) {
-                        material.shininess = 0
-                        gltf.scene.children[nbChildren].material = material
-                    }
                 }
+                scene.add( gltf.scene );
             }
-
-            scene.add( gltf.scene );
 
         }, undefined, function ( error ) {
 
             console.error( error );
 
         } );
+    }
+
+    initObject () {
+        this.loader = new GLTFLoader()
+        const materialImported = this.material
+        const position = this.props.position
+        const scaleY = this.props.scaleY
+
+        const object = new THREE.Object3D()
+
+        this.loader.load( this.props.model, function ( gltf ) {
+
+            gltf.scene.position.x = position.x
+            gltf.scene.position.y = position.y
+            gltf.scene.position.z = position.z
+
+            if(scaleY) {
+                gltf.scene.scale.y = scaleY
+            }
+
+            for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 2) ; nbChildren++) {
+                gltf.scene.children[nbChildren].material = materialImported
+            }
+            object.add(gltf.scene)
+
+        }, undefined, function ( error ) {
+
+            console.error( error )
+
+        } )
+
+        return object
     }
 }
 
