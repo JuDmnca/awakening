@@ -2,12 +2,14 @@ import Land from '../Land'
 import Cube from './Cube'
 import Flower from './Flower'
 import modelDesert from '../../../../assets/models/desert.glb'
-import MainGui from "../Helpers/MainGui"
-import Raycaster from "../Raycaster"
+import MainGui from "../Utils/MainGui"
+import Raycaster from "../Utils/Raycaster"
 import Path from "../Path"
 import gsap from 'gsap'
 import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
+
+import Rotation from '../Utils/Rotation'
 
 const sandTexture = require("../../../../assets/textures/sand.png")
 
@@ -60,13 +62,19 @@ class Desert {
     // this.flower = new Flower({scene: this.group, position: this.flowerPosition})
 
     // Flower group
-    for(let nbFlowers = 0; nbFlowers <= 15; nbFlowers++) {
+    // for(let nbFlowers = 0; nbFlowers <= 15; nbFlowers++) {
+    for(let nbFlowers = 0; nbFlowers <= 0; nbFlowers++) {
       new Flower({
         scene: this.flowerGroup,
+        // position: {
+        //   x: - this.noise.get(this.flowerOffsets.x) * 3, // 3 is for the distance between flowers
+        //   y: 0,
+        //   z: this.noise.get(this.flowerOffsets.z) * 3 - 15.5 // 3 is for the distance between flowers and 15.5 is for positionning
+        // },
         position: {
-          x: - this.noise.get(this.flowerOffsets.x) * 3, // 3 is for the distance between flowers
+          x: -1.5, // 3 is for the distance between flowers
           y: 0,
-          z: this.noise.get(this.flowerOffsets.z) * 3 - 15.5 // 3 is for the distance between flowers and 15.5 is for positionning
+          z: - 14.5 // 3 is for the distance between flowers and 15.5 is for positionning
         },
         scaleY: this.noise.get(this.flowerOffsets.y + 10) // Min = 0.5 and Max = 1
       })

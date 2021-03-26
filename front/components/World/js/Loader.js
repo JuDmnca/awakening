@@ -33,6 +33,8 @@ class Loader {
                 const material = new THREE.MeshPhongMaterial( { map: texture } );
                 if (textureImported.includes('sand')) {
                     gltf.scene.children[4].material = material
+                    // gltf.scene.children[4].scale.x *= 0.2
+                    // gltf.scene.children[4].scale.z *= 0.2
                 } else if (textureImported.includes('petale')) {
                     for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 2) ; nbChildren++) {
                         material.shininess = 0

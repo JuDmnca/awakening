@@ -13,9 +13,9 @@ class MainGui {
          console.log('gui : ', this.gui)
          const datGui  = new this.gui.GUI({ autoPlace: true });
          datGui.domElement.id = 'gui'
- 
+
          const folder = datGui.addFolder(`Cube`)
- 
+
          folder.addColor(new ColorGUIHelper(myCube.cube.material,'color'),'value') //
          .name('color')
          // .onChange(animationLoop)
