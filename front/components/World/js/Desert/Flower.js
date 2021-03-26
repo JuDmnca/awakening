@@ -54,10 +54,17 @@ class Flower {
 
         // - update rotation with rotationForce
         this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce));
+
+        this._traversePetalsChilds( ( child ) => {
+          // apply shader only to petal with shader material
+          if (child.material instanceof THREE.ShaderMaterial) {
+            child.material.uniforms.rotationForceMatrix.value = distRotationMatrix;
+          }
+        })
       }
     }
 
-    _createRotationMatrix(vectRotation) {
+  _createRotationMatrix(vectRotation) {
 		let m = new THREE.Matrix4();
 		let m1 = new THREE.Matrix4();
 		let m2 = new THREE.Matrix4();
@@ -72,6 +79,15 @@ class Flower {
 
 		return m;
 	}
+
+  _traversePetalsChilds(fct) {
+		this.flowerObject.children[0].traverse( (c) => {
+			if ( c instanceof THREE.Mesh ) {
+				fct(c)
+			}
+		})
+	}
+
 }
 
 export default Flower
