@@ -15,18 +15,13 @@ if (process.browser) {
     store = $store
   })
 }
-class Flower extends THREE.Object3D {
+class Flower {
     constructor(props) {
-        super()
         this.props = props
-        this.scene = props.scene
-        this.model = null
-        this.flowerObject = new THREE.Object3D()
+        this.flowerObject = null
     }
 
     init() {
-        const position = this.props.position
-
         const flowerFrag = require("../../../../assets/textures/texture_03.jpg")
         const flowerTexture = new THREE.TextureLoader().load( flowerFrag );
 
@@ -43,22 +38,23 @@ class Flower extends THREE.Object3D {
             fragmentShader: petalFrag,
             side: THREE.DoubleSide
         });
-        this.flowerObject = new Loader({model: modelFlower, position: position, scaleY: this.props.scaleY, material: flowerShaderMaterial})
+        this.flowerObject = new Loader({model: modelFlower, material: flowerShaderMaterial})
         this.flowerObject = this.flowerObject.initObject()
+
         return this.flowerObject
     }
 
     update() {
-        if (store && store.state.desert.rotation != null) {
-            let distRotation = store.state.desert.rotation.clone().sub(this.flowerObject.rotation.toVector3());
-            let distRotationMatrix = this._createRotationMatrix(distRotation);
+      if (store && store.state.desert.rotation != null) {
+        let distRotation = store.state.desert.rotation.clone().sub(this.flowerObject.rotation.toVector3());
+        let distRotationMatrix = this._createRotationMatrix(distRotation);
 
-            // // - force to apply at flowerObject
-            let rotationForce = distRotation.multiplyScalar(store.state.desert.velSpringiness);
+        // // - force to apply at flowerObject
+        let rotationForce = distRotation.multiplyScalar(store.state.desert.velSpringiness);
 
-            // - update rotation with rotationForce
-            this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce));
-        }
+        // - update rotation with rotationForce
+        this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce));
+      }
     }
 
     _createRotationMatrix(vectRotation) {

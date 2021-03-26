@@ -18,7 +18,7 @@ const mutations = {
     state.done = resp
   },
   updateRotation (state, resp) {
-    state.rotation = new THREE.Vector3( resp.x, resp.y, 0 )
+    state.rotation = new THREE.Vector3( resp.x, 0, -resp.y )
   }
 }
 
