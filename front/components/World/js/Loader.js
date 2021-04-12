@@ -1,5 +1,6 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as THREE from 'three'
+import perlinNoise3d from 'perlin-noise-3d'
 
 class Loader {
     constructor(props) {
@@ -47,17 +48,20 @@ class Loader {
         } );
     }
 
-    initObject () {
+    initFlowerObject () {
         this.loader = new GLTFLoader()
         const materialImported = this.material
+        let rotation = 0
 
         const object = new THREE.Object3D()
 
         this.loader.load( this.props.model, function ( gltf ) {
+            rotation = rotation + (Math.floor(Math.random() * 360))
 
             for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 2) ; nbChildren++) {
                 gltf.scene.children[nbChildren].material = materialImported
             }
+            gltf.scene.rotation.y = rotation
             const box = new THREE.Box3().setFromObject( gltf.scene );
             box.getCenter( gltf.scene.position );
             gltf.scene.position.multiplyScalar( - 1 );

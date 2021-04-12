@@ -39,7 +39,7 @@ class Flower {
             side: THREE.DoubleSide
         });
         this.flowerObject = new Loader({model: modelFlower, material: flowerShaderMaterial})
-        this.flowerObject = this.flowerObject.initObject()
+        this.flowerObject = this.flowerObject.initFlowerObject()
 
         return this.flowerObject
     }

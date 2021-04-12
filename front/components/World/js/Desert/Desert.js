@@ -78,9 +78,8 @@ class Desert {
       this.flowerOffsets.z += 2 // To be not too organic
 
       this.flowerGroup.add(flower.init())
-      flower.flowerObject.position.x = - this.noise.get(this.flowerOffsets.x) * 3 + 1
-      flower.flowerObject.position.y = 0
-      flower.flowerObject.position.z = this.noise.get(this.flowerOffsets.z) * 3 - 1
+
+      flower.flowerObject.position.set(- this.noise.get(this.flowerOffsets.x) * 3 + 1, 0, this.noise.get(this.flowerOffsets.z) * 3 - 1)
       flower.flowerObject.scale.y = this.noise.get(this.flowerOffsets.y + 10)
     }
 

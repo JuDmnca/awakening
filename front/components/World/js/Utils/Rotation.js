@@ -27,13 +27,13 @@ class RotationControl {
 
   _onMouseMove(event) {
     let x = (45 * (event.y - window.innerHeight/2)) / window.innerHeight/2,
-        y = (45 * (event.x - window.innerWidth/2)) / window.innerWidth/2;
-    this.rotateElement(x/this.ratio, y/this.ratio);
+        z = (45 * (event.x - window.innerWidth/2)) / window.innerWidth/2;
+    this.rotateElement(x/this.ratio, z/this.ratio);
   }
 
-  rotateElement(x, y){
+  rotateElement(x, z){
     if(store) {
-      store.commit('desert/updateRotation', {x: x, y: y})
+      store.commit('desert/updateRotation', {x: x, z: z})
     }
   }
 }
