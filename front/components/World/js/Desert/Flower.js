@@ -3,8 +3,8 @@ import Loader from '../Loader'
 // import modelFlower from '../../../../assets/models/flower.glb'
 import modelFlower from '../../../../assets/models/flower_2.gltf'
 
-import petalVert from "../../../../assets/shaders/flower.vert"
-import petalFrag from "../../../../assets/shaders/flower.frag"
+import petalVert from "../../../../assets/shaders/flower/flower.vert"
+import petalFrag from "../../../../assets/shaders/flower/flower.frag"
 import { Vector3 } from 'three'
 
 // const petaleTexture = require("../../../../assets/textures/petale.png")

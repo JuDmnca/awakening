@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import Common from '../Common'
-// import vertexShader from "../Shaders/Plane/plane.vert"
-// import fragmentShader from "../Shaders/Plane/plane.frag"
+import vertexShader from "../../../../assets/shaders/plane/plane.vert"
+import fragmentShader from "../../../../assets/shaders/plane/plane.frag"
 
 export default class Plane {
     constructor() {
