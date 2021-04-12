@@ -22,7 +22,7 @@ class Flower {
     }
 
     init() {
-        const flowerFrag = require("../../../../assets/textures/texture_03.jpg")
+        const flowerFrag = require("../../../../assets/textures/petale2.png")
         const flowerTexture = new THREE.TextureLoader().load( flowerFrag );
 
         const flowerVert = require("../../../../assets/textures/texture_springiness.jpg")

@@ -48,6 +48,7 @@ class Desert {
 
     this.flowerGroup = new THREE.Group()
     this.flower = null
+    this.flowers = []
     this.flowerOffsets = {
       x: 10,
       y: 0,
@@ -64,24 +65,24 @@ class Desert {
     this.myCube = new Cube({scene: this.flowerGroup, position: {x: 0, y: 0, z: -1.5}})
 
     // Flower
-    this.flower = new Flower()
-    this.flowerGroup.add(this.flower.init())
+    // this.flower = new Flower()
+    // this.flowerGroup.add(this.flower.init())
 
     // Flower group
-    // for(let nbFlowers = 0; nbFlowers <= 15; nbFlowers++) {
-    //   new Flower({
-    //     scene: this.flowerGroup,
-    //     position: {
-    //       x: - this.noise.get(this.flowerOffsets.x) * 3, // 3 is for the distance between flowers
-    //       y: 0,
-    //       z: this.noise.get(this.flowerOffsets.z) * 3 - 15.5 // 3 is for the distance between flowers and 15.5 is for positionning
-    //     },
-    //     scaleY: this.noise.get(this.flowerOffsets.y + 10) // Min = 0.5 and Max = 1
-    //   })
-    //   this.flowerOffsets.x += 2 // To be not too organic
-    //   this.flowerOffsets.y += 0.1
-    //   this.flowerOffsets.z += 2 // To be not too organic
-    // }
+    for(let nbFlowers = 0; nbFlowers <= 15; nbFlowers++) {
+      const flower = new Flower()
+      this.flowers.push(flower)
+
+      this.flowerOffsets.x += 2 // To be not too organic
+      this.flowerOffsets.y += 0.1
+      this.flowerOffsets.z += 2 // To be not too organic
+
+      this.flowerGroup.add(flower.init())
+      flower.flowerObject.position.x = - this.noise.get(this.flowerOffsets.x) * 3 + 1
+      flower.flowerObject.position.y = 0
+      flower.flowerObject.position.z = this.noise.get(this.flowerOffsets.z) * 3 - 1
+      flower.flowerObject.scale.y = this.noise.get(this.flowerOffsets.y + 10)
+    }
 
     this.flowerGroup.position.z = -2
 
@@ -132,7 +133,7 @@ class Desert {
       // Emissive cubeLight of cube on hover
       const lightAltitude = 3
       this.cubeLight.position.set( this.intersected.position.x, this.intersected.position.y + lightAltitude, this.intersected.position.z );
-      this.cubeLight.intensity = 1
+      // this.cubeLight.intensity = 1
     } else if (this.intersected) {
       document.body.style.cursor = "initial"
       this.intersected.material.emissive.setHex("default")
@@ -179,7 +180,11 @@ class Desert {
     this.intersects = this.raycaster.render(this.desertGroup)
     this.handleCubeHover()
     this.path.render(this.progression)
-    this.flower.update()
+    this.flowers.forEach(flower => {
+      flower.update()
+    })
+
+    // this.flower.update()
   }
 }
 
