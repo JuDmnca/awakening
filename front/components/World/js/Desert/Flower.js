@@ -3,10 +3,8 @@ import Loader from '../Loader'
 // import modelFlower from '../../../../assets/models/flower.glb'
 import modelFlower from '../../../../assets/models/flower_2.gltf'
 
-// import petalVert from "../Shaders/Flower/flower.vert"
-// import petalFrag from "../Shaders/Flower/flower.frag"
-const petalVert = require("../Shaders/Flower/flower.vert")
-const petalFrag = require("../Shaders/Flower/flower.frag")
+import petalVert from "../../../../assets/shaders/flower.vert"
+import petalFrag from "../../../../assets/shaders/flower.frag"
 import { Vector3 } from 'three'
 
 // const petaleTexture = require("../../../../assets/textures/petale.png")
@@ -36,8 +34,8 @@ class Flower {
               springinessMap: { type: "t", value: flowerSpringiness },
               rotationForceMatrix : { type : 'm4', value : new THREE.Matrix4() },
             },
-            vertexShader: petalVert.default,
-            fragmentShader: petalFrag.default,
+            vertexShader: petalVert,
+            fragmentShader: petalFrag,
             side: THREE.DoubleSide
         });
         this.flowerObject = new Loader({model: modelFlower, material: flowerShaderMaterial})
