@@ -26,9 +26,9 @@ class Plant {
     this.radiusSegment = 100;
     this.size = 0.01;
     this.length = this.getRandomFloat(0.05, 0.5);
-    this.curve = this.getRandomFloat(1, 2);
+    this.curve = 1;
 
-    this.curve = new CustomSinCurve({scale: 1, curve: this.curve, length: this.length})
+    this.curve = new CustomSinCurve({curve: this.curve, length: this.length})
     this.plantHeadPosition = this.curve.getPoints()[this.curve.getPoints().length-1];
 
     this.plantplantGeometry = new THREE.TubeGeometry( this.curve, this.segments, this.size, this.radiusSegment );

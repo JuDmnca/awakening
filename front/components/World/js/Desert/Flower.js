@@ -19,13 +19,14 @@ class Flower {
     constructor(props) {
         this.props = props
         this.flowerObject = null
+        this.ready = false
     }
 
     init() {
         const flowerFrag = require("../../../../assets/textures/petal2.png")
         const flowerTexture = new THREE.TextureLoader().load( flowerFrag );
 
-        const flowerVert = require("../../../../assets/textures/texture_springiness.jpg")
+        const flowerVert = require("../../../../assets/textures/petal_s.jpg")
         const flowerSpringiness = new THREE.TextureLoader().load( flowerVert );
 
         const flowerShaderMaterial = new THREE.ShaderMaterial( {

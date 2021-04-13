@@ -32,14 +32,14 @@ class Desert {
     this.intersected = null
 
     this.pathVectors = [
-      new THREE.Vector3(0, 2, 20),
-      new THREE.Vector3(2, 2, 15),
+      new THREE.Vector3(0, 3, 20),
+      new THREE.Vector3(2, 3, 15),
       // new THREE.Vector3(80, 4, 40),
       // new THREE.Vector3(2, 3, 15),
-      new THREE.Vector3(-3, 2, 10),
-      new THREE.Vector3(0, 3, -0.8), // Point avant la plongée
-      new THREE.Vector3(0, 2.5, -1),
-      new THREE.Vector3(0, 2, -1.3) // Point plongée
+      new THREE.Vector3(3, 3, 13),
+      new THREE.Vector3(0, 3, 10), // Point avant la plongée
+      new THREE.Vector3(0, 3.5, 1),
+      new THREE.Vector3(0, 2.2, -0.2) // Point plongée
     ]
     this.path = new Path({pathVectors: this.pathVectors})
     this.progression = null
@@ -53,8 +53,8 @@ class Desert {
     this.plants = []
     this.plantsOffsets = {
       x: 10,
-      y: 0,
-      z: 0
+      y: 0.1,
+      z: 2
     }
 
     this.noise = new perlinNoise3d()
@@ -67,18 +67,11 @@ class Desert {
     this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
 
     // Add Plants (Flower + Stem)
-    for(let nbPlants = 0; nbPlants <= 3; nbPlants++) {
+    for(let nbPlants = 0; nbPlants <= 14; nbPlants++) {
       const plant = new Plant({orientation: nbPlants})
       this.plants.push(plant)
 
-      this.plantsOffsets.x += 2 // To be not too organic
-      this.plantsOffsets.y += 0.1
-      this.plantsOffsets.z += 2 // To be not too organic
-
       this.plantsGroup.add(plant.init())
-
-      // flower.flowerObject.position.set(- this.noise.get(this.plantsOffsets.x) * 3 + 1, 0, this.noise.get(this.plantsOffsets.z) * 3 - 1)
-      // flower.flowerObject.scale.y = this.noise.get(this.plantsOffsets.y + 10)
     }
 
     this.plantsGroup.position.z = -2

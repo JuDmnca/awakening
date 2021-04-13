@@ -5,7 +5,6 @@ class CustomSinCurve extends THREE.Curve {
 	constructor( props ) {
 		super();
 		this.props = props
-		this.scale = this.props.scale;
 		this.curve = this.props.curve;
 		this.length = this.props.length;
 	}
@@ -16,7 +15,7 @@ class CustomSinCurve extends THREE.Curve {
 		const ty = Math.sin( t * this.curve );
 		const tz = t * this.length;
 
-		return optionalTarget.set( tx, ty, tz ).multiplyScalar( this.scale );
+		return optionalTarget.set( tx, ty, tz );
 
 	}
 

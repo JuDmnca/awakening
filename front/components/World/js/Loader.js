@@ -58,17 +58,17 @@ class Loader {
         this.loader.load( this.props.model, function ( gltf ) {
             rotation = rotation + (Math.floor(Math.random() * 360))
 
-            for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 2) ; nbChildren++) {
+            for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 1) ; nbChildren++) {
                 gltf.scene.children[nbChildren].material = materialImported
             }
             gltf.scene.rotation.y = rotation
+            gltf.scene.rotation.x = 0.1;
             const box = new THREE.Box3().setFromObject( gltf.scene );
             box.getCenter( gltf.scene.position );
             gltf.scene.position.multiplyScalar( - 1 );
             gltf.scene.scale.set(1.6,1.6,1.6);
-            gltf.scene.position.y = -0.49 * 1.6;
-            gltf.scene.position.z = -0.1;
-            gltf.scene.rotation.x = 0.1;
+            gltf.scene.position.y = -0.5 * 1.6;
+            gltf.scene.position.z = -0.09;
 
             object.add(gltf.scene)
 
