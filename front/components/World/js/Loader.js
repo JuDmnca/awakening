@@ -35,8 +35,8 @@ class Loader {
                 const material = new THREE.MeshPhongMaterial( { map: texture } );
                 if (textureImported.includes('sand')) {
                     gltf.scene.children[4].material = material
-                    // gltf.scene.children[4].scale.x *= 0.2
-                    // gltf.scene.children[4].scale.z *= 0.2
+                    // gltf.scene.children[0].material = material
+                    // gltf.scene.children[0].scale.set(3,3,3)
                 }
                 scene.add( gltf.scene );
             }
@@ -65,7 +65,10 @@ class Loader {
             const box = new THREE.Box3().setFromObject( gltf.scene );
             box.getCenter( gltf.scene.position );
             gltf.scene.position.multiplyScalar( - 1 );
-            gltf.scene.position.y = 0.1;
+            gltf.scene.scale.set(1.6,1.6,1.6);
+            gltf.scene.position.y = -0.49 * 1.6;
+            gltf.scene.position.z = -0.1;
+            gltf.scene.rotation.x = 0.1;
 
             object.add(gltf.scene)
 

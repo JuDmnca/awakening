@@ -34,6 +34,8 @@ class Desert {
     this.pathVectors = [
       new THREE.Vector3(0, 2, 20),
       new THREE.Vector3(2, 2, 15),
+      // new THREE.Vector3(80, 4, 40),
+      // new THREE.Vector3(2, 3, 15),
       new THREE.Vector3(-3, 2, 10),
       new THREE.Vector3(0, 3, -0.8), // Point avant la plongée
       new THREE.Vector3(0, 2.5, -1),
@@ -87,7 +89,7 @@ class Desert {
     this.desertGroup.add( this.cubeLight );
 
     // GUI
-    // MainGui.init(this.myCube)
+    // MainGui.init(this.)
     this.raycaster.init(this.path, renderer)
 
     // Path

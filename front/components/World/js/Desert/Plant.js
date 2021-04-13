@@ -25,7 +25,7 @@ class Plant {
     this.segments = 32;
     this.radiusSegment = 100;
     this.size = 0.01;
-    this.length = this.getRandomFloat(0.1, 0.5);
+    this.length = this.getRandomFloat(0.05, 0.5);
     this.curve = this.getRandomFloat(1, 2);
 
     this.curve = new CustomSinCurve({scale: 1, curve: this.curve, length: this.length})
@@ -43,8 +43,10 @@ class Plant {
 
     this.plantplantMesh = new THREE.Mesh( this.plantplantGeometry, this.plantShaderMaterial );
 
+    this.flower = null
+
     // TEST
-    this.pistilHeadGeometry = new THREE.SphereGeometry( this.size*5, this.radiusSegment, this.segment );
+    this.pistilHeadGeometry = new THREE.SphereGeometry( this.size*2, this.radiusSegment, this.segment );
 		this.pistilHeadShaderMaterial = new THREE.ShaderMaterial({
 			uniforms : {
 				rotationForceMatrix : { type : 'm4', value : new THREE.Matrix4() }
@@ -56,18 +58,17 @@ class Plant {
 		this.pistilHeadMesh.position.set( this.plantHeadPosition.x, this.plantHeadPosition.y, this.plantHeadPosition.z);
 
     this.plantMesh = new THREE.Object3D();
-    this.test = new THREE.Group()
-    this.test.add(this.plantplantMesh)
-    this.test.add(this.pistilHeadMesh)
+    this.plant = new THREE.Group()
+    this.plant.add(this.plantplantMesh)
+    this.plant.add(this.pistilHeadMesh)
 
-    this.plantMesh.add(this.test);
+    this.plantMesh.add(this.plant);
   }
 
     init() {
-      // const flower = new Flower()
-
-      // this.plantMesh.add(flower.init());
-      // this.plantMesh.children[1].position.set(this.plantHeadPosition.x, this.plantHeadPosition.y, this.plantHeadPosition.z);
+      this.flower = new Flower()
+      this.plant.add(this.flower.init())
+      this.plant.children[2].position.set(this.plantHeadPosition.x, this.plantHeadPosition.y, this.plantHeadPosition.z);
 
       this.plantMesh.position.set(this.POZ.x,this.POZ.y,this.POZ.z);
       // this.plantMesh.rotation.set(this.ROTATION.x, this.ROTATION.y, this.ROTATION.z);
@@ -76,18 +77,18 @@ class Plant {
     }
 
     update() {
-      if (store && store.state.desert.rotation != null) {
-        let distRotation = store.state.desert.rotation.clone().sub(this.plantMesh.children[0].rotation.toVector3());
+      if (store && store.state.desert.sRotation != null) {
+        let distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3());
         let distRotationMatrix = this._createRotationMatrix(distRotation);
 
         // force to apply at flowerObject
-        let rotationForce = distRotation.multiplyScalar(store.state.desert.velSpringiness);
+        let rotationForce = distRotation.multiplyScalar(store.state.desert.velStem);
 
         // update rotation with rotationForce
         this.plantMesh.children[0].rotation.setFromVector3(this.plantMesh.children[0].rotation.toVector3().add(rotationForce));
 
         this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix;
-        this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix;
+        this.flower.update()
       }
     }
 

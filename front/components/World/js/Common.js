@@ -137,7 +137,7 @@ class Common {
             this.target.x = ( 1 - this.mouse.x ) * 0.002;
             this.target.y = ( 1 - this.mouse.y ) * 0.002;
 
-            this.camera.rotation.x += 0.1 * ( this.target.y - this.camera.rotation.x )
+            // this.camera.rotation.x += 0.01 * ( this.target.y - this.camera.rotation.x )
             this.camera.rotation.y += 0.5 * ( this.target.x - this.camera.rotation.y )
         }
 
