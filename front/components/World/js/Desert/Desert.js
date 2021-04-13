@@ -1,6 +1,7 @@
 import Land from '../Land'
 import Cube from './Cube'
 import Flower from './Flower'
+import Plant from './Plant'
 import modelDesert from '../../../../assets/models/desert.glb'
 import MainGui from "../Utils/MainGui"
 import Raycaster from "../Utils/Raycaster"
@@ -35,8 +36,8 @@ class Desert {
       new THREE.Vector3(2, 2, 15),
       new THREE.Vector3(-3, 2, 10),
       new THREE.Vector3(0, 3, -0.8), // Point avant la plongée
-      new THREE.Vector3(0, 2, -1),
-      new THREE.Vector3(0, 1.5, -1.2) // Point plongée
+      new THREE.Vector3(0, 2.5, -1),
+      new THREE.Vector3(0, 2, -1.3) // Point plongée
     ]
     this.path = new Path({pathVectors: this.pathVectors})
     this.progression = null
@@ -46,10 +47,9 @@ class Desert {
     this.myCube = null
     this.cubeLight = new THREE.PointLight(0xffff00, 0, 5)
 
-    this.flowerGroup = new THREE.Group()
-    this.flower = null
-    this.flowers = []
-    this.flowerOffsets = {
+    this.plantsGroup = new THREE.Group()
+    this.plants = []
+    this.plantsOffsets = {
       x: 10,
       y: 0,
       z: 0
@@ -62,30 +62,26 @@ class Desert {
     this.land.load(this.desertGroup, modelDesert)
 
     // Cube - Hover zone for flowers
-    this.myCube = new Cube({scene: this.flowerGroup, position: {x: 0, y: 0, z: -1.5}})
+    this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
 
-    // Flower
-    // this.flower = new Flower()
-    // this.flowerGroup.add(this.flower.init())
+    // Add Plants (Flower + Stem)
+    for(let nbPlants = 0; nbPlants <= 3; nbPlants++) {
+      const plant = new Plant({orientation: nbPlants})
+      this.plants.push(plant)
 
-    // Flower group
-    for(let nbFlowers = 0; nbFlowers <= 15; nbFlowers++) {
-      const flower = new Flower()
-      this.flowers.push(flower)
+      this.plantsOffsets.x += 2 // To be not too organic
+      this.plantsOffsets.y += 0.1
+      this.plantsOffsets.z += 2 // To be not too organic
 
-      this.flowerOffsets.x += 2 // To be not too organic
-      this.flowerOffsets.y += 0.1
-      this.flowerOffsets.z += 2 // To be not too organic
+      this.plantsGroup.add(plant.init())
 
-      this.flowerGroup.add(flower.init())
-
-      flower.flowerObject.position.set(- this.noise.get(this.flowerOffsets.x) * 3 + 1, 0, this.noise.get(this.flowerOffsets.z) * 3 - 1)
-      flower.flowerObject.scale.y = this.noise.get(this.flowerOffsets.y + 10)
+      // flower.flowerObject.position.set(- this.noise.get(this.plantsOffsets.x) * 3 + 1, 0, this.noise.get(this.plantsOffsets.z) * 3 - 1)
+      // flower.flowerObject.scale.y = this.noise.get(this.plantsOffsets.y + 10)
     }
 
-    this.flowerGroup.position.z = -2
+    this.plantsGroup.position.z = -2
 
-    this.desertGroup.add(this.flowerGroup)
+    this.desertGroup.add(this.plantsGroup)
 
     // Lights
     this.desertGroup.add( this.cubeLight );
@@ -179,11 +175,9 @@ class Desert {
     this.intersects = this.raycaster.render(this.desertGroup)
     this.handleCubeHover()
     this.path.render(this.progression)
-    this.flowers.forEach(flower => {
-      flower.update()
+    this.plants.forEach(plant => {
+      plant.update()
     })
-
-    // this.flower.update()
   }
 }
 
