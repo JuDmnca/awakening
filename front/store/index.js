@@ -1,7 +1,12 @@
 const state = () => ({
-  userId: '',
-  userName: '',
-  userColor: ''
+  user: {
+    id: '',
+    name: '',
+    color: '',
+    smell: '',
+    taste: '',
+    sound: ''
+  }
 })
 
 const actions = {
@@ -9,13 +14,22 @@ const actions = {
 
 const mutations = {
   setUserId (state, resp) {
-    state.userId = resp
+    state.user.id = resp
   },
   setUserName (state, resp) {
-    state.userName = resp
+    state.user.name = resp
   },
   setUserColor (state, resp) {
-    state.userColor = resp
+    state.user.color = resp
+  },
+  setUserSmell (state, resp) {
+    state.user.smell = resp
+  },
+  setUserTaste (state, resp) {
+    state.user.taste = resp
+  },
+  setUserSound (state, resp) {
+    state.user.sound = resp
   }
 }
 

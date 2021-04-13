@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import Loader from '../Loader'
 // import modelFlower from '../../../../assets/models/flower.glb'
-import modelFlower from '../../../../assets/models/flower_2.gltf'
+import modelFlower from '../../../../assets/models/flower.gltf'
 
 import petalVert from "../../../../assets/shaders/flower/flower.vert"
 import petalFrag from "../../../../assets/shaders/flower/flower.frag"
@@ -22,7 +22,7 @@ class Flower {
     }
 
     init() {
-        const flowerFrag = require("../../../../assets/textures/petale2.png")
+        const flowerFrag = require("../../../../assets/textures/petal2.png")
         const flowerTexture = new THREE.TextureLoader().load( flowerFrag );
 
         const flowerVert = require("../../../../assets/textures/texture_springiness.jpg")
@@ -45,8 +45,8 @@ class Flower {
     }
 
     update() {
-      if (store && store.state.desert.rotation != null) {
-        let distRotation = store.state.desert.rotation.clone().sub(this.flowerObject.rotation.toVector3());
+      if (store && store.state.desert.fRotation != null) {
+        let distRotation = store.state.desert.fRotation.clone().sub(this.flowerObject.rotation.toVector3());
         let distRotationMatrix = this._createRotationMatrix(distRotation);
 
         // force to apply at flowerObject
