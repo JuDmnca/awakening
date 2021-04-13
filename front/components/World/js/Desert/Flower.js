@@ -49,10 +49,10 @@ class Flower {
         let distRotation = store.state.desert.rotation.clone().sub(this.flowerObject.rotation.toVector3());
         let distRotationMatrix = this._createRotationMatrix(distRotation);
 
-        // // - force to apply at flowerObject
+        // force to apply at flowerObject
         let rotationForce = distRotation.multiplyScalar(store.state.desert.velSpringiness);
 
-        // - update rotation with rotationForce
+        // update rotation with rotationForce
         this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce));
 
         this._traversePetalsChilds( ( child ) => {
