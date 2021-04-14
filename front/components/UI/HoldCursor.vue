@@ -3,21 +3,21 @@
     <svg ref="circle" viewBox="0 0 200 200">
       <path
         d="
-                 M 100, 100
-                 m -75, 0
-                 a 75,75 0 1,0 150,0
-                 a 75,75 0 1,0 -150,0
-                 "
+          M 100, 100
+          m -75, 0
+          a 75,75 0 1,0 150,0
+          a 75,75 0 1,0 -150,0
+          "
       />
     </svg>
      <svg ref="inner" viewBox="0 0 200 200">
-       <path 
+       <path
         d="
-                 M 100, 100
-                 m -75, 0
-                 a 75,75 0 1,0 150,0
-                 a 75,75 0 1,0 -150,0
-                 "
+          M 100, 100
+          m -75, 0
+          a 75,75 0 1,0 150,0
+          a 75,75 0 1,0 -150,0
+          "
       />
     </svg>
   </section>
@@ -80,7 +80,7 @@ export default {
                 {
                 opacity: 1,
                 duration: 2,
-                ease: "power3.out"                
+                ease: "power3.out"
                 }
             )
             } else {
@@ -98,10 +98,10 @@ export default {
                 {
                 opacity: 1,
                 duration: 2,
-                ease: "power3.out"                
+                ease: "power3.out"
                 }
             )
-        } 
+        }
     },
     hideCursor () {
         this.hold = false
@@ -143,6 +143,8 @@ svg {
     height: 100px;
     z-index: 1000;
     opacity: 0;
+    user-select: none;
+    pointer-events: none;
 }
 path {
     fill: transparent;
@@ -150,6 +152,8 @@ path {
     transform-origin: center;
     width: 100px;
     height: 100px;
+    user-select: none;
+    pointer-events: none;
 }
 svg:last-of-type path {
     transform: scale(0.4);

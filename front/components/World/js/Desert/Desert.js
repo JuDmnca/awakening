@@ -1,6 +1,5 @@
 import Land from '../Land'
 import Cube from './Cube'
-import Flower from './Flower'
 import Plant from './Plant'
 import modelDesert from '../../../../assets/models/desert-dev.glb'
 import Raycaster from "../Utils/Raycaster"
@@ -25,6 +24,7 @@ class Desert {
     this.hold = false
     this.land = new Land({texture: sandTexture})
 
+    this.camera = this.props.camera
     this.raycaster = new Raycaster()
     this.intersects = []
     this.intersected = null
@@ -61,7 +61,8 @@ class Desert {
       this.plantsGroup.add(plant.init())
     }
 
-    this.plantsGroup.position.set(-10,2,-10)
+    this.plantsGroup.position.set(-2.2075, 1.896, -1.7811)
+    this.plantsGroup.scale.set(2.5,2.5,2.5)
 
     this.desertGroup.add(this.plantsGroup)
 
@@ -69,8 +70,7 @@ class Desert {
     this.desertGroup.add( this.cubeLight );
 
     // GUI
-    // MainGui.init(this.)
-    // this.raycaster.init(this.path, renderer)
+    this.raycaster.init(this.camera, renderer)
 
     // Listeners
     window.addEventListener('click', () => {

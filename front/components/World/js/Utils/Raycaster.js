@@ -6,17 +6,17 @@ class Raycaster {
         this.intersects = []
     }
 
-    init(path, renderer) {
+    init(camera, renderer) {
         window.addEventListener('mousemove', (e) => {
-            this.mouseMovement(e, path, renderer)
+            this.mouseMovement(e, camera, renderer)
         })
     }
 
-    mouseMovement(e, path, renderer) {
+    mouseMovement(e, camera, renderer) {
         this.raycaster.setFromCamera({
             x: (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
             y: -(e.clientY / renderer.domElement.clientHeight) * 2 + 1
-        }, path.splineCamera);
+        }, camera.camera);
     }
 
     render(scene) {

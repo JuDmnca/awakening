@@ -4,8 +4,6 @@ export default class Camera {
   constructor(options) {
     this.window = options.window
 
-    this.container = new THREE.Object3D()
-
     this.setCamera()
   }
 
@@ -16,6 +14,5 @@ export default class Camera {
       0.1,
       1000
     )
-    this.container.add(this.camera)
   }
 }
