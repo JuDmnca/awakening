@@ -4,21 +4,12 @@ import Camera from './Camera.js'
 import Desert from './Desert/Desert'
 
 const desertCurve = [
-    // GLOBAL
     [44.085, 1.2081, -45.012],
     [23.59, 1.2736, -44.35],
     [13.896, 1.8958, -34.535],
     [10.96, 1.4074, -12.929],
     [0.060661, 1.4757, -7.4292],
     [-2.2075, 1.896, -1.7811]
-
-    // LOCAL
-    // [-1, 0, 0],
-    // [14.667, 0.065479, 13.231],
-    // [28.439, 0.68773, 12.431],
-    // [45.086, 0.19931, -1.6525],
-    // [56.864, 0.26766, 1.5599],
-    // [62.33, 0.3152, -1.1169]
 ]
 
 const prairieCurve = [
@@ -56,7 +47,7 @@ class Common {
         this.windowHalf = new THREE.Vector2()
 
         this.currentScene = 0
-        this.desert = new Desert()
+        this.desert = null
 
         this.size = {
             windowW: null,
@@ -96,59 +87,61 @@ class Common {
             this.resize()
         })
 
-        // Load for first scene
-        this.desert.init(this.scene, this.renderer)
-
+        // Init camera
         this.cameraDisplacement()
-        // Init camera vector
         this.vectCam = new THREE.Vector3(this.p1.x, this.p1.y, this.p1.z)
         this.initCamera()
 
-        this.light = new THREE.SpotLight('white', 3.5, 200)
+        // Load for first scene
+        this.desert = new Desert({camera: this.camera})
+        this.desert.init(this.scene, this.renderer)
+
+        // Init light
+        this.light = new THREE.SpotLight('white', 3.5, 400)
         this.light.position.z = 100
-        this.light.position.y = 50
+        this.light.position.y = 300
         this.scene.add(this.light)
     }
-
 
     initCamera() {
         this.camera = new Camera({
         window: this.size,
         })
-        this.scene.add(this.camera.container)
+        this.scene.add(this.camera.camera)
     }
 
     cameraDisplacement() {
         this.curves = []
-    
+
         // Scale curves
-        allCurves.forEach((curve, index) => {    
+        allCurves.forEach((curve, index) => {
             if (index === 0) {
-                this.scale = 2
+                this.scale = 3
             }
             this.curves.push(new THREE.CatmullRomCurve3(curve))
-   
+
             for (var i = 0; i < curve.length; i++) {
                 var x = curve[i][0] * this.scale
-                var y = curve[i][1] * this.scale
+                var y = curve[i][1] * this.scale + 4
                 var z = curve[i][2] * this.scale
-                curve[i] = new THREE.Vector3(x, z, -y)
+                curve[i] = new THREE.Vector3(x, y, -z)
             }
         })
-    
+
         // Init variables
         this.p1 = this.curves[0].points[0]
-
         this.progression = 0
         this.curveNumber = 0
     }
 
     moveCamera(e) {
-        // TO DO : check if delta is + or - to allow reverse progression if > 1
-        this.progression >= 0.98 ? this.progression = 1 : this.progression += e.deltaY * 0.00007  
+        if (e.deltaY < 0) {
+            this.progression >= 0.98 ? this.progression = 1 : this.progression += (-e.deltaY) * 0.000001
+        } else {
+            this.progression <= 0.1 ? this.progression = 0 : this.progression += (-e.deltaY) * 0.000001
+        }
 
         this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
-
         // this.desert.progression = this.progression
     }
 
@@ -195,7 +188,7 @@ class Common {
             this.target.y = ( 1 - this.mouse.y ) * 0.002;
 
             // this.camera.camera.rotation.x += 0.01 * ( this.target.y - this.camera.camera.rotation.x )
-            this.camera.camera.rotation.y -= 0.5 * ( this.target.x - this.camera.camera.rotation.y )
+            // this.camera.camera.rotation.y -= 0.5 * ( this.target.x - this.camera.camera.rotation.y )
         }
 
         this.renderer.render(this.scene, this.camera.camera)
