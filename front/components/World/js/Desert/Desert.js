@@ -2,10 +2,8 @@ import Land from '../Land'
 import Cube from './Cube'
 import Flower from './Flower'
 import Plant from './Plant'
-import modelDesert from '../../../../assets/models/desert.glb'
-import MainGui from "../Utils/MainGui"
+import modelDesert from '../../../../assets/models/desert-dev.glb'
 import Raycaster from "../Utils/Raycaster"
-import Path from "../Path"
 import gsap from 'gsap'
 import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
@@ -31,17 +29,6 @@ class Desert {
     this.intersects = []
     this.intersected = null
 
-    this.pathVectors = [
-      new THREE.Vector3(0, 3, 20),
-      new THREE.Vector3(2, 3, 15),
-      // new THREE.Vector3(80, 4, 40),
-      // new THREE.Vector3(2, 3, 15),
-      new THREE.Vector3(3, 3, 13),
-      new THREE.Vector3(0, 3, 10), // Point avant la plongée
-      new THREE.Vector3(0, 3.5, 1),
-      new THREE.Vector3(0, 2.2, -0.2) // Point plongée
-    ]
-    this.path = new Path({pathVectors: this.pathVectors})
     this.progression = null
 
     this.desertGroup = new THREE.Group()
@@ -74,7 +61,7 @@ class Desert {
       this.plantsGroup.add(plant.init())
     }
 
-    this.plantsGroup.position.z = -2
+    this.plantsGroup.position.set(-10,2,-10)
 
     this.desertGroup.add(this.plantsGroup)
 
@@ -83,27 +70,12 @@ class Desert {
 
     // GUI
     // MainGui.init(this.)
-    this.raycaster.init(this.path, renderer)
-
-    // Path
-    this.path.init()
+    // this.raycaster.init(this.path, renderer)
 
     // Listeners
     window.addEventListener('click', () => {
       this.handleClick()
     })
-    window.addEventListener('mousedown', (e) => {
-      e.preventDefault()
-      this.showCursorTimer(e.target)
-    })
-    window.addEventListener('mouseup', (e) => {
-      e.preventDefault()
-      this.hideCursorTimer()
-    })
-    // FOR LATER : TOUCH INTERACTION
-    // window.addEventListener('touchstart', (e) => {
-    //   this.hold(e)
-    // })
     scene.add(this.desertGroup)
   }
 
@@ -131,33 +103,6 @@ class Desert {
     }
   }
 
-  showCursorTimer (t) {
-    const circle = document.body.querySelector('.cursor-timer')
-    if (!this.hold) {
-      this.hold = true
-      gsap.to(circle, {opacity: 1, duration: 1})
-      gsap.to(circle, {x: 500, duration: 3, onComplete: this.increaseCounter})
-    } else {
-      gsap.to(circle, {opacity: 1, duration: 1})
-      gsap.to(circle, {x: 500, duration: 3})
-    }
-  }
-
-  hideCursorTimer () {
-    this.hold = false
-    const circle = document.body.querySelector('.cursor-timer')
-    gsap.to(circle, {opacity: 0, duration: 1})
-    gsap.to(circle, {x: 0, duration: 1, overwrite: "auto"})
-  }
-
-  increaseCounter () {
-    store.commit('desert/increaseCounter')
-    console.log(store.state.desert.counter)
-    if (store.state.desert.counter === 3) {
-      console.log('Interaction done !')
-    }
-  }
-
   isFixedView () {
     if (this.progression > 19) {
       return true
@@ -169,7 +114,6 @@ class Desert {
   render() {
     this.intersects = this.raycaster.render(this.desertGroup)
     this.handleCubeHover()
-    this.path.render(this.progression)
     this.plants.forEach(plant => {
       plant.update()
     })

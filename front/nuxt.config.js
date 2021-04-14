@@ -31,6 +31,10 @@ export default {
     {
       path: '~/components/Forms/',
       prefix: 'Forms'
+    },
+    {
+      path: '~/components/UI/',
+      prefix: 'UI-'
     }
   ],
 

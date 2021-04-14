@@ -34,9 +34,9 @@ class Loader {
                 // immediately use the texture for material creation
                 const material = new THREE.MeshPhongMaterial( { map: texture } );
                 if (textureImported.includes('sand')) {
-                    gltf.scene.children[4].material = material
-                    // gltf.scene.children[0].material = material
-                    // gltf.scene.children[0].scale.set(3,3,3)
+                    // gltf.scene.children[4].material = material
+                    gltf.scene.children[0].material = material
+                    gltf.scene.children[0].scale.set(3,3,3)
                 }
                 scene.add( gltf.scene );
             }

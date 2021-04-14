@@ -33,7 +33,7 @@ class Path {
 
     init() {
         this.cameraParams = {
-            fov: 84,
+            fov: 75,
             aspect: window.innerWidth / window.innerHeight,
             near: 0.01,
             far: 1000
@@ -79,7 +79,7 @@ class Path {
         this.tubeGeometry.parameters.path.getPointAt( (t + 30 / this.tubeGeometry.parameters.path.getLength() ) % 1, this.lookAt)
         // this.lookAt.multiplyScalar( this.params.scale )
 
-        this.lookAt.copy( this.position ).add( this.direction )
+        this.lookAt.copy(this.position).add(this.direction)
         this.splineCamera.matrix.lookAt( this.splineCamera.position, this.lookAt, this.normal)
         this.splineCamera.quaternion.setFromRotationMatrix( this.splineCamera.matrix )
         this.splineCamera.rotation.z = Math.PI * 2

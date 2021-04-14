@@ -1,7 +1,35 @@
 import * as THREE from "three"
-import gsap from 'gsap'
-import Path from './Path'
+import Camera from './Camera.js'
+
 import Desert from './Desert/Desert'
+
+const desertCurve = [
+    // GLOBAL
+    [44.085, 1.2081, -45.012],
+    [23.59, 1.2736, -44.35],
+    [13.896, 1.8958, -34.535],
+    [10.96, 1.4074, -12.929],
+    [0.060661, 1.4757, -7.4292],
+    [-2.2075, 1.896, -1.7811]
+
+    // LOCAL
+    // [-1, 0, 0],
+    // [14.667, 0.065479, 13.231],
+    // [28.439, 0.68773, 12.431],
+    // [45.086, 0.19931, -1.6525],
+    // [56.864, 0.26766, 1.5599],
+    // [62.33, 0.3152, -1.1169]
+]
+
+const prairieCurve = [
+]
+
+const forestCurve = [
+]
+
+const allCurves = [desertCurve, prairieCurve, forestCurve]
+
+const start = new THREE.Vector3(0, 0, 0)
 
 let store
 if (process.browser) {
@@ -13,13 +41,20 @@ if (process.browser) {
 class Common {
     constructor() {
         this.scene = null
-        this.camera = null
         this.renderer = null
+
+        this.camera = null
         this.progression = null
+        this.curveNumber = 0
+        this.camLook = start.clone()
+        this.camTarget =start.clone()
+
         this.canMove = null
         this.mouse = new THREE.Vector2()
         this.target = new THREE.Vector2()
+
         this.windowHalf = new THREE.Vector2()
+
         this.currentScene = 0
         this.desert = new Desert()
 
@@ -54,14 +89,8 @@ class Common {
         this.clock = new THREE.Clock()
         this.clock.start()
 
-        // this.axesHelper = new THREE.AxesHelper( 5 )
-        // this.scene.add( this.axesHelper )
-
         window.addEventListener('mousemove', (e) => {
             this.mouseMovement(e)
-        })
-        window.addEventListener('wheel', (e) => {
-            this.onMouseWheel(e)
         })
         window.addEventListener('resize', () => {
             this.resize()
@@ -69,13 +98,58 @@ class Common {
 
         // Load for first scene
         this.desert.init(this.scene, this.renderer)
-        this.camera = this.desert.path.splineCamera
-        this.scene.add(this.camera)
+
+        this.cameraDisplacement()
+        // Init camera vector
+        this.vectCam = new THREE.Vector3(this.p1.x, this.p1.y, this.p1.z)
+        this.initCamera()
 
         this.light = new THREE.SpotLight('white', 3.5, 200)
         this.light.position.z = 100
         this.light.position.y = 50
         this.scene.add(this.light)
+    }
+
+
+    initCamera() {
+        this.camera = new Camera({
+        window: this.size,
+        })
+        this.scene.add(this.camera.container)
+    }
+
+    cameraDisplacement() {
+        this.curves = []
+    
+        // Scale curves
+        allCurves.forEach((curve, index) => {    
+            if (index === 0) {
+                this.scale = 2
+            }
+            this.curves.push(new THREE.CatmullRomCurve3(curve))
+   
+            for (var i = 0; i < curve.length; i++) {
+                var x = curve[i][0] * this.scale
+                var y = curve[i][1] * this.scale
+                var z = curve[i][2] * this.scale
+                curve[i] = new THREE.Vector3(x, z, -y)
+            }
+        })
+    
+        // Init variables
+        this.p1 = this.curves[0].points[0]
+
+        this.progression = 0
+        this.curveNumber = 0
+    }
+
+    moveCamera(e) {
+        // TO DO : check if delta is + or - to allow reverse progression if > 1
+        this.progression >= 0.98 ? this.progression = 1 : this.progression += e.deltaY * 0.00007  
+
+        this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
+
+        // this.desert.progression = this.progression
     }
 
     setSize() {
@@ -92,40 +166,12 @@ class Common {
         this.mouse.y = ( e.clientY - this.windowHalf.y )
     }
 
-    onMouseWheel(e) {
-        this.camera.position.z += e.deltaY * 0.1
-        this.progression += (e.deltaY / 10) * 0.1
-
-        // Remove the error if backwards scroll at the beginning
-        this.progression < 0 ? this.progression = 0 : this.progression
-        this.progression > 10 ? this.progression = 10 : this.progression
-
-        this.desert.progression = this.progression
-    }
-
     resize() {
         this.setSize()
-        this.camera.aspect = this.size.windowW / this.size.windowH
-        this.camera.updateProjectionMatrix()
+        this.camera.camera.aspect = this.size.windowW / this.size.windowH
+        this.camera.camera.updateProjectionMatrix()
         this.renderer.setSize(this.size.windowW, this.size.windowH)
     }
-
-    // updateScene() {
-    //     this.currentScene++
-    //     switch (this.currentScene) {
-    //         case 1:
-    //             this.scene.remove(this.scene0)
-    //             this.land.load(this.currentScene, this.scene1)
-    //             this.scene1.rotation.y = Math.PI / 2
-    //             this.scene.add(this.scene1)
-    //           break;
-    //         // case 2:
-    //         //     this.scene.remove(this.scene1)
-    //         //     this.land.load(this.currentScene, this.scene2)
-    //         //     this.scene.add(this.scene2)
-    //         //   break;
-    //       }
-    // }
 
     render() {
         this.time.delta = this.clock.getDelta()
@@ -133,15 +179,26 @@ class Common {
 
         this.desert.render(this.scene)
 
+        window.addEventListener('wheel', (e) => {
+            if (this.curves[this.curveNumber] !== undefined) {
+            this.moveCamera(e)
+            }
+        })
+
+        this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)
+        this.camera.camera.position.lerp(this.vectCam, 0.1)
+        this.camLook.lerp(this.camTarget, 0.05)
+        this.camera.camera.lookAt(this.camLook)
+
         if (!this.desert.isFixedView()) {
             this.target.x = ( 1 - this.mouse.x ) * 0.002;
             this.target.y = ( 1 - this.mouse.y ) * 0.002;
 
-            // this.camera.rotation.x += 0.01 * ( this.target.y - this.camera.rotation.x )
-            this.camera.rotation.y += 0.5 * ( this.target.x - this.camera.rotation.y )
+            // this.camera.camera.rotation.x += 0.01 * ( this.target.y - this.camera.camera.rotation.x )
+            this.camera.camera.rotation.y -= 0.5 * ( this.target.x - this.camera.camera.rotation.y )
         }
 
-        this.renderer.render(this.scene, this.camera)
+        this.renderer.render(this.scene, this.camera.camera)
     }
 }
 

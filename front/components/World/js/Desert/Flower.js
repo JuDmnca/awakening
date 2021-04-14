@@ -5,7 +5,6 @@ import modelFlower from '../../../../assets/models/flower.gltf'
 
 import petalVert from "../../../../assets/shaders/flower/flower.vert"
 import petalFrag from "../../../../assets/shaders/flower/flower.frag"
-import { Vector3 } from 'three'
 
 // const petaleTexture = require("../../../../assets/textures/petale.png")
 
@@ -56,12 +55,14 @@ class Flower {
         // update rotation with rotationForce
         this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce));
 
-        this._traversePetalsChilds( ( child ) => {
-          // apply shader only to petal with shader material
-          if (child.material instanceof THREE.ShaderMaterial) {
-            child.material.uniforms.rotationForceMatrix.value = distRotationMatrix;
-          }
-        })
+        if (this.flowerObject.children[0]) {
+          this._traversePetalsChilds( ( child ) => {
+            // apply shader only to petal with shader material
+            if (child.material instanceof THREE.ShaderMaterial) {
+              child.material.uniforms.rotationForceMatrix.value = distRotationMatrix;
+            }
+          })
+        }
       }
     }
 
