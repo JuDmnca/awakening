@@ -29,7 +29,7 @@
             this.$store.commit('setUserName', name)
             },
             setUserColor(color) {
-            this.$fire.database.ref('users/' + this.$store.state.userId).update({
+            this.$fire.database.ref('users/' + this.$store.state.user.id).update({
                 color: color
             })
             this.$store.commit('setUserColor', color)
@@ -42,13 +42,13 @@
             }
             },
             myId () {
-            return this.$store.state.userId
+            return this.$store.state.user.id
             },
             myName () {
-            return this.$store.state.userName
+            return this.$store.state.user.name
             },
             nameSetted () {
-            return this.$store.state.userName != ''? true : false
+            return this.$store.state.user.name != ''? true : false
             }
         }
     }

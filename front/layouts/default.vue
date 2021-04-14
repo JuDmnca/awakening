@@ -1,6 +1,7 @@
 <template>
   <div>
     <World />
+    <UI-HoldCursor />
     <Nuxt />
   </div>
 </template>
