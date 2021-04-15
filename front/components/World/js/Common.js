@@ -60,6 +60,13 @@ class Common {
             windowH: null
         }
 
+        this.clock = null
+
+        this.time = {
+            total: null,
+            delta: null
+        }
+
         this.light = null
     }
 
@@ -75,6 +82,9 @@ class Common {
         this.renderer.setPixelRatio(window.devicePixelRatio)
 
         this.renderer.setSize(this.size.windowW, this.size.windowH)
+
+        this.clock = new THREE.Clock()
+        this.clock.start()
 
         window.addEventListener('mousemove', (e) => {
             this.mouseMovement(e)
@@ -159,7 +169,10 @@ class Common {
     }
 
     render() {
-        this.desert.render(this.scene)
+        this.time.delta = this.clock.getDelta()
+        this.time.total += this.time.delta
+
+        this.desert.render(this.time.total)
 
         // Add event if nuxt is ready
         if (!this.addscroll && nuxt) {
