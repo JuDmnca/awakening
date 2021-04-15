@@ -48,6 +48,8 @@ export default class Desert {
     this.noise = new perlinNoise3d()
 
     this.spores = null
+
+    this.spotLightOnFlowers = null
   }
 
   init(scene, renderer) {
@@ -79,6 +81,18 @@ export default class Desert {
     this.spores = new Particles()
     this.desertGroup.add(this.spores.init(renderer))
 
+    // SpotLights on Flowers
+    this.spotLightOnFlowers = new THREE.PointLight( '#ff57e9', 1, 0 );
+    this.spotLightOnFlowers.position.y += 5
+    this.spotLightOnFlowers.position.x -= 3
+    this.spotLightOnFlowers.position.z -= 3
+    this.desertGroup.children[2].add( this.spotLightOnFlowers );
+
+    // Fog
+    const colorBG = new THREE.Color('#877d6f')
+    scene.fog = new THREE.Fog(colorBG, 10, 300)
+    scene.background = new THREE.Color(colorBG)
+    
     // Listeners
     window.addEventListener('click', () => {
       this.handleClick()
@@ -131,9 +145,9 @@ export default class Desert {
     gsap.to(
       this.desertGroup.children[2].material.uniforms.uZSpeed,
       {
-        value: 5,
+        value: 40,
         duration: 2000,
-        ease: "expo.in"
+        ease: "power3.out"
       }
     )
   }
@@ -142,9 +156,9 @@ export default class Desert {
     gsap.to(
       this.desertGroup.children[2].material.uniforms.uZSpeed,
       {
-        value: 1,
+        value: -2,
         duration: 2000,
-        ease: "expo.in"
+        ease: "power3.out"
       }
     )
   }

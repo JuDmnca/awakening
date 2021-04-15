@@ -80,7 +80,7 @@ class Particles {
         // Geometry
         this.particlesGeometry = new THREE.BufferGeometry()
 
-        let count = 100000
+        let count = 10000
         let positions = new Float32Array(count * 3)
         const scales = new Float32Array(count)
         const colors = new Float32Array(count * 3)
@@ -93,15 +93,16 @@ class Particles {
             const i3 = i * 3
             // Position
             positions[i3 + 0] = (Math.random() - 0.5) * 10 * Math.random() - 2
-            positions[i3 + 1] = (Math.random() - 0.5) * 50 * Math.random() - 20
+            positions[i3 + 1] = (Math.random() - 0.5) * 50 * Math.random()
             positions[i3 + 2] = (Math.random() - 0.5) * 10 * Math.random()
 
             // Scale
             scales[i] = Math.random() + 0.2
 
             // Colors
-            colors[i3 + 0] = 1.0
-            colors[i3 + 1] = 1.0
+            colors[i3 + 0] = 1
+            colors[i3 + 1] = 87/255
+            colors[i3 + 2] = 233/255
 
             // Random Speed
             randomSpeed[i] = Math.pow(noise2D(xOff, yOff), 2)
