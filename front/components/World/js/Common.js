@@ -45,6 +45,8 @@ class Common {
 
         this.canMove = null
         this.scroll = null
+        this.scrolling = null
+        this.addscroll = false
         this.mouse = new THREE.Vector2()
         this.target = new THREE.Vector2()
 
@@ -56,13 +58,6 @@ class Common {
         this.size = {
             windowW: null,
             windowH: null
-        }
-
-        this.clock = null
-
-        this.time = {
-            total: null,
-            delta: null
         }
 
         this.light = null
@@ -80,9 +75,6 @@ class Common {
         this.renderer.setPixelRatio(window.devicePixelRatio)
 
         this.renderer.setSize(this.size.windowW, this.size.windowH)
-
-        this.clock = new THREE.Clock()
-        this.clock.start()
 
         window.addEventListener('mousemove', (e) => {
             this.mouseMovement(e)
@@ -160,25 +152,29 @@ class Common {
         this.renderer.setSize(this.size.windowW, this.size.windowH)
     }
 
-    render() {
-        this.time.delta = this.clock.getDelta()
-        this.time.total += this.time.delta
+    addWheelEvent() {
+        nuxt.$on('wheelMove', (value) => {
+            this.scrolling = value
+        })
+    }
 
+    render() {
         this.desert.render(this.scene)
 
+        // Add event if nuxt is ready
+        if (!this.addscroll && nuxt) {
+            this.addWheelEvent()
+            this.addscroll = true
+        }
+
         // Increase progression of the camera on the curve
-        if (nuxt) {
-            const _this = this
-            nuxt.$on('wheelMove', (e) => {
-                if (_this.curves[_this.curveNumber] !== undefined) {
-                    if (e.deltaY < 0) {
-                        this.progression >= 0.98 ? this.progression = 1 : this.progression += (-e.deltaY) * 0.000002
-                    } else {
-                        this.progression <= 0.1 ? this.progression = 0 : this.progression += (-e.deltaY) * 0.000002
-                    }
-                    this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
-                }
-            })
+        if (this.curves[this.curveNumber] !== undefined && this.scrolling && this.scrolling.value) {
+            if (this.scrolling.event.deltaY <= 0) {
+                this.progression >= 0.98 ? this.progression = 1 : this.progression += -this.scrolling.event.deltaY * 0.00007
+            } else {
+                this.progression <= 0.01 ? this.progression = 0 : this.progression += -this.scrolling.event.deltaY * 0.00007
+            }
+            this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
         }
 
         // Update camera rotation & look at

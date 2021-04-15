@@ -1,7 +1,7 @@
 import Land from '../Land'
 import Cube from './Cube'
 import Plant from './Plant'
-import modelDesert from '../../../../assets/models/desert-dev.glb'
+import modelDesert from '../../../../assets/models/m_desert-dev.glb'
 import Raycaster from "../Utils/Raycaster"
 import gsap from 'gsap'
 import * as THREE from 'three'
@@ -9,7 +9,7 @@ import perlinNoise3d from 'perlin-noise-3d'
 
 import Rotation from '../Utils/Rotation'
 
-const sandTexture = require("../../../../assets/textures/sand.png")
+const sandTexture = require("../../../../assets/textures/t_sand.png")
 
 let store
 if (process.browser) {
