@@ -100,8 +100,9 @@ class Particles {
             scales[i] = Math.random() + 0.2
 
             // Colors
-            colors[i3 + 0] = 1.0
-            colors[i3 + 1] = 1.0
+            colors[i3 + 0] = 1
+            colors[i3 + 1] = 87/255
+            colors[i3 + 2] = 233/255
 
             // Random Speed
             randomSpeed[i] = Math.pow(noise2D(xOff, yOff), 2)
