@@ -1,5 +1,6 @@
 import * as THREE from "three"
-import Camera from './Camera.js'
+import Camera from './Camera'
+import Scroll from './Utils/Scroll'
 
 import Desert from './Desert/Desert'
 
@@ -23,8 +24,10 @@ const allCurves = [desertCurve, prairieCurve, forestCurve]
 const start = new THREE.Vector3(0, 0, 0)
 
 let store
+let nuxt
 if (process.browser) {
-  window.onNuxtReady(({$store}) => {
+  window.onNuxtReady(({$nuxt, $store}) => {
+    nuxt = $nuxt
     store = $store
   })
 }
@@ -41,6 +44,7 @@ class Common {
         this.camTarget =start.clone()
 
         this.canMove = null
+        this.scroll = null
         this.mouse = new THREE.Vector2()
         this.target = new THREE.Vector2()
 
@@ -91,6 +95,7 @@ class Common {
         this.cameraDisplacement()
         this.vectCam = new THREE.Vector3(this.p1.x, this.p1.y, this.p1.z)
         this.initCamera()
+        this.scroll = new Scroll({document: document})
 
         // Load for first scene
         this.desert = new Desert({camera: this.camera})
@@ -134,17 +139,6 @@ class Common {
         this.curveNumber = 0
     }
 
-    moveCamera(e) {
-        if (e.deltaY < 0) {
-            this.progression >= 0.98 ? this.progression = 1 : this.progression += (-e.deltaY) * 0.000001
-        } else {
-            this.progression <= 0.1 ? this.progression = 0 : this.progression += (-e.deltaY) * 0.000001
-        }
-
-        this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
-        // this.desert.progression = this.progression
-    }
-
     setSize() {
         this.size = {
             windowW: window.innerWidth,
@@ -172,23 +166,34 @@ class Common {
 
         this.desert.render(this.scene)
 
-        window.addEventListener('wheel', (e) => {
-            if (this.curves[this.curveNumber] !== undefined) {
-            this.moveCamera(e)
-            }
-        })
+        // Increase progression of the camera on the curve
+        if (nuxt) {
+            const _this = this
+            nuxt.$on('wheelMove', (e) => {
+                if (_this.curves[_this.curveNumber] !== undefined) {
+                    if (e.deltaY < 0) {
+                        this.progression >= 0.98 ? this.progression = 1 : this.progression += (-e.deltaY) * 0.000002
+                    } else {
+                        this.progression <= 0.1 ? this.progression = 0 : this.progression += (-e.deltaY) * 0.000002
+                    }
+                    this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
+                }
+            })
+        }
 
+        // Update camera rotation & look at
         this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)
         this.camera.camera.position.lerp(this.vectCam, 0.1)
         this.camLook.lerp(this.camTarget, 0.05)
         this.camera.camera.lookAt(this.camLook)
 
+        // TO DO : update code so camera moves like head following the mouse BUT needs to check camera rotation before
         if (!this.desert.isFixedView()) {
             this.target.x = ( 1 - this.mouse.x ) * 0.002;
             this.target.y = ( 1 - this.mouse.y ) * 0.002;
 
             // this.camera.camera.rotation.x += 0.01 * ( this.target.y - this.camera.camera.rotation.x )
-            // this.camera.camera.rotation.y -= 0.5 * ( this.target.x - this.camera.camera.rotation.y )
+            // this.camera.camera.rotation.y += 0.2 * ( this.target.x - this.camera.camera.rotation.y )
         }
 
         this.renderer.render(this.scene, this.camera.camera)

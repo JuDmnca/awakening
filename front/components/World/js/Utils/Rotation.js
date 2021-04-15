@@ -10,22 +10,14 @@ class RotationControl {
   constructor() {
     this.ratio = 10;
 
-    // window.addEventListener('deviceorientation', (event) => {
-    //   this._onOrientationMove(event);
-    // });
-
     if(process.client) {
       window.addEventListener('mousemove', (event) => {
-        this._onMouseMove(event);
+        this.onMouseMove(event);
       });
     }
   }
 
-  // _onOrientationMove(event){
-  //   this.rotateElement((55-event.beta)/this.ratio,(event.gamma)/this.ratio);
-  // }
-
-  _onMouseMove(event) {
+  onMouseMove(event) {
     let x = (45 * (event.y - window.innerHeight/2)) / window.innerHeight/2,
         z = (45 * (event.x - window.innerWidth/2)) / window.innerWidth/2;
     this.rotateElement(x/this.ratio, z/this.ratio);

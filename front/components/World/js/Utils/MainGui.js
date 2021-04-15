@@ -1,7 +1,4 @@
-import * as THREE from 'three'
-import ColorGUIHelper from './ColorGUIHelper'
-
-class MainGui {
+export default class MainGui {
     constructor() {
         this.gui = null
     }
@@ -17,5 +14,3 @@ class MainGui {
         return datGui
     }
 }
-
-export default MainGui

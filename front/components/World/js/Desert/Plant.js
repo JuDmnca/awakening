@@ -1,12 +1,11 @@
-import stemVert from "../../../../assets/shaders/plant/stem.vert"
-import stemFrag from "../../../../assets/shaders/plant/stem.frag"
-
-import pistilHeadVert from "../../../../assets/shaders/plant/pistilHead.vert"
-import pistilHeadFrag from "../../../../assets/shaders/plant/pistilHead.frag"
-
 import * as THREE from 'three'
 import Flower from './Flower'
 import CustomSinCurve from '../Utils/CustomSinCurve'
+
+import stemVert from "../../../../assets/shaders/plant/stem.vert"
+import stemFrag from "../../../../assets/shaders/plant/stem.frag"
+import budVert from "../../../../assets/shaders/plant/bud.vert"
+import budFrag from "../../../../assets/shaders/plant/bud.frag"
 
 let store
 if (process.browser) {
@@ -15,7 +14,7 @@ if (process.browser) {
   })
 }
 
-class Plant {
+export default class Plant {
   constructor(props) {
     this.props = props
 
@@ -29,11 +28,13 @@ class Plant {
     this.curve = 1;
 
     this.curve = new CustomSinCurve({curve: this.curve, length: this.length})
-    this.plantHeadPosition = this.curve.getPoints()[this.curve.getPoints().length-1];
 
-    this.plantplantGeometry = new THREE.TubeGeometry( this.curve, this.segments, this.size, this.radiusSegment );
+    this.flower = null
 
-    this.plantShaderMaterial = new THREE.ShaderMaterial({
+    // Create Stem
+    this.stemGeometry = new THREE.TubeGeometry( this.curve, this.segments, this.size, this.radiusSegment );
+
+    this.stemShaderMaterial = new THREE.ShaderMaterial({
       uniforms : {
         rotationForceMatrix : { type : 'm4', value : new THREE.Matrix4() }
       },
@@ -41,76 +42,81 @@ class Plant {
       fragmentShader: stemFrag
     });
 
-    this.plantplantMesh = new THREE.Mesh( this.plantplantGeometry, this.plantShaderMaterial );
+    this.stemMesh = new THREE.Mesh( this.stemGeometry, this.stemShaderMaterial );
 
-    this.flower = null
-
-    // TEST
-    this.pistilHeadGeometry = new THREE.SphereGeometry( this.size*2, this.radiusSegment, this.segment );
-		this.pistilHeadShaderMaterial = new THREE.ShaderMaterial({
+    // Create Bud
+    this.budPosition = this.curve.getPoints()[this.curve.getPoints().length-1];
+    this.budGeometry = new THREE.SphereGeometry( this.size*2, this.radiusSegment, this.segment );
+		this.budShaderMaterial = new THREE.ShaderMaterial({
 			uniforms : {
 				rotationForceMatrix : { type : 'm4', value : new THREE.Matrix4() }
 			},
-			vertexShader: pistilHeadVert,
-			fragmentShader: pistilHeadFrag
+			vertexShader: budVert,
+			fragmentShader: budFrag
 		});
-    this.pistilHeadMesh = new THREE.Mesh( this.pistilHeadGeometry, this.pistilHeadShaderMaterial );
-		this.pistilHeadMesh.position.set( this.plantHeadPosition.x, this.plantHeadPosition.y, this.plantHeadPosition.z);
+    this.budMesh = new THREE.Mesh( this.budGeometry, this.budShaderMaterial );
+		this.budMesh.position.set( this.budPosition.x, this.budPosition.y, this.budPosition.z);
 
+    // Create Plant Object3D (which contains stem, bud & flower)
     this.plantMesh = new THREE.Object3D();
+
+    // Create Plant Stem (which contains stem & bud)
     this.plant = new THREE.Group()
-    this.plant.add(this.plantplantMesh)
-    this.plant.add(this.pistilHeadMesh)
+    this.plant.add(this.stemMesh)
+    this.plant.add(this.budMesh)
 
     this.plantMesh.add(this.plant);
   }
 
-    init() {
-      this.flower = new Flower()
-      this.plant.add(this.flower.init())
-      this.plant.children[2].position.set(this.plantHeadPosition.x, this.plantHeadPosition.y, this.plantHeadPosition.z);
+  init() {
+    // Add flower
+    this.flower = new Flower()
+    this.plant.add(this.flower.init())
 
-      this.plantMesh.position.set(this.POZ.x,this.POZ.y,this.POZ.z);
-      // this.plantMesh.rotation.set(this.ROTATION.x, this.ROTATION.y, this.ROTATION.z);
+    // Set flower at the top of the stem
+    this.plant.children[2].position.set(this.budPosition.x, this.budPosition.y, this.budPosition.z);
 
-      return this.plantMesh
+    this.plantMesh.position.set(this.POZ.x,this.POZ.y,this.POZ.z);
+    // this.plantMesh.rotation.set(this.ROTATION.x, this.ROTATION.y, this.ROTATION.z);
+
+    return this.plantMesh
+  }
+
+  update() {
+    if (store && store.state.desert.sRotation != null) {
+      let distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3());
+      let distRotationMatrix = this.createRotationMatrix(distRotation);
+
+      // Force to apply at flowerObject
+      let rotationForce = distRotation.multiplyScalar(store.state.desert.velStem);
+
+      // Update rotation with rotationForce
+      this.plantMesh.children[0].rotation.setFromVector3(this.plantMesh.children[0].rotation.toVector3().add(rotationForce));
+
+      this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix;
+
+      // Update flower petals
+      this.flower.update()
     }
+  }
 
-    update() {
-      if (store && store.state.desert.sRotation != null) {
-        let distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3());
-        let distRotationMatrix = this._createRotationMatrix(distRotation);
+  createRotationMatrix(vectRotation) {
+    let m = new THREE.Matrix4();
+    let m1 = new THREE.Matrix4();
+    let m2 = new THREE.Matrix4();
+    let m3 = new THREE.Matrix4();
 
-        // force to apply at flowerObject
-        let rotationForce = distRotation.multiplyScalar(store.state.desert.velStem);
+    m1.makeRotationX( -vectRotation.x );
+    m2.makeRotationY( -vectRotation.y );
+    m3.makeRotationY( -vectRotation.z );
 
-        // update rotation with rotationForce
-        this.plantMesh.children[0].rotation.setFromVector3(this.plantMesh.children[0].rotation.toVector3().add(rotationForce));
+    m.multiplyMatrices( m1, m2 );
+    m.multiply( m3 );
 
-        this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix;
-        this.flower.update()
-      }
-    }
+    return m;
+  }
 
-    _createRotationMatrix(vectRotation) {
-      let m = new THREE.Matrix4();
-      let m1 = new THREE.Matrix4();
-      let m2 = new THREE.Matrix4();
-      let m3 = new THREE.Matrix4();
-
-      m1.makeRotationX( -vectRotation.x );
-      m2.makeRotationY( -vectRotation.y );
-      m3.makeRotationY( -vectRotation.z );
-
-      m.multiplyMatrices( m1, m2 );
-      m.multiply( m3 );
-
-      return m;
-    }
-
-    getRandomFloat(min, max) {
-      return Math.random() * (max - min) + min;
-    }
+  getRandomFloat(min, max) {
+    return Math.random() * (max - min) + min;
+  }
 }
-
-export default Plant
