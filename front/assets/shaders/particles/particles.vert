@@ -34,7 +34,7 @@ void main() {
     // float angle = rand(vec2(gl_VertexID, gl_VertexID)) + 0.5;
     // float speed = rand(vec2(gl_VertexID * 2, gl_VertexID * 2));
     // modelPosition.x = cos(angle) * uTime * speed;
-    float deplacement = distanceToCenter * uTime;
+    float deplacement = distanceToCenter * uTime * 0.5;
     modelPosition.x += noise1D(deplacement * 0.1);
     modelPosition.z += randomSpeed * uTime * noise;
     // modelPosition.y = pow(randomSpeed * uTime * noise * 10.0, 2.0) * uZSpeed + 10.0;
