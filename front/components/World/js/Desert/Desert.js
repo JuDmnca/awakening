@@ -89,7 +89,7 @@ export default class Desert {
     this.desertGroup.children[2].add( this.spotLightOnFlowers );
 
     // Fog
-    scene.fog = new THREE.Fog('#877d6f', 10, 100)
+    scene.fog = new THREE.Fog('#877d6f', 10, 200)
     
     // Listeners
     window.addEventListener('click', () => {
