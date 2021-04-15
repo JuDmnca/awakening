@@ -4,7 +4,6 @@ if (process.browser) {
     nuxt = $nuxt
   })
 }
-
 export default class Scroll {
   constructor(props) {
     this.delta = 0
@@ -17,8 +16,17 @@ export default class Scroll {
 
   wheelMove(event) {
     this.delta = this.delta + event.deltaY
-    if  (nuxt) {
-      nuxt.$emit('wheelMove', event)
+    if (nuxt) {
+      nuxt.$emit('wheelMove', {event: event, value: true})
+    }
+    setTimeout(() => {
+      this.stop()
+    }, 300);
+  }
+
+  stop() {
+    if (nuxt) {
+      nuxt.$emit('wheelMove', false)
     }
   }
 
