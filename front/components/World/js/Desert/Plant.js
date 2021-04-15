@@ -34,8 +34,13 @@ export default class Plant {
     // Create Stem
     this.stemGeometry = new THREE.TubeGeometry( this.curve, this.segments, this.size, this.radiusSegment );
 
+    // Import flower petals texture
+    const stemAsset = require("../../../../assets/textures/t_stem.png")
+    const stemTexture = new THREE.TextureLoader().load( stemAsset );
+
     this.stemShaderMaterial = new THREE.ShaderMaterial({
       uniforms : {
+        stemMap: { type: "t", value: stemTexture },
         rotationForceMatrix : { type : 'm4', value : new THREE.Matrix4() }
       },
       vertexShader: stemVert,

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import Loader from '../Loader'
-import modelFlower from '../../../../assets/models/flower.gltf'
+import modelFlower from '../../../../assets/models/m_flower.gltf'
 
 import petalVert from "../../../../assets/shaders/flower/flower.vert"
 import petalFrag from "../../../../assets/shaders/flower/flower.frag"
@@ -20,11 +20,11 @@ export default class Flower {
 
   init() {
     // Import flower petals texture
-    const flowerFrag = require("../../../../assets/textures/petal2.png")
+    const flowerFrag = require("../../../../assets/textures/t_petal2.png")
     const flowerTexture = new THREE.TextureLoader().load( flowerFrag );
 
     // Import flower petals springiness texture
-    const flowerVert = require("../../../../assets/textures/petal_s.jpg")
+    const flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
     const flowerSpringiness = new THREE.TextureLoader().load( flowerVert );
 
     const flowerShaderMaterial = new THREE.ShaderMaterial( {
