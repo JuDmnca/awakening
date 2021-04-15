@@ -45,6 +45,8 @@ class Common {
 
         this.canMove = null
         this.scroll = null
+        this.scrolling = null
+        this.addscroll = false
         this.mouse = new THREE.Vector2()
         this.target = new THREE.Vector2()
 
@@ -160,25 +162,32 @@ class Common {
         this.renderer.setSize(this.size.windowW, this.size.windowH)
     }
 
+    addWheelEvent() {
+        nuxt.$on('wheelMove', (value) => {
+            this.scrolling = value
+        })
+    }
+
     render() {
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
 
         this.desert.render(this.time.total)
 
+        // Add event if nuxt is ready
+        if (!this.addscroll && nuxt) {
+            this.addWheelEvent()
+            this.addscroll = true
+        }
+
         // Increase progression of the camera on the curve
-        if (nuxt) {
-            const _this = this
-            nuxt.$on('wheelMove', (e) => {
-                if (_this.curves[_this.curveNumber] !== undefined) {
-                    if (e.deltaY < 0) {
-                        this.progression >= 0.98 ? this.progression = 1 : this.progression += (-e.deltaY) * 0.000002
-                    } else {
-                        this.progression <= 0.1 ? this.progression = 0 : this.progression += (-e.deltaY) * 0.000002
-                    }
-                    this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
-                }
-            })
+        if (this.curves[this.curveNumber] !== undefined && this.scrolling && this.scrolling.value) {
+            if (this.scrolling.event.deltaY <= 0) {
+                this.progression >= 0.98 ? this.progression = 1 : this.progression += -this.scrolling.event.deltaY * 0.00007
+            } else {
+                this.progression <= 0.01 ? this.progression = 0 : this.progression += -this.scrolling.event.deltaY * 0.00007
+            }
+            this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
         }
 
         // Update camera rotation & look at
