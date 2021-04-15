@@ -82,12 +82,14 @@ export default class Desert {
     this.desertGroup.add(this.spores.init(renderer))
 
     // SpotLights on Flowers
-
-    this.spotLightOnFlowers = new THREE.PointLight( 0xffff00, 1, 0 );
+    this.spotLightOnFlowers = new THREE.PointLight( '#ff57e9', 1, 0 );
     this.spotLightOnFlowers.position.y += 5
     this.spotLightOnFlowers.position.x -= 3
     this.spotLightOnFlowers.position.z -= 3
     this.desertGroup.children[2].add( this.spotLightOnFlowers );
+
+    // Fog
+    scene.fog = new THREE.Fog('#877d6f', 10, 100)
     
     // Listeners
     window.addEventListener('click', () => {
@@ -143,7 +145,7 @@ export default class Desert {
       {
         value: 40,
         duration: 2000,
-        ease: "expo.in"
+        ease: "power3.out"
       }
     )
   }
@@ -154,7 +156,7 @@ export default class Desert {
       {
         value: -2,
         duration: 2000,
-        ease: "expo.in"
+        ease: "power3.out"
       }
     )  
   }
