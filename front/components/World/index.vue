@@ -1,8 +1,7 @@
 <template>
     <section class="scene">
-        <canvas id="canvas" ref="canvas"></canvas>
+        <canvas id="canvas" ref="canvas" />
         <FormsQuestion v-if="isVisible" />
-        <span class="cursor-timer"></span>
     </section>
 </template>
 
@@ -28,13 +27,13 @@
 </script>
 
 <style>
-.cursor-timer {
-    width: 20px;
-    height: 20px;
-    opacity: 0;
-    background-color: yellow;
-    position: absolute;
-    top: 0;
+body {
+    height: 100vh;
+    overflow: hidden;
+}
+.scene {
+    position: fixed;
+    height: 100vh;
 }
 </style>
 

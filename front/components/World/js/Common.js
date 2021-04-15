@@ -1,6 +1,6 @@
 import * as THREE from "three"
 import Camera from './Camera'
-import Scroll from './Utils/Scroll'
+import Loader from './Loader'
 
 import Desert from './Desert/Desert'
 
@@ -44,9 +44,8 @@ class Common {
         this.camTarget =start.clone()
 
         this.canMove = null
-        this.scroll = null
-        this.scrolling = null
         this.addscroll = false
+
         this.mouse = new THREE.Vector2()
         this.target = new THREE.Vector2()
 
@@ -86,25 +85,19 @@ class Common {
         this.clock = new THREE.Clock()
         this.clock.start()
 
-        window.addEventListener('mousemove', (e) => {
-            this.mouseMovement(e)
-        })
-        window.addEventListener('resize', () => {
-            this.resize()
-        })
-
         // Init camera
         this.cameraDisplacement()
         this.vectCam = new THREE.Vector3(this.p1.x, this.p1.y, this.p1.z)
         this.initCamera()
-        this.scroll = new Scroll({document: document})
+
+        this.addWheelEvent()
 
         // Load for first scene
         this.desert = new Desert({camera: this.camera})
         this.desert.init(this.scene, this.renderer)
 
         // Init light
-        this.light = new THREE.SpotLight('white', 3.5, 400)
+        this.light = new THREE.SpotLight('white', 8, 400)
         this.light.position.z = 100
         this.light.position.y = 300
         this.scene.add(this.light)
@@ -141,6 +134,15 @@ class Common {
         this.curveNumber = 0
     }
 
+    moveCamera(e) {
+        if (e.deltaY <= 0) {
+            this.progression >= 0.98 ? this.progression = 1 : this.progression += -e.deltaY * 0.00007
+        } else {
+            this.progression <= 0.01 ? this.progression = 0 : this.progression += -e.deltaY * 0.00007
+        }
+        this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
+    }
+
     setSize() {
         this.size = {
             windowW: window.innerWidth,
@@ -163,8 +165,16 @@ class Common {
     }
 
     addWheelEvent() {
-        nuxt.$on('wheelMove', (value) => {
-            this.scrolling = value
+        window.addEventListener('mousemove', (e) => {
+            this.mouseMovement(e)
+        })
+        window.addEventListener('resize', () => {
+            this.resize()
+        })
+        window.addEventListener('wheel', (e) => {
+            if (this.curves[this.curveNumber] !== undefined) {
+                this.moveCamera(e)
+            }
         })
     }
 
@@ -173,22 +183,6 @@ class Common {
         this.time.total += this.time.delta
 
         this.desert.render(this.time.total)
-
-        // Add event if nuxt is ready
-        if (!this.addscroll && nuxt) {
-            this.addWheelEvent()
-            this.addscroll = true
-        }
-
-        // Increase progression of the camera on the curve
-        if (this.curves[this.curveNumber] !== undefined && this.scrolling && this.scrolling.value) {
-            if (this.scrolling.event.deltaY <= 0) {
-                this.progression >= 0.98 ? this.progression = 1 : this.progression += -this.scrolling.event.deltaY * 0.00007
-            } else {
-                this.progression <= 0.01 ? this.progression = 0 : this.progression += -this.scrolling.event.deltaY * 0.00007
-            }
-            this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
-        }
 
         // Update camera rotation & look at
         this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)

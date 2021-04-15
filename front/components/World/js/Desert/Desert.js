@@ -1,7 +1,7 @@
 import Land from '../Land'
 import Cube from './Cube'
 import Plant from './Plant'
-import modelDesert from '../../../../assets/models/m_desert-dev.glb'
+import modelDesert from '../../../../assets/models/m_desert.glb'
 import Raycaster from "../Utils/Raycaster"
 import { gsap } from "gsap";
 import * as THREE from 'three'
@@ -146,7 +146,7 @@ export default class Desert {
         duration: 2000,
         ease: "expo.in"
       }
-    )  
+    )
   }
 
   render(elapsedTime) {

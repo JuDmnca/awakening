@@ -11,30 +11,23 @@ export default class Loader {
     init(scene) {
         this.loader = new GLTFLoader()
 
-        const textureImported = this.props.texture
         const position = this.props.position
-        const scaleY = this.props.scaleY
+
+        const object = new THREE.Object3D()
 
         this.loader.load( this.props.model, function ( gltf ) {
             gltf.scene.position.x = position.x
             gltf.scene.position.y = position.y
             gltf.scene.position.z = position.z
 
-            if(scaleY) {
-                gltf.scene.scale.y = scaleY
+            console.log(gltf.scene)
+            object.add( gltf.scene.children[9] )
+            for (let i = 0; i < 11; i++) {
+                object.add( gltf.scene.children[23] )
             }
+            object.scale.set(3,3,3)
 
-            if(textureImported){
-                const texture = new THREE.TextureLoader().load( textureImported );
-
-                // immediately use the texture for material creation
-                const material = new THREE.MeshPhongMaterial( { map: texture } );
-                if (textureImported.includes('sand')) {
-                    gltf.scene.children[0].material = material
-                    gltf.scene.children[0].scale.set(3,3,3)
-                }
-                scene.add( gltf.scene );
-            }
+            scene.add( object );
 
         }, undefined, function ( error ) {
             console.error( error );
