@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 // Futur composant flower
-class Cube {
+export default class Cube {
     constructor(props) {
         this.props = props
         this.scene = props.scene
@@ -29,5 +29,3 @@ class Cube {
         scene.add(this.cube)
     }
 }
-
-export default Cube

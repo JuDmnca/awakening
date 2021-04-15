@@ -1,8 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as THREE from 'three'
-import perlinNoise3d from 'perlin-noise-3d'
 
-class Loader {
+export default class Loader {
     constructor(props) {
         this.loader = null
         this.props = props
@@ -13,13 +12,10 @@ class Loader {
         this.loader = new GLTFLoader()
 
         const textureImported = this.props.texture
-
         const position = this.props.position
-
         const scaleY = this.props.scaleY
 
         this.loader.load( this.props.model, function ( gltf ) {
-
             gltf.scene.position.x = position.x
             gltf.scene.position.y = position.y
             gltf.scene.position.z = position.z
@@ -34,7 +30,6 @@ class Loader {
                 // immediately use the texture for material creation
                 const material = new THREE.MeshPhongMaterial( { map: texture } );
                 if (textureImported.includes('sand')) {
-                    // gltf.scene.children[4].material = material
                     gltf.scene.children[0].material = material
                     gltf.scene.children[0].scale.set(3,3,3)
                 }
@@ -42,10 +37,8 @@ class Loader {
             }
 
         }, undefined, function ( error ) {
-
             console.error( error );
-
-        } );
+        });
     }
 
     initFlowerObject () {
@@ -63,9 +56,13 @@ class Loader {
             }
             gltf.scene.rotation.y = rotation
             gltf.scene.rotation.x = 0.1;
+
+            // Center 3D object
             const box = new THREE.Box3().setFromObject( gltf.scene );
             box.getCenter( gltf.scene.position );
-            gltf.scene.position.multiplyScalar( - 1 );
+
+            // Position flower object on the top of the stem
+            gltf.scene.position.multiplyScalar(-1);
             gltf.scene.scale.set(1.6,1.6,1.6);
             gltf.scene.position.y = -0.5 * 1.6;
             gltf.scene.position.z = -0.09;
@@ -73,13 +70,9 @@ class Loader {
             object.add(gltf.scene)
 
         }, undefined, function ( error ) {
-
             console.error( error )
-
-        } )
+        })
 
         return object
     }
 }
-
-export default Loader

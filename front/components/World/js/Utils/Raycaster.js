@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-class Raycaster {
+export default class Raycaster {
     constructor() {
         this.raycaster = new THREE.Raycaster()
         this.intersects = []
@@ -30,5 +30,3 @@ class Raycaster {
         return this.intersects
     }
 }
-
-export default Raycaster

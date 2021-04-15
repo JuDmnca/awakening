@@ -18,7 +18,7 @@ if (process.browser) {
   })
 }
 
-class Desert {
+export default class Desert {
   constructor(props) {
     this.props = props
     this.hold = false
@@ -69,7 +69,7 @@ class Desert {
     // Lights
     this.desertGroup.add( this.cubeLight );
 
-    // GUI
+    // Raycaster
     this.raycaster.init(this.camera, renderer)
 
     // Listeners
@@ -119,5 +119,3 @@ class Desert {
     })
   }
 }
-
-export default Desert

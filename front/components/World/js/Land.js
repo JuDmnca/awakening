@@ -1,7 +1,6 @@
-import * as THREE from 'three'
 import Loader from './Loader'
 
-class Land {
+export default class Land {
     constructor(props) {
         this.props = props
         this.model = null
@@ -12,5 +11,3 @@ class Land {
         this.model.init(scene)
     }
 }
-
-export default Land
