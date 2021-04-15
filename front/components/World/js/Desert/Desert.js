@@ -3,9 +3,10 @@ import Cube from './Cube'
 import Plant from './Plant'
 import modelDesert from '../../../../assets/models/desert-dev.glb'
 import Raycaster from "../Utils/Raycaster"
-import gsap from 'gsap'
+import { gsap } from "gsap";
 import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
+import Particles from './Particles'
 
 import Rotation from '../Utils/Rotation'
 
@@ -45,6 +46,8 @@ export default class Desert {
     }
 
     this.noise = new perlinNoise3d()
+
+    this.spores = null
   }
 
   init(scene, renderer) {
@@ -72,10 +75,23 @@ export default class Desert {
     // Raycaster
     this.raycaster.init(this.camera, renderer)
 
+    // Add Spores
+    this.spores = new Particles()
+    this.desertGroup.add(this.spores.init(renderer))
+
     // Listeners
     window.addEventListener('click', () => {
       this.handleClick()
     })
+    window.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      this.hold = true
+    });
+    window.addEventListener("mouseup", (e) => {
+      e.preventDefault();
+      this.hold = false
+    });
+
     scene.add(this.desertGroup)
   }
 
@@ -111,8 +127,36 @@ export default class Desert {
     }
   }
 
-  render() {
+  inhale() {
+    gsap.to(
+      this.desertGroup.children[2].material.uniforms.uZSpeed,
+      {
+        value: 5,
+        duration: 2000,
+        ease: "expo.in"
+      }
+    )
+  }
+
+  exhale() {
+    gsap.to(
+      this.desertGroup.children[2].material.uniforms.uZSpeed,
+      {
+        value: 1,
+        duration: 2000,
+        ease: "expo.in"
+      }
+    )  
+  }
+
+  render(elapsedTime) {
     this.intersects = this.raycaster.render(this.desertGroup)
+    if(this.hold){
+      this.inhale()
+    } else {
+      this.exhale()
+    }
+    this.desertGroup.children[2].material.uniforms.uTime.value = elapsedTime
     this.handleCubeHover()
     this.plants.forEach(plant => {
       plant.update()

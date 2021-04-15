@@ -164,7 +164,7 @@ class Common {
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
 
-        this.desert.render(this.scene)
+        this.desert.render(this.time.total)
 
         // Increase progression of the camera on the curve
         if (nuxt) {
