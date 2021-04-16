@@ -19,15 +19,9 @@ export default class Loader {
             gltf.scene.position.x = position.x
             gltf.scene.position.y = position.y
             gltf.scene.position.z = position.z
+            gltf.scene.scale.set(3,3,3)
 
-            console.log(gltf.scene)
-            object.add( gltf.scene.children[9] )
-            for (let i = 0; i < 11; i++) {
-                object.add( gltf.scene.children[23] )
-            }
-            object.scale.set(3,3,3)
-
-            scene.add( object );
+            scene.add( gltf.scene );
 
         }, undefined, function ( error ) {
             console.error( error );

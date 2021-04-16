@@ -1,6 +1,5 @@
 import * as THREE from "three"
 import Camera from './Camera'
-import Loader from './Loader'
 
 import Desert from './Desert/Desert'
 
@@ -97,7 +96,7 @@ class Common {
         this.desert.init(this.scene, this.renderer)
 
         // Init light
-        this.light = new THREE.SpotLight('white', 8, 400)
+        this.light = new THREE.SpotLight('white', 7, 400)
         this.light.position.z = 100
         this.light.position.y = 300
         this.scene.add(this.light)
