@@ -109,7 +109,7 @@ export default class Desert {
 
   handleClick() {
     if (this.intersects.length > 0) {
-      gsap.to(this, {progression: 19.9999, duration: 2.5, ease: "power3.out"} )
+      gsap.to(this, {progression: 1, duration: 1, ease: "power3.out"} )
     }
   }
 
@@ -132,7 +132,7 @@ export default class Desert {
   }
 
   isFixedView () {
-    if (this.progression > 19) {
+    if (this.progression > 0.9) {
       return true
     } else {
       return false
@@ -170,6 +170,7 @@ export default class Desert {
     }
     this.desertGroup.children[2].material.uniforms.uTime.value = elapsedTime
     this.handleCubeHover()
+    
     this.plants.forEach(plant => {
       plant.update()
     })

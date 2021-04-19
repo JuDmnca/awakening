@@ -50,7 +50,7 @@ class Common {
 
         this.windowHalf = new THREE.Vector2()
 
-        this.currentScene = 0
+        this.currentScene = null
         this.desert = null
 
         this.size = {
@@ -94,6 +94,7 @@ class Common {
         // Load for first scene
         this.desert = new Desert({camera: this.camera})
         this.desert.init(this.scene, this.renderer)
+        this.currentScene = this.desert
 
         // Init light
         this.light = new THREE.SpotLight('white', 7, 400)
@@ -139,6 +140,7 @@ class Common {
         } else {
             this.progression <= 0.01 ? this.progression = 0 : this.progression += -e.deltaY * 0.00007
         }
+        this.currentScene.progression = this.progression
         this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
     }
 
