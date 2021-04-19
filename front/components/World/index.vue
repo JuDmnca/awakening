@@ -37,6 +37,9 @@
                 }
                 this.visible = true
             })
+            this.$nuxt.$on('questionHidden', () => {
+                this.visible = false
+            })
         }
     }
 </script>
