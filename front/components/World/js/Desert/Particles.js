@@ -15,9 +15,11 @@ class Particles {
         this.particlesGeometry = null
         this.particlesMaterial = null
         this.particles = null
+        this.count = 10000
+        this.init()
     }
 
-    init(renderer) {
+    init() {
         /*
         * Noise
         */
@@ -79,15 +81,14 @@ class Particles {
         // Geometry
         this.particlesGeometry = new THREE.BufferGeometry()
 
-        let count = 10000
-        let positions = new Float32Array(count * 3)
-        const scales = new Float32Array(count)
-        const colors = new Float32Array(count * 3)
-        const randomSpeed = new Float32Array(count)
-        const directionNoised = new Float32Array(count)
+        let positions = new Float32Array(this.count * 3)
+        const scales = new Float32Array(this.count)
+        const colors = new Float32Array(this.count * 3)
+        const randomSpeed = new Float32Array(this.count)
+        const directionNoised = new Float32Array(this.count)
         let xOff = 0
         let yOff = 0
-        for(let i = 0; i < count * 3; i++){
+        for(let i = 0; i < this.count * 3; i++){
 
             const i3 = i * 3
             // Position
@@ -138,7 +139,7 @@ class Particles {
             fragmentShader: particlesFragmentShader,
             uniforms: {
                 uTime: {value: 0},
-                uSize: {value: 25.0 * renderer.getPixelRatio()},
+                uSize: {value: 25.0 * window.devicePixelRatio},
                 uZSpeed: {value: 1.0}
             }
         })
@@ -147,8 +148,6 @@ class Particles {
 
         // Particles mesh
         this.particles = new THREE.Points(this.particlesGeometry, this.particlesMaterial)
-
-        return this.particles
     }
 
     render(elapsedTime) {
