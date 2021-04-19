@@ -57,47 +57,28 @@ export default {
       })
     },
     showCursor () {
-      if (!this.hold) {
-        this.hold = true
-        gsap.to(
-          this.circle,
-          {
-          opacity: 1,
-          scale: 0.4,
-          duration: 2,
-          ease: "power3.out",
-          onComplete: this.increaseCounter
-          }
-        )
-        gsap.to(
-          this.inner,
-          {
-          opacity: 1,
-          duration: 2,
-          ease: "power3.out"
-          }
-        )
-        } else {
-        gsap.to(
-          this.circle,
-          {
-          opacity: 1,
-          scale: 0.4,
-          duration: 2,
-          ease: "power3.out",
-          }
-        )
-        gsap.to(
-          this.inner,
-          {
-          opacity: 1,
-          duration: 2,
-          ease: "power3.out"
-          }
-        )
-      }
+      this.hold = true
+      gsap.to(
+        this.circle,
+        {
+        opacity: 1,
+        scale: 0.4,
+        duration: 2,
+        ease: "power3.out",
+        onComplete: this.increaseCounter
+        }
+      )
+      gsap.to(
+        this.inner,
+        {
+        opacity: 1,
+        duration: 2,
+        ease: "power3.out"
+        }
+      )
     },
     hideCursor () {
+      gsap.killTweensOf([this.circle, this.inner])
       this.hold = false
       gsap.to(
         this.circle,
@@ -118,22 +99,22 @@ export default {
       )
     },
     terminate() {
-      this.circle = this.$refs.circle
-      this.inner = this.$refs.inner
       gsap.set(this.circle, { scale: 0 })
     },
     increaseCounter () {
-      if (this.$store.state.desert.counter != 3) {
-        this.$store.commit('desert/increaseCounter')
-        console.log(this.$store.state.desert.counter)
-      }
-      if (this.$store.state.desert.counter === 3) {
-        console.log('Interaction done !')
-        this.$nuxt.$emit('questionVisible', 2)
-        this.hideCursor()
-        window.removeEventListener("mousedown", this.showCursor)
-        window.removeEventListener("mouseup", this.hideCursor)
-        this.terminate()
+      if (this.hold) {
+        if (this.$store.state.desert.counter != 3) {
+          this.$store.commit('desert/increaseCounter')
+          console.log(this.$store.state.desert.counter)
+        }
+        if (this.$store.state.desert.counter === 3) {
+          console.log('Interaction done !')
+          this.$nuxt.$emit('questionVisible', 2)
+          this.hideCursor()
+          window.removeEventListener("mousedown", this.showCursor)
+          window.removeEventListener("mouseup", this.hideCursor)
+          this.terminate()
+        }
       }
     }
   },
