@@ -1,16 +1,16 @@
 export default class MainGui {
     constructor() {
+        this.guiModule = null
         this.gui = null
+        this.init()
     }
 
     init() {
         if(process.client) {
-            this.gui = require('three/examples/jsm/libs/dat.gui.module')
+            this.guiModule = require('three/examples/jsm/libs/dat.gui.module')
         }
 
-        console.log('gui : ', this.gui)
-        const datGui  = new this.gui.GUI({ autoPlace: true });
-        datGui.domElement.id = 'gui'
-        return datGui
+        this.gui  = new this.guiModule.GUI({ width: 300 }); // 300 px
+        this.gui.domElement.id = 'gui'
     }
 }
