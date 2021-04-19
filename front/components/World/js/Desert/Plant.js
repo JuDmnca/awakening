@@ -73,10 +73,10 @@ export default class Plant {
     this.plantMesh.add(this.plant);
   }
 
-  init() {
+  init(flowerType) {
     // Add flower
     this.flower = new Flower()
-    this.plant.add(this.flower.init())
+    this.plant.add(this.flower.init(flowerType))
 
     // Set flower at the top of the stem
     this.plant.children[2].position.set(this.budPosition.x, this.budPosition.y, this.budPosition.z);

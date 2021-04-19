@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import Loader from '../Loader'
-import modelFlower from '../../../../assets/models/m_flower.gltf'
+import modelOrchid from '../../../../assets/models/m_flower.gltf'
+import modelLavender from '../../../../assets/models/m_lavender.gltf'
+import modelDaisy from '../../../../assets/models/m_daisy.gltf'
 
 import petalVert from "../../../../assets/shaders/flower/flower.vert"
 import petalFrag from "../../../../assets/shaders/flower/flower.frag"
@@ -18,27 +20,48 @@ export default class Flower {
     this.ready = false
   }
 
-  init() {
+  init(flowerType) {
+    let modelFlower = null
+    let flowerFrag = null
+    let flowerVert = null
+
+    switch (flowerType) {
+      case 'lavender':
+        modelFlower = modelLavender
+        flowerFrag = require("../../../../assets/textures/t_petal0.jpg")
+        flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
+        break;
+      case 'orchid':
+        modelFlower = modelOrchid
+        flowerFrag = require("../../../../assets/textures/t_petal2.png")
+        flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
+        break;
+      case 'daisy':
+        modelFlower = modelDaisy
+        flowerFrag = require("../../../../assets/textures/t_petal2.png")
+        flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
+        break;
+    }
+
     // Import flower petals texture
-    const flowerFrag = require("../../../../assets/textures/t_petal2.png")
-    const flowerTexture = new THREE.TextureLoader().load( flowerFrag );
+    const flowerTexture = new THREE.TextureLoader().load( flowerFrag )
 
     // Import flower petals springiness texture
-    const flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
-    const flowerSpringiness = new THREE.TextureLoader().load( flowerVert );
+    const flowerSpringiness = new THREE.TextureLoader().load( flowerVert )
 
     const flowerShaderMaterial = new THREE.ShaderMaterial( {
-        uniforms: {
-          petalMap: { type: "t", value: flowerTexture },
-          springinessMap: { type: "t", value: flowerSpringiness },
-          rotationForceMatrix : { type : 'm4', value : new THREE.Matrix4() },
-        },
-        vertexShader: petalVert,
-        fragmentShader: petalFrag,
-        side: THREE.DoubleSide
-    });
+      uniforms: {
+        petalMap: { type: "t", value: flowerTexture },
+        springinessMap: { type: "t", value: flowerSpringiness },
+        rotationForceMatrix : { type : 'm4', value : new THREE.Matrix4() },
+      },
+      vertexShader: petalVert,
+      fragmentShader: petalFrag,
+      side: THREE.DoubleSide
+    })
+
     this.flowerObject = new Loader({model: modelFlower, material: flowerShaderMaterial})
-    this.flowerObject = this.flowerObject.initFlowerObject()
+    this.flowerObject = this.flowerObject.initFlowerObject(flowerType)
 
     return this.flowerObject
   }
@@ -51,8 +74,10 @@ export default class Flower {
       // force to apply at flowerObject
       let rotationForce = distRotation.multiplyScalar(store.state.desert.velSpringiness);
 
-      // update rotation with rotationForce
-      this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce));
+      if (this.flowerObject.name != 'lavender') {
+        // update rotation with rotationForce
+        this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce));
+      }
 
       if (this.flowerObject.children[0]) {
         this.traversePetalsChilds( ( child ) => {

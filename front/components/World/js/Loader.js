@@ -28,7 +28,7 @@ export default class Loader {
         });
     }
 
-    initFlowerObject () {
+    initFlowerObject (type) {
         this.loader = new GLTFLoader()
         const materialImported = this.material
         let rotation = 0
@@ -49,11 +49,26 @@ export default class Loader {
             box.getCenter( gltf.scene.position );
 
             // Position flower object on the top of the stem
-            gltf.scene.position.multiplyScalar(-1);
-            gltf.scene.scale.set(1.6,1.6,1.6);
-            gltf.scene.position.y = -0.5 * 1.6;
-            gltf.scene.position.z = -0.09;
+            console.log(type)
+            switch (type) {
+                case 'lavender':
+                    gltf.scene.position.multiplyScalar(-1);
+                    gltf.scene.scale.set(1.6,1.6,1.6);
+                    gltf.scene.position.y = -0.2;
+                  break;
+                case 'orchid':
+                    gltf.scene.position.multiplyScalar(-1);
+                    gltf.scene.scale.set(1.6,1.6,1.6);
+                    gltf.scene.position.y = -0.5 * 1.6;
+                    gltf.scene.position.z = -0.09;
+                  break;
+                case 'daisy':
+                    gltf.scene.position.multiplyScalar(-1);
+                    gltf.scene.scale.set(1.6,1.6,1.6);
+                  break;
+            }
 
+            object.name = type
             object.add(gltf.scene)
 
         }, undefined, function ( error ) {
