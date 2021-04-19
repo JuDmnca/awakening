@@ -41,6 +41,7 @@ export default class Loader {
             for(let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 1) ; nbChildren++) {
                 gltf.scene.children[nbChildren].material = materialImported
             }
+
             gltf.scene.rotation.y = rotation
             gltf.scene.rotation.x = 0.1;
 
@@ -49,22 +50,29 @@ export default class Loader {
             box.getCenter( gltf.scene.position );
 
             // Position flower object on the top of the stem
-            console.log(type)
             switch (type) {
                 case 'lavender':
-                    gltf.scene.position.multiplyScalar(-1);
-                    gltf.scene.scale.set(1.6,1.6,1.6);
-                    gltf.scene.position.y = -0.2;
+                    gltf.scene.position.multiplyScalar(-1)
+                    gltf.scene.scale.set(2,2,2)
+                    gltf.scene.position.y = -0.6
+                    gltf.scene.rotation.y = 0
+                    gltf.scene.rotation.x = 0
+                    gltf.scene.children[0].position.set(0,0,-0.19)
+                    gltf.scene.children[1].position.set(0,0.1,-0.14)
+                    gltf.scene.children[2].position.set(0,0.14,-0.13)
+                    gltf.scene.children[3].position.set(0,0.2,-0.08)
+                    gltf.scene.children[4].position.set(0,0.24,-0.04)
+                    gltf.scene.children[5].position.set(0,0.3,0.01)
                   break;
                 case 'orchid':
-                    gltf.scene.position.multiplyScalar(-1);
-                    gltf.scene.scale.set(1.6,1.6,1.6);
-                    gltf.scene.position.y = -0.5 * 1.6;
-                    gltf.scene.position.z = -0.09;
+                    gltf.scene.position.multiplyScalar(-1)
+                    gltf.scene.scale.set(1.6,1.6,1.6)
+                    gltf.scene.position.y = -0.5 * 1.6
+                    gltf.scene.position.z = -0.09
                   break;
                 case 'daisy':
-                    gltf.scene.position.multiplyScalar(-1);
-                    gltf.scene.scale.set(1.6,1.6,1.6);
+                    gltf.scene.position.multiplyScalar(-1)
+                    gltf.scene.scale.set(1.6,1.6,1.6)
                   break;
             }
 
