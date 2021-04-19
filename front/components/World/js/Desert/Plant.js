@@ -18,25 +18,27 @@ export default class Plant {
   constructor(props) {
     this.props = props
 
-		this.POZ = new THREE.Vector3(this.getRandomFloat(-1, 1), 0.03, this.getRandomFloat(-1, 1) );
-		this.ROTATION = new THREE.Vector3(-this.getRandomFloat(0.5, 1), 0.5 - (this.props.orientation/2), 0 );
+		this.POZ = new THREE.Vector3(this.getRandomFloat(-1, 1), 0.03, this.getRandomFloat(-1, 1))
+		this.ROTATION = new THREE.Vector3(-this.getRandomFloat(0.5, 1), 0.5 - (this.props.orientation/2), 0)
 
-    this.segments = 32;
-    this.radiusSegment = 100;
-    this.size = 0.01;
-    this.length = this.getRandomFloat(0.05, 0.5);
-    this.curve = 1;
+    this.segments = 32
+    this.radiusSegment = 100
+    this.size = 0.01
+    this.length = this.getRandomFloat(0.2, 0.5)
 
-    this.curve = new CustomSinCurve({curve: this.curve, length: this.length})
-
+    this.flowerType = this.props.flowerType
     this.flower = null
 
     // Create Stem
-    this.stemGeometry = new THREE.TubeGeometry( this.curve, this.segments, this.size, this.radiusSegment );
+    if (this.flowerType === 'lavender') {
+      this.length = 1.3
+    }
+    this.curve = new CustomSinCurve({length: this.length})
+    this.stemGeometry = new THREE.TubeGeometry(this.curve, this.segments, this.size, this.radiusSegment)
 
     // Import flower petals texture
     const stemAsset = require("../../../../assets/textures/t_stem.png")
-    const stemTexture = new THREE.TextureLoader().load( stemAsset );
+    const stemTexture = new THREE.TextureLoader().load(stemAsset)
 
     this.stemShaderMaterial = new THREE.ShaderMaterial({
       uniforms : {
@@ -45,43 +47,43 @@ export default class Plant {
       },
       vertexShader: stemVert,
       fragmentShader: stemFrag
-    });
+    })
 
-    this.stemMesh = new THREE.Mesh( this.stemGeometry, this.stemShaderMaterial );
+    this.stemMesh = new THREE.Mesh(this.stemGeometry, this.stemShaderMaterial)
 
     // Create Bud
-    this.budPosition = this.curve.getPoints()[this.curve.getPoints().length-1];
-    this.budGeometry = new THREE.SphereGeometry( this.size*2, this.radiusSegment, this.segment );
+    this.budPosition = this.curve.getPoints()[this.curve.getPoints().length-1]
+    this.budGeometry = new THREE.SphereGeometry(this.size*2, this.radiusSegment, this.segment)
 		this.budShaderMaterial = new THREE.ShaderMaterial({
 			uniforms : {
 				rotationForceMatrix : { type : 'm4', value : new THREE.Matrix4() }
 			},
 			vertexShader: budVert,
 			fragmentShader: budFrag
-		});
-    this.budMesh = new THREE.Mesh( this.budGeometry, this.budShaderMaterial );
-		this.budMesh.position.set( this.budPosition.x, this.budPosition.y, this.budPosition.z);
+		})
+    this.budMesh = new THREE.Mesh(this.budGeometry, this.budShaderMaterial)
+		this.budMesh.position.set( this.budPosition.x, this.budPosition.y, this.budPosition.z)
 
     // Create Plant Object3D (which contains stem, bud & flower)
-    this.plantMesh = new THREE.Object3D();
+    this.plantMesh = new THREE.Object3D()
 
     // Create Plant Stem (which contains stem & bud)
     this.plant = new THREE.Group()
     this.plant.add(this.stemMesh)
     this.plant.add(this.budMesh)
 
-    this.plantMesh.add(this.plant);
+    this.plantMesh.add(this.plant)
   }
 
-  init(flowerType) {
+  init() {
     // Add flower
     this.flower = new Flower()
-    this.plant.add(this.flower.init(flowerType))
+    this.plant.add(this.flower.init(this.flowerType))
 
     // Set flower at the top of the stem
-    this.plant.children[2].position.set(this.budPosition.x, this.budPosition.y, this.budPosition.z);
+    this.plant.children[2].position.set(this.budPosition.x, this.budPosition.y, this.budPosition.z)
 
-    this.plantMesh.position.set(this.POZ.x,this.POZ.y,this.POZ.z);
+    this.plantMesh.position.set(this.POZ.x,this.POZ.y,this.POZ.z)
     // this.plantMesh.rotation.set(this.ROTATION.x, this.ROTATION.y, this.ROTATION.z);
 
     return this.plantMesh

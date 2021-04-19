@@ -44,10 +44,10 @@ export default class Flower {
     }
 
     // Import flower petals texture
-    const flowerTexture = new THREE.TextureLoader().load( flowerFrag )
+    const flowerTexture = new THREE.TextureLoader().load(flowerFrag)
 
     // Import flower petals springiness texture
-    const flowerSpringiness = new THREE.TextureLoader().load( flowerVert )
+    const flowerSpringiness = new THREE.TextureLoader().load(flowerVert)
 
     const flowerShaderMaterial = new THREE.ShaderMaterial( {
       uniforms: {
@@ -74,8 +74,12 @@ export default class Flower {
       // force to apply at flowerObject
       let rotationForce = distRotation.multiplyScalar(store.state.desert.velSpringiness);
 
-      if (this.flowerObject.name != 'lavender') {
+      if (this.flowerObject.name === 'lavender') {
         // update rotation with rotationForce
+        this.flowerObject.children[0].children.forEach(petal => {
+          petal.rotation.setFromVector3(petal.rotation.toVector3().add(rotationForce))
+        })
+      } else {
         this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce));
       }
 

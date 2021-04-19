@@ -76,13 +76,13 @@ export default class Desert {
       if (index >= 3) {
         index = 0
       }
-      const plant = new Plant({orientation: nbPlants})
+      const plant = new Plant({orientation: nbPlants, flowerType: this.flowerTypes[index]})
       this.plants.push(plant)
 
-      this.plantsGroup.add(plant.init(this.flowerTypes[index]))
+      this.plantsGroup.add(plant.init())
     }
 
-    this.plantsGroup.position.set(-2.2075, 1.896, -1.7811)
+    this.plantsGroup.position.set(-2.2075, 3, -1.7811)
     this.plantsGroup.scale.set(2.5,2.5,2.5)
 
     this.desertGroup.add(this.plantsGroup)
@@ -118,7 +118,7 @@ export default class Desert {
     lightsFolder.add(this.spotLightOnFlowers, 'intensity', 0, 2, 0.1).name('intensity flowers')
     // Fog and Background
     const fogFolder = currentSceneFolder.addFolder('Fog')
-    fogFolder.addColor(new ColorGUIHelper(scene.fog, 'color'), 'value').name('fog color') 
+    fogFolder.addColor(new ColorGUIHelper(scene.fog, 'color'), 'value').name('fog color')
     fogFolder.addColor(new ColorGUIHelper(scene, 'background'), 'value').name('background color')
 
     // Listeners
