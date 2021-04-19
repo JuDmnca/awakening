@@ -107,11 +107,12 @@ export default class Desert {
 
     // GUI
       // Lights
-    const lightsFolder = this.gui.gui.addFolder('Lights')
+    const currentSceneFolder = this.gui.gui.addFolder('Current Scene')
+    const lightsFolder = currentSceneFolder.addFolder('Lights')
     lightsFolder.addColor(new ColorGUIHelper(this.spotLightOnFlowers, 'color'), 'value').name('flowers color')
     lightsFolder.add(this.spotLightOnFlowers, 'intensity', 0, 2, 0.1).name('intensity flowers')
       // Fog and Background
-    const fogFolder = this.gui.gui.addFolder('Fog')
+    const fogFolder = currentSceneFolder.addFolder('Fog')
     fogFolder.addColor(new ColorGUIHelper(scene.fog, 'color'), 'value').name('fog color') 
     fogFolder.addColor(new ColorGUIHelper(scene, 'background'), 'value').name('background color') 
     
