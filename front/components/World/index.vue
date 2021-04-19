@@ -1,7 +1,7 @@
 <template>
-    <section class="scene">
+    <section class="scene rel">
         <canvas id="canvas" ref="canvas" />
-        <FormsQuestion v-if="isVisible" />
+        <FormsQuestion v-if="isVisible" :label="label" :step="step" />
     </section>
 </template>
 
@@ -11,16 +11,34 @@
     export default {
         name: 'scene',
         data() {
-            return {}
+            return {
+                visible: false,
+                label: '',
+                step: 0
+            }
         },
         computed: {
             isVisible() {
-                return false
+                return this.visible
             }
         },
         mounted() {
             new Scene({
                 $canvas: this.$refs.canvas
+            })
+            this.$nuxt.$on('questionVisible', (step) => {
+                this.step = step
+                if (step === 2) {
+                    this.label = 'Odeur'
+                } else if (step === 3) {
+                    this.label = 'Goût'
+                } else {
+                    this.label = 'Son'
+                }
+                this.visible = true
+            })
+            this.$nuxt.$on('questionHidden', () => {
+                this.visible = false
             })
         }
     }
@@ -33,6 +51,7 @@ body {
 }
 .scene {
     position: fixed;
+    width: 100%;
     height: 100vh;
 }
 </style>

@@ -18,7 +18,6 @@ class Particles {
     }
 
     init(renderer) {
-
         /*
         * Noise
         */
@@ -122,7 +121,7 @@ class Particles {
         this.particlesGeometry.setAttribute(
             'randomSpeed',
             new THREE.BufferAttribute(randomSpeed, 1)
-        ) 
+        )
 
         this.particlesGeometry.setAttribute('directionNoised', new THREE.BufferAttribute(directionNoised, 1))
         this.particlesGeometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1))

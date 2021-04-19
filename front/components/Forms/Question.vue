@@ -1,12 +1,35 @@
 <template>
-    <section>
-        <p style="color: white" @click="setUserId('Julie')">Ajouter un utilisateur</p>
+    <section class="question">
+        <form action="">
+            <label class="">{{ label }}</label>
+            <input
+                ref="input"
+                name="input"
+                type="string"
+                required
+            >
+        </form>
+        <button class="" type="submit" @click="storeInfo">
+            Envoyer
+        </button>
     </section>
 </template>
 
 <script>
     export default {
         name: 'question',
+        props: {
+            label: {
+                type: String,
+                default: '',
+                required: true
+            },
+            step: {
+                type: Number,
+                default: 0,
+                required: true
+            },
+        },
         async asyncData ({ app }) {
             // const ref = app.$fire.database.ref('users/julie/name')
             // ref.on('value', (snapshot) => {
@@ -16,44 +39,56 @@
         data() {
             return {}
         },
-        mounted() {
-        },
         methods: {
-            setUserId(name) {
-            const newUser = this.$fire.database.ref('users/').push({
-                name: name,
-                color: ''
-            })
-            const userId = newUser.key
-            this.$store.commit('setUserId', userId)
-            this.$store.commit('setUserName', name)
+            storeInfo() {
+                const data = this.$refs.input.value
+                switch (this.step) {
+                   case 0:
+                       this.$store.commit('setUserName', data)
+                       break;
+                    case 1:
+                       this.$store.commit('setUserColor', data)
+                       break;
+                    case 2:
+                       this.$store.commit('setUserSmell', data)
+                       break;
+                    case 3:
+                       this.$store.commit('setUserTaste', data)
+                       break;
+                    case 4:
+                       this.$store.commit('setUserSound', data)
+                       break;
+                }
+                this.$nuxt.$emit('questionHidden')
             },
-            setUserColor(color) {
-            this.$fire.database.ref('users/' + this.$store.state.user.id).update({
-                color: color
-            })
-            this.$store.commit('setUserColor', color)
-            }
-        },
-        computed: {
-            Style () {
-            return {
-                'background-color': this.$store.state.userColor
-            }
-            },
-            myId () {
-            return this.$store.state.user.id
-            },
-            myName () {
-            return this.$store.state.user.name
-            },
-            nameSetted () {
-            return this.$store.state.user.name != ''? true : false
+            other() {
+                // PUSH INFO TO FIREBASE : TO DO LATER AT THE END
+                // const newUser = this.$fire.database.ref('users/').push({
+                //     name: name,
+                //     color: ''
+                // })
+                // const userId = newUser.key
+                // this.$fire.database.ref('users/' + this.$store.state.user.id).update({
+                //     color: color
+                // })
             }
         }
     }
 </script>
-<style>
 
+<style>
+.question {
+    position: absolute;
+    width: 300px;
+    height: 200px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    background-color: magenta;
+}
 </style>
 
