@@ -72,7 +72,7 @@ export default class Desert {
 
     // Add Plants (Flower + Stem)
     let index = -1
-    for(let nbPlants = 0; nbPlants <= 1; nbPlants++) {
+    for(let nbPlants = 0; nbPlants <= 14; nbPlants++) {
       index++
       if (index >= 3) {
         index = 0
