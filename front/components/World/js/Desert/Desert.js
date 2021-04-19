@@ -98,7 +98,7 @@ export default class Desert {
     this.spotLightOnFlowers.position.x -= 3
     this.spotLightOnFlowers.position.z -= 3
     // this.spotLightOnFlowers.color = '#ffffff'
-    this.desertGroup.children[2].add( this.spotLightOnFlowers );
+    this.desertGroup.children[1].add( this.spotLightOnFlowers );
 
     // Fog
     const colorBG = new THREE.Color('#877d6f')
@@ -167,7 +167,7 @@ export default class Desert {
 
   inhale() {
     gsap.to(
-      this.desertGroup.children[2].material.uniforms.uZSpeed,
+      this.desertGroup.children[1].material.uniforms.uZSpeed,
       {
         value: 40,
         duration: 2000,
@@ -178,7 +178,7 @@ export default class Desert {
 
   exhale() {
     gsap.to(
-      this.desertGroup.children[2].material.uniforms.uZSpeed,
+      this.desertGroup.children[1].material.uniforms.uZSpeed,
       {
         value: -2,
         duration: 2000,
@@ -194,8 +194,8 @@ export default class Desert {
     } else {
       this.exhale()
     }
-    this.desertGroup.children[2].material.uniforms.uTime.value = elapsedTime
-    this.handleCubeHover()
+    this.desertGroup.children[1].material.uniforms.uTime.value = elapsedTime
+    // this.handleCubeHover()
     this.plants.forEach(plant => {
       plant.update()
     })
