@@ -83,14 +83,14 @@ export default class Desert {
     this.desertGroup.add(this.plantsGroup)
 
     // Lights
-    this.desertGroup.add( this.cubeLight );
+    // this.desertGroup.add( this.cubeLight );
 
     // Raycaster
     this.raycaster.init(this.camera, renderer)
 
     // Add Spores
     this.spores = new Particles()
-    this.desertGroup.add(this.spores.init(renderer))
+    this.desertGroup.add(this.spores.particles)
 
     // SpotLights on Flowers
     this.spotLightOnFlowers = new THREE.PointLight( this.params.spotLightOnFlowersColor, 1, 0 );
@@ -98,7 +98,7 @@ export default class Desert {
     this.spotLightOnFlowers.position.x -= 3
     this.spotLightOnFlowers.position.z -= 3
     // this.spotLightOnFlowers.color = '#ffffff'
-    this.desertGroup.children[1].add( this.spotLightOnFlowers );
+    this.spores.particles.add( this.spotLightOnFlowers );
 
     // Fog
     const colorBG = new THREE.Color('#877d6f')
@@ -114,7 +114,7 @@ export default class Desert {
       // Fog and Background
     const fogFolder = currentSceneFolder.addFolder('Fog')
     fogFolder.addColor(new ColorGUIHelper(scene.fog, 'color'), 'value').name('fog color') 
-    fogFolder.addColor(new ColorGUIHelper(scene, 'background'), 'value').name('background color') 
+    fogFolder.addColor(new ColorGUIHelper(scene, 'background'), 'value').name('background color')
     
     // Listeners
     window.addEventListener('click', () => {
@@ -170,7 +170,7 @@ export default class Desert {
 
   inhale() {
     gsap.to(
-      this.desertGroup.children[1].material.uniforms.uZSpeed,
+      this.spores.particles.material.uniforms.uZSpeed,
       {
         value: 40,
         duration: 2000,
@@ -181,7 +181,7 @@ export default class Desert {
 
   exhale() {
     gsap.to(
-      this.desertGroup.children[1].material.uniforms.uZSpeed,
+      this.spores.particles.material.uniforms.uZSpeed,
       {
         value: -2,
         duration: 2000,
@@ -197,7 +197,7 @@ export default class Desert {
     } else {
       this.exhale()
     }
-    this.desertGroup.children[1].material.uniforms.uTime.value = elapsedTime
+    this.spores.particles.material.uniforms.uTime.value = elapsedTime
     // this.handleCubeHover()
     this.plants.forEach(plant => {
       plant.update()
