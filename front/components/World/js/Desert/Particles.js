@@ -16,7 +16,7 @@ class Particles {
         this.particlesGeometry = null
         this.particlesMaterial = null
         this.particles = null
-        this.count = 10000
+        this.count = 20000
         this.init()
     }
 
@@ -39,7 +39,7 @@ class Particles {
             const i3 = i * 3
             // Position
             positions[i3 + 0] = (Math.random() - 0.5) * 10 * Math.random() - 2
-            positions[i3 + 1] = (Math.random() - 0.5) * 50 * Math.random()
+            positions[i3 + 1] = (Math.random() - 0.5) * 75 * Math.random() - 35
             positions[i3 + 2] = (Math.random() - 0.5) * 10 * Math.random()
 
             // Scale

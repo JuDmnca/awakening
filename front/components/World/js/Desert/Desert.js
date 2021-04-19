@@ -128,14 +128,29 @@ export default class Desert {
     })
     window.addEventListener("mousedown", (e) => {
       this.hold = true
+      this.inhale(30)
     });
     window.addEventListener("mouseup", (e) => {
       this.hold = false
+      this.exhale()
     });
-
-    window.addEventListener("mouseup", (e) => {
+    
+    let lastMouseX = -1; 
+    let lastMouseY = -1;
+    let mouseSpeed = 0;
+    window.addEventListener("mousemove", (e) => {
+      // Spores elevating when mousemove
+      // TO DO : activate this listener when we are near the flowers
       e.preventDefault();
-      this.hold = false
+      let mouseX = e.pageX;
+      let mouseY = e.pageY;
+      if (lastMouseX > -1) {
+          mouseSpeed = Math.max( Math.abs(mouseX-lastMouseX), Math.abs(mouseY-lastMouseY) );
+        }
+      lastMouseX = mouseX;
+      lastMouseY = mouseY;
+
+      this.inhale(mouseSpeed)
     });
 
     scene.add(this.desertGroup)
@@ -174,11 +189,11 @@ export default class Desert {
     }
   }
 
-  inhale() {
+  inhale(speedOfSpores) {
     gsap.to(
       this.spores.particles.material.uniforms.uZSpeed,
       {
-        value: 40,
+        value: speedOfSpores * 10,
         duration: 2000,
         ease: "power3.out"
       }
@@ -189,7 +204,7 @@ export default class Desert {
     gsap.to(
       this.spores.particles.material.uniforms.uZSpeed,
       {
-        value: -2,
+        value: -10,
         duration: 2000,
         ease: "power3.out"
       }
@@ -198,11 +213,6 @@ export default class Desert {
 
   render(elapsedTime) {
     this.intersects = this.raycaster.render(this.desertGroup)
-    if(this.hold){
-      this.inhale()
-    } else {
-      this.exhale()
-    }
     this.spores.particles.material.uniforms.uTime.value = elapsedTime
     // this.handleCubeHover()
     this.plants.forEach(plant => {
