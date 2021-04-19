@@ -61,7 +61,6 @@ export default class Desert {
     this.spotLightOnFlowers = null
 
     this.gui = new MainGui()
-
   }
 
   init(scene, renderer) {
@@ -126,13 +125,19 @@ export default class Desert {
     window.addEventListener('click', () => {
       this.handleClick()
     })
+    let sporesElevation = 0
     window.addEventListener("mousedown", (e) => {
       this.hold = true
-      this.inhale(30)
+      sporesElevation += 1000
+      this.inhale(sporesElevation)
     });
     window.addEventListener("mouseup", (e) => {
       this.hold = false
-      this.exhale()
+      // If inhale not completed
+      if(this.spores.particles.material.uniforms.uZSpeed.value != sporesElevation / 1000) {
+        sporesElevation -= 1000
+        this.exhale(sporesElevation)
+      }
     });
     
     let lastMouseX = -1; 
@@ -140,17 +145,16 @@ export default class Desert {
     let mouseSpeed = 0;
     window.addEventListener("mousemove", (e) => {
       // Spores elevating when mousemove
-      // TO DO : activate this listener when we are near the flowers
+      // TO DO : activate this listener only when we are near the flowers
       e.preventDefault();
       let mouseX = e.pageX;
       let mouseY = e.pageY;
       if (lastMouseX > -1) {
-          mouseSpeed = Math.max( Math.abs(mouseX-lastMouseX), Math.abs(mouseY-lastMouseY) );
+          sporesElevation += Math.max( Math.abs(mouseX-lastMouseX), Math.abs(mouseY-lastMouseY) );
         }
       lastMouseX = mouseX;
       lastMouseY = mouseY;
-
-      this.inhale(mouseSpeed)
+      this.inhale(sporesElevation, true)
     });
 
     scene.add(this.desertGroup)
@@ -189,23 +193,36 @@ export default class Desert {
     }
   }
 
-  inhale(speedOfSpores) {
-    gsap.to(
-      this.spores.particles.material.uniforms.uZSpeed,
-      {
-        value: speedOfSpores * 10,
-        duration: 2000,
-        ease: "power3.out"
-      }
-    )
+  inhale(sporesElevation, mousemove = false) {
+    // Movement when mousemove
+    if(mousemove){
+      gsap.to(
+        this.spores.particles.material.uniforms.uZSpeed,
+        {
+          value: sporesElevation / 1000,
+          duration: 3,
+          ease: "power3.out"
+        }
+      )
+    } else {
+      // Movement when hold
+      gsap.to(
+        this.spores.particles.material.uniforms.uZSpeed,
+        {
+          value: sporesElevation / 1000,
+          duration: 2,
+          ease: "power4.inOut"
+        }
+      )
+    }
   }
 
-  exhale() {
+  exhale(sporesElevation) {
     gsap.to(
       this.spores.particles.material.uniforms.uZSpeed,
       {
-        value: -10,
-        duration: 2000,
+        value: sporesElevation / 1000,
+        duration: 2,
         ease: "power3.out"
       }
     )
