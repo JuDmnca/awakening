@@ -5,15 +5,14 @@ class CustomSinCurve extends THREE.Curve {
 	constructor( props ) {
 		super();
 		this.props = props
-		this.curve = this.props.curve;
 		this.length = this.props.length;
 	}
 
 	getPoint( t, optionalTarget = new THREE.Vector3() ) {
 
 		const tx = 0;
-		const ty = Math.sin( t * this.curve );
-		const tz = t * this.length;
+		const ty = Math.sin( t ) * this.length;
+		const tz = t * this.length / 2;
 
 		return optionalTarget.set( tx, ty, tz );
 
