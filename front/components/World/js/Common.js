@@ -1,5 +1,6 @@
 import * as THREE from "three"
 import Camera from './Camera'
+import MainGui from './Utils/MainGui'
 
 import Desert from './Desert/Desert'
 
@@ -66,6 +67,13 @@ class Common {
         }
 
         this.light = null
+
+        // General Params
+        this.params = {
+            scrollSpeed: 7
+        }
+
+        this.gui = null
     }
 
     init($canvas) {
@@ -100,6 +108,11 @@ class Common {
         this.light.position.z = 100
         this.light.position.y = 300
         this.scene.add(this.light)
+
+        // Common GUI
+        this.gui = new MainGui()
+        const commonFolder = this.gui.gui.addFolder('Common')
+        commonFolder.add(this.params, 'scrollSpeed', 0, 10, 0.1)
     }
 
     initCamera() {
@@ -135,9 +148,9 @@ class Common {
 
     moveCamera(e) {
         if (e.deltaY <= 0) {
-            this.progression >= 0.98 ? this.progression = 1 : this.progression += -e.deltaY * 0.00007
+            this.progression >= 0.98 ? this.progression = 1 : this.progression += -e.deltaY * this.params.scrollSpeed / Math.pow(10, 5)
         } else {
-            this.progression <= 0.01 ? this.progression = 0 : this.progression += -e.deltaY * 0.00007
+            this.progression <= 0.01 ? this.progression = 0 : this.progression += -e.deltaY * this.params.scrollSpeed / Math.pow(10, 5)
         }
         this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
     }
