@@ -46,6 +46,7 @@ export default class Desert {
     // this.cubeLight = new THREE.PointLight(0xffffff, 0, 5)
 
     this.plantsGroup = new THREE.Group()
+    this.flowerTypes = ['lavender', 'orchid', 'daisy']
     this.plants = []
     this.plantsOffsets = {
       x: 10,
@@ -70,11 +71,16 @@ export default class Desert {
     this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
 
     // Add Plants (Flower + Stem)
+    let index = -1
     for(let nbPlants = 0; nbPlants <= 14; nbPlants++) {
+      index++
+      if (index >= 3) {
+        index = 0
+      }
       const plant = new Plant({orientation: nbPlants})
       this.plants.push(plant)
 
-      this.plantsGroup.add(plant.init())
+      this.plantsGroup.add(plant.init(this.flowerTypes[index]))
     }
 
     this.plantsGroup.position.set(-2.2075, 1.896, -1.7811)
