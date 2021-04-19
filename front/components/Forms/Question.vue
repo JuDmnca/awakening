@@ -59,6 +59,7 @@
                        this.$store.commit('setUserSound', data)
                        break;
                 }
+                this.$nuxt.$emit('questionHidden')
             },
             other() {
                 // PUSH INFO TO FIREBASE : TO DO LATER AT THE END
@@ -74,6 +75,7 @@
         }
     }
 </script>
+
 <style>
 .question {
     position: absolute;
