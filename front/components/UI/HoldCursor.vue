@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="cursor">
     <svg ref="circle" viewBox="0 0 200 200">
       <path
         d="
@@ -37,98 +37,104 @@ export default {
   mounted() {
     this.init();
     this.$nextTick(() => {
-      window.addEventListener("mouseover", this.followCursor);
-      window.addEventListener("mousemove", this.followCursor);
-      window.addEventListener("mousedown", (e) => {
-        e.preventDefault();
-        this.showCursor();
-      });
-      window.addEventListener("mouseup", (e) => {
-        e.preventDefault();
-        this.hideCursor();
-      });
-    });
+      window.addEventListener("mouseover", this.followCursor)
+      window.addEventListener("mousemove", this.followCursor)
+      window.addEventListener("mousedown", this.showCursor)
+      window.addEventListener("mouseup", this.hideCursor)
+    })
   },
   methods: {
     init() {
-      this.circle = this.$refs.circle;
-      this.inner = this.$refs.inner;
-      gsap.set(this.circle, { scale: 1 });
+      this.circle = this.$refs.circle
+      this.inner = this.$refs.inner
+      gsap.set(this.circle, { scale: 1 })
     },
     followCursor(e) {
       gsap.to([this.circle, this.inner], {
         x: e.clientX - 100 / 2,
         y: e.clientY - 100 / 2,
         duration: 0,
-      });
+      })
     },
     showCursor () {
-        if (!this.hold) {
-            this.hold = true
-            gsap.to(
-                this.circle,
-                {
-                opacity: 1,
-                scale: 0.4,
-                duration: 2,
-                ease: "power3.out",
-                onComplete: this.increaseCounter
-                }
-            )
-            gsap.to(
-                this.inner,
-                {
-                opacity: 1,
-                duration: 2,
-                ease: "power3.out"
-                }
-            )
-            } else {
-            gsap.to(
-                this.circle,
-                {
-                opacity: 1,
-                scale: 0.4,
-                duration: 2,
-                ease: "power3.out",
-                }
-            )
-            gsap.to(
-                this.inner,
-                {
-                opacity: 1,
-                duration: 2,
-                ease: "power3.out"
-                }
-            )
-        }
+      if (!this.hold) {
+        this.hold = true
+        gsap.to(
+          this.circle,
+          {
+          opacity: 1,
+          scale: 0.4,
+          duration: 2,
+          ease: "power3.out",
+          onComplete: this.increaseCounter
+          }
+        )
+        gsap.to(
+          this.inner,
+          {
+          opacity: 1,
+          duration: 2,
+          ease: "power3.out"
+          }
+        )
+        } else {
+        gsap.to(
+          this.circle,
+          {
+          opacity: 1,
+          scale: 0.4,
+          duration: 2,
+          ease: "power3.out",
+          }
+        )
+        gsap.to(
+          this.inner,
+          {
+          opacity: 1,
+          duration: 2,
+          ease: "power3.out"
+          }
+        )
+      }
     },
     hideCursor () {
-        this.hold = false
-        gsap.to(
-            this.circle,
-            {
-            opacity: 0,
-            scale: 1,
-            duration: 1,
-            ease: "power3.out",
-            }
-        )
-        gsap.to(
-            this.inner,
-            {
-            opacity: 0,
-            duration: 1,
-            ease: "power3.out"
-            }
-        )
+      this.hold = false
+      gsap.to(
+        this.circle,
+        {
+        opacity: 0,
+        scale: 1,
+        duration: 1,
+        ease: "power3.out",
+        }
+      )
+      gsap.to(
+        this.inner,
+        {
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out"
+        }
+      )
+    },
+    terminate() {
+      this.circle = this.$refs.circle
+      this.inner = this.$refs.inner
+      gsap.set(this.circle, { scale: 0 })
     },
     increaseCounter () {
+      if (this.$store.state.desert.counter != 3) {
         this.$store.commit('desert/increaseCounter')
         console.log(this.$store.state.desert.counter)
-        if (this.$store.state.desert.counter === 3) {
+      }
+      if (this.$store.state.desert.counter === 3) {
         console.log('Interaction done !')
-        }
+        this.$nuxt.$emit('questionVisible', 2)
+        this.hideCursor()
+        window.removeEventListener("mousedown", this.showCursor)
+        window.removeEventListener("mouseup", this.hideCursor)
+        this.terminate()
+      }
     }
   },
 };
@@ -136,28 +142,28 @@ export default {
 
 <style>
 svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100px;
-    height: 100px;
-    z-index: 1000;
-    opacity: 0;
-    user-select: none;
-    pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  z-index: 1000;
+  opacity: 0;
+  user-select: none;
+  pointer-events: none;
 }
 path {
-    fill: transparent;
-    stroke: white;
-    transform-origin: center;
-    width: 100px;
-    height: 100px;
-    user-select: none;
-    pointer-events: none;
+  fill: transparent;
+  stroke: white;
+  transform-origin: center;
+  width: 100px;
+  height: 100px;
+  user-select: none;
+  pointer-events: none;
 }
 svg:last-of-type path {
-    transform: scale(0.4);
-    stroke-width: 2px;
+  transform: scale(0.4);
+  stroke-width: 2px;
 }
 </style>
 

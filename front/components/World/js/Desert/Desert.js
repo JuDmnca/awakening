@@ -98,11 +98,9 @@ export default class Desert {
       this.handleClick()
     })
     window.addEventListener("mousedown", (e) => {
-      e.preventDefault();
       this.hold = true
     });
     window.addEventListener("mouseup", (e) => {
-      e.preventDefault();
       this.hold = false
     });
 
