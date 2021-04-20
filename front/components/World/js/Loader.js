@@ -43,7 +43,6 @@ export default class Loader {
             }
 
             gltf.scene.rotation.y = rotation
-            gltf.scene.rotation.x = 0.1;
 
             // Center 3D object
             const box = new THREE.Box3().setFromObject( gltf.scene );
@@ -68,11 +67,13 @@ export default class Loader {
                     gltf.scene.position.multiplyScalar(-1)
                     gltf.scene.scale.set(1.6,1.6,1.6)
                     gltf.scene.position.y = -0.5 * 1.6
-                    gltf.scene.position.z = -0.09
+                    gltf.scene.position.z = -0.15
+                    gltf.scene.rotation.x = 0.2;
                   break;
                 case 'daisy':
                     gltf.scene.position.multiplyScalar(-1)
                     gltf.scene.scale.set(1.6,1.6,1.6)
+                    gltf.scene.rotation.x = 0.3;
                   break;
             }
 

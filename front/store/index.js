@@ -6,7 +6,8 @@ const state = () => ({
     smell: '',
     taste: '',
     sound: ''
-  }
+  },
+  worldRotation: null
 })
 
 const actions = {
@@ -30,6 +31,9 @@ const mutations = {
   },
   setUserSound (state, resp) {
     state.user.sound = resp
+  },
+  updateWorldRotation (state, resp) {
+    state.worldRotation = resp
   }
 }
 
