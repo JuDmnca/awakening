@@ -168,6 +168,11 @@ class Common {
         }
         this.currentScene.progression = this.progression
         this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
+
+        if (store) {
+            const euler = this.camera.camera.rotation.clone()
+            store.commit('updateWorldRotation', euler)
+        }
     }
 
     setSize() {
