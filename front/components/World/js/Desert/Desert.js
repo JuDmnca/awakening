@@ -139,8 +139,8 @@ export default class Desert {
         this.exhale(sporesElevation)
       }
     });
-    
-    let lastMouseX = -1; 
+
+    let lastMouseX = -1;
     let lastMouseY = -1;
     let mouseSpeed = 0;
     window.addEventListener("mousemove", (e) => {
