@@ -66,13 +66,18 @@ export default class Flower {
     return this.flowerObject
   }
 
-  update() {
+  update(toInitial) {
     if (store && store.state.desert.fRotation != null) {
-      let distRotation = store.state.desert.fRotation.clone().sub(this.flowerObject.rotation.toVector3());
-      let distRotationMatrix = this.createRotationMatrix(distRotation);
+      let distRotation
+      if (toInitial) {
+        distRotation = store.state.desert.initialRotation.clone().sub(this.flowerObject.rotation.toVector3())
+      } else {
+        distRotation = store.state.desert.fRotation.clone().sub(this.flowerObject.rotation.toVector3())
+      }
+      let distRotationMatrix = this.createRotationMatrix(distRotation)
 
       // force to apply at flowerObject
-      let rotationForce = distRotation.multiplyScalar(store.state.desert.velSpringiness);
+      let rotationForce = distRotation.multiplyScalar(store.state.desert.velSpringiness)
 
       if (this.flowerObject.name === 'lavender') {
         // update rotation with rotationForce
@@ -80,7 +85,7 @@ export default class Flower {
           petal.rotation.setFromVector3(petal.rotation.toVector3().add(rotationForce))
         })
       } else {
-        this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce));
+        this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce))
       }
 
       if (this.flowerObject.children[0]) {
