@@ -63,6 +63,7 @@ export default class Desert {
     this.gui = new MainGui()
 
     this.sporesElevation = 0
+    this.cameraIsZoomed = false
   }
 
   init(scene, renderer) {
@@ -133,30 +134,34 @@ export default class Desert {
   }
 
   enableSporesMovement() {
-    window.addEventListener("mousedown", (e) => {
+    window.addEventListener("mousedown", () => {
       this.hold = true
       this.sporesElevation += 1000
       this.inhale()
-      this.cameraOnHold(this.camera)
-    });
+      this.cameraOnHold()
+    })
 
-    let lastMouseX = -1;
-    let lastMouseY = -1;
+    let lastMouseX = -1
+    let lastMouseY = -1
     window.addEventListener("mousemove", (e) => {
       // Spores elevating when mousemove
-      e.preventDefault();
-      let mouseX = e.pageX;
-      let mouseY = e.pageY;
+      e.preventDefault()
+      let mouseX = e.pageX
+      let mouseY = e.pageY
       if (lastMouseX > -1) {
-          this.sporesElevation += Math.max( Math.abs(mouseX-lastMouseX), Math.abs(mouseY-lastMouseY) );
-        }
-      lastMouseX = mouseX;
-      lastMouseY = mouseY;
-      this.inhale({mousmove: true})
-    });
+        this.sporesElevation += Math.max(Math.abs(mouseX-lastMouseX), Math.abs(mouseY-lastMouseY))
+      }
+      lastMouseX = mouseX
+      lastMouseY = mouseY
+      this.inhale({ mousemove: true })
+    })
 
-    window.addEventListener("mouseup", (e) => {
+    window.addEventListener("mouseup", () => {
       this.exhale()
+      console.log(this.cameraIsZoomed)
+      if (this.cameraIsZoomed) {
+        this.cameraOnUnhold(this.camera.camera.position)
+      }
     })
   }
 
@@ -166,35 +171,36 @@ export default class Desert {
     // }
   }
 
-  // TO DO : Maybe remove that
-  // handleCubeHover() {
-  //   if (this.intersects.length > 0) {
-  //     document.body.style.cursor = "pointer"
-  //     this.intersected = this.intersects[0].object
-  //     this.intersected.currentHex = this.intersected.material.emissive.getHex()
-  //     this.intersected.material.emissive.setHex( 0xcccc00 )
+  cameraOnHold(){
+    this.cameraIsZoomed = true
+    gsap.to(
+      this.camera.camera.position,
+      {
+        x: this.camera.camera.position.x + 1,
+        y: this.camera.camera.position.y - 1,
+        z: this.camera.camera.position.z - 1,
+        duration: 2,
+        ease: "power3.out",
+        onComplete: this.cameraOnUnhold(this.camera.camera.position)
+      }
+    )
+  }
 
-  //     // Emissive cubeLight of cube on hover
-  //     const lightAltitude = 3
-  //     this.cubeLight.position.set( this.intersected.position.x, this.intersected.position.y + lightAltitude, this.intersected.position.z );
-  //     // this.cubeLight.intensity = 1
-  //   } else if (this.intersected) {
-  //     document.body.style.cursor = "initial"
-  //     this.intersected.material.emissive.setHex("default")
-  //     this.cubeLight.intensity = 0
-  //   }
-  // }
-
-  cameraOnHold(camera){
-      let forwardCamera = this.camera.camera.position.y - 2
-      gsap.to(
-        this.camera.camera.position,
-        {
-          y: forwardCamera,
-          duration: 1,
-          ease: "power3.out"
+  cameraOnUnhold(camera){
+    gsap.killTweensOf(camera)
+    gsap.to(
+      this.camera.camera.position,
+      {
+        x: this.camera.camera.position.x - 1,
+        y: this.camera.camera.position.y + 1,
+        z: this.camera.camera.position.z + 1,
+        duration: 1,
+        ease: "power3.out",
+        onComplete: () => {
+          this.cameraIsZoomed = false
         }
-      )
+      }
+    )
   }
 
   isFixedView () {
