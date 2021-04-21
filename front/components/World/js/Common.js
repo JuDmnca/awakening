@@ -80,6 +80,8 @@ class Common {
         }
 
         this.gui = null
+
+        this.sporesCanMove = false
     }
 
     init($canvas) {
@@ -172,6 +174,12 @@ class Common {
         if (store) {
             const euler = this.camera.camera.rotation.clone()
             store.commit('updateWorldRotation', euler)
+        }
+
+        // Enable spores movement and inhale if end of path
+        if(this.progression >= 0.98 && this.sporesCanMove === false){
+            this.desert.enableSporesMovement()
+            this.sporesCanMove = true
         }
     }
 
