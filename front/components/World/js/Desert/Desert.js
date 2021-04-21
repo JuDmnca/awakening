@@ -61,9 +61,12 @@ export default class Desert {
     this.spotLightOnFlowers = null
 
     this.gui = new MainGui()
+    
+    this.sporesElevation = 0
   }
 
   init(scene, renderer) {
+
     this.land.load(this.desertGroup, modelDesert)
 
     // Cube - Hover zone for flowers
@@ -125,45 +128,38 @@ export default class Desert {
     window.addEventListener('click', () => {
       this.handleClick()
     })
-    let sporesElevation = 0
-    window.addEventListener("mousedown", (e) => {
-      this.hold = true
-      sporesElevation += 1000
-      this.inhale(sporesElevation)
-    });
-    window.addEventListener("mouseup", (e) => {
-      this.hold = false
-      // If inhale not completed
-      if(this.spores.particles.material.uniforms.uZSpeed.value != sporesElevation / 1000) {
-        sporesElevation -= 1000
-        this.exhale(sporesElevation)
-      }
-    });
-    
-    let lastMouseX = -1; 
-    let lastMouseY = -1;
-    let mouseSpeed = 0;
-    window.addEventListener("mousemove", (e) => {
-      // Spores elevating when mousemove
-      // TO DO : activate this listener only when we are near the flowers
-      e.preventDefault();
-      let mouseX = e.pageX;
-      let mouseY = e.pageY;
-      if (lastMouseX > -1) {
-          sporesElevation += Math.max( Math.abs(mouseX-lastMouseX), Math.abs(mouseY-lastMouseY) );
-        }
-      lastMouseX = mouseX;
-      lastMouseY = mouseY;
-      this.inhale(sporesElevation, true)
-    });
 
     scene.add(this.desertGroup)
   }
 
+  enableSporesMovement() {
+    window.addEventListener("mousedown", (e) => {
+      this.hold = true
+      this.sporesElevation += 1000
+      this.inhale()
+      this.cameraOnHold(this.camera)
+    });
+
+    let lastMouseX = -1;
+    let lastMouseY = -1;
+    window.addEventListener("mousemove", (e) => {
+      // Spores elevating when mousemove
+      e.preventDefault();
+      let mouseX = e.pageX;
+      let mouseY = e.pageY;
+      if (lastMouseX > -1) {
+          this.sporesElevation += Math.max( Math.abs(mouseX-lastMouseX), Math.abs(mouseY-lastMouseY) );
+        }
+      lastMouseX = mouseX;
+      lastMouseY = mouseY;
+      this.inhale({mousmove: true})
+    });
+  }
+
   handleClick() {
-    if (this.intersects.length > 0) {
-      gsap.to(this, {progression: 1, duration: 1, ease: "power3.out"} )
-    }
+    // if (this.intersects.length > 0) {
+    //   gsap.to(this, {progression: 1, duration: 1, ease: "power3.out"} )
+    // }
   }
 
   // TO DO : Maybe remove that
@@ -185,6 +181,18 @@ export default class Desert {
   //   }
   // }
 
+  cameraOnHold(camera){
+      let forwardCamera = this.camera.camera.position.y - 2
+      gsap.to(
+        this.camera.camera.position,
+        {
+          y: forwardCamera,
+          duration: 1,
+          ease: "power3.out"
+        }
+      )
+  }
+
   isFixedView () {
     if (this.progression > 0.9) {
       return true
@@ -193,13 +201,13 @@ export default class Desert {
     }
   }
 
-  inhale(sporesElevation, mousemove = false) {
+  inhale(mousemove = false) {
     // Movement when mousemove
     if(mousemove){
       gsap.to(
         this.spores.particles.material.uniforms.uZSpeed,
         {
-          value: sporesElevation / 1000,
+          value: this.sporesElevation / 1000,
           duration: 3,
           ease: "power3.out"
         }
@@ -209,27 +217,18 @@ export default class Desert {
       gsap.to(
         this.spores.particles.material.uniforms.uZSpeed,
         {
-          value: sporesElevation / 1000,
-          duration: 2,
+          value: this.sporesElevation / 1000,
+          duration: 1,
           ease: "power4.inOut"
         }
       )
     }
   }
 
-  exhale(sporesElevation) {
-    gsap.to(
-      this.spores.particles.material.uniforms.uZSpeed,
-      {
-        value: sporesElevation / 1000,
-        duration: 2,
-        ease: "power3.out"
-      }
-    )
-  }
-
   render(elapsedTime) {
-    this.intersects = this.raycaster.render(this.desertGroup)
+    if(this.desertGroup.children[2]) {
+      this.intersects = this.raycaster.render(this.desertGroup.children[2].children)
+    }
     this.spores.particles.material.uniforms.uTime.value = elapsedTime
     // this.handleCubeHover()
     this.plants.forEach(plant => {
