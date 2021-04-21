@@ -158,7 +158,6 @@ export default class Desert {
 
     window.addEventListener("mouseup", () => {
       this.exhale()
-      console.log(this.cameraIsZoomed)
       if (this.cameraIsZoomed) {
         this.cameraOnUnhold(this.camera.camera.position)
       }
@@ -212,7 +211,7 @@ export default class Desert {
   }
 
   inhale(mousemove = false) {
-    // Movement when mousemove
+    // Movement on mousemove
     if(mousemove){
       gsap.to(
         this.spores.particles.material.uniforms.uZSpeed,
@@ -223,7 +222,7 @@ export default class Desert {
         }
       )
     } else {
-      // Movement when hold
+      // Movement on hold
       gsap.to(
         this.spores.particles.material.uniforms.uZSpeed,
         {
