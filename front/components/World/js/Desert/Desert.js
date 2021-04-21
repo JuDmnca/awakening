@@ -154,6 +154,10 @@ export default class Desert {
       lastMouseY = mouseY;
       this.inhale({mousmove: true})
     });
+
+    window.addEventListener("mouseup", (e) => {
+      this.exhale()
+    })
   }
 
   handleClick() {
@@ -223,6 +227,18 @@ export default class Desert {
         }
       )
     }
+  }
+
+  exhale() {
+    this.sporesElevation -= 1000
+    gsap.to(
+      this.spores.particles.material.uniforms.uZSpeed,
+      {
+        value: this.sporesElevation / 1000,
+        duration: 1,
+        ease: "power3.out"
+      }
+    )
   }
 
   render(elapsedTime) {
