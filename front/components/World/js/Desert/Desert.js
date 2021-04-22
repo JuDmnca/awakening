@@ -70,6 +70,23 @@ export default class Desert {
   init(scene, renderer) {
 
     this.land.load(this.desertGroup, modelDesert, 1)
+    /*
+      * Material rocks
+      * Need to do this shit to wait the complete load
+      * TO DO : Have to find an other way
+    */
+    setTimeout(() => {
+      let rocksMaterial = new THREE.MeshStandardMaterial({
+        color: '#ffffff',
+      })
+      this.desertGroup.children[2].children[1].material = rocksMaterial
+
+      // Material Rocks GUI
+      const materialRocksFolder = this.gui.gui.addFolder('Material rocks folder')
+      materialRocksFolder.addColor(new ColorGUIHelper(this.desertGroup.children[2].children[1].material, 'color'), 'value').name('Color material')
+      materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'roughness', 0, 1, .01).name('roughness')
+      materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'metalness', 0, 1, .01).name('metalness')
+    }, 1000)
 
     // Cube - Hover zone for flowers
     this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
