@@ -1,17 +1,26 @@
 <template>
-    <section class="question">
+    <section class="question" :style="style">
         <form action="">
             <label class="">{{ label }}</label>
             <input
                 ref="input"
+                :placeholder="placeholder"
                 name="input"
                 type="string"
                 required
             >
         </form>
-        <button class="" type="submit" @click="storeInfo">
-            Envoyer
+        <button v-if="step === 0" class="button" type="submit" @click="storeInfo">
+            {{ confirmation }}
         </button>
+        <div v-else class="buttons">
+            <button type="submit" @click="acceptMic">
+                J'accepte
+            </button>
+            <button type="submit" @click="refuseMic">
+                Non merci
+            </button>
+        </div>
     </section>
 </template>
 
@@ -24,10 +33,25 @@
                 default: '',
                 required: true
             },
+            placeholder: {
+                type: Number,
+                default: 'Pierre',
+                required: false
+            },
             step: {
                 type: Number,
                 default: 0,
-                required: true
+                required: false
+            },
+            color: {
+                type: String,
+                default: 'white',
+                required: false
+            },
+            confirmation: {
+                type: String,
+                default: '',
+                required: false
             },
         },
         async asyncData ({ app }) {
@@ -38,6 +62,13 @@
         },
         data() {
             return {}
+        },
+        computed: {
+            style () {
+                return {
+                    color: this.color
+                }
+            },
         },
         methods: {
             storeInfo() {
@@ -80,17 +111,32 @@
 <style>
 .question {
     position: absolute;
-    width: 300px;
-    height: 200px;
+    width: 1000px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 3;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: black;
-    background-color: magenta;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 40px;
+}
+
+.button {
+    text-transform: uppercase;
+}
+
+.buttons {
+    display: flex;
 }
 </style>
 

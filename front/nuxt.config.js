@@ -44,6 +44,10 @@ export default {
     '@nuxtjs/tailwindcss',
   ],
 
+  tailwindcss: {
+    cssPath: '~/assets/style/tailwind.css'
+  },
+
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     [

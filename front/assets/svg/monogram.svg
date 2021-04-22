@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="197" viewBox="0 0 60 197">
+  <g id="Groupe_377" data-name="Groupe 377" transform="translate(-930 -432)">
+    <text id="A" transform="translate(960 559)" fill="#fff" font-size="80" font-family="Butler-ExtraBold, Butler" font-weight="800" letter-spacing="0.4em"><tspan x="-29.28" y="0">A</tspan></text>
+    <circle id="Ellipse_1" data-name="Ellipse 1" cx="10" cy="10" r="10" transform="translate(950 609)" fill="#fff"/>
+    <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(950 432)" fill="none" stroke="#fff" stroke-width="1">
+      <circle cx="10" cy="10" r="10" stroke="none"/>
+      <circle cx="10" cy="10" r="9.5" fill="none"/>
+    </g>
+  </g>
+</svg>
