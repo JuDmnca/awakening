@@ -25,6 +25,7 @@
         },
         methods: {
             launchTransition(vignettageRef) {
+                gsap.killTweensOf(vignettageRef)
                 gsap.to(
                     vignettageRef,
                     {
