@@ -1,0 +1,57 @@
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('~/assets/fonts/SofiaProLight.eot');
+  src: url('~/assets/fonts/SofiaProLight.eot?#iefix') format('embedded-opentype'),
+      url('~/assets/fonts/SofiaProLight.woff2') format('woff2'),
+      url('~/assets/fonts/SofiaProLight.woff') format('woff'),
+      url('~/assets/fonts/SofiaProLight.ttf') format('truetype'),
+      url('~/assets/fonts/SofiaProLight.svg#SofiaProLight') format('svg');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Sofia Pro';
+  margin: 0;
+  padding: 0;
+}
+
+/* For icons */
+svg {
+  position: relative;
+  z-index: 9999;
+}
+
+button {
+  text-transform: none;
+  overflow: visible;
+  font-family: inherit;
+	font-size: 100%;
+	line-height: 1.15;
+	margin: 0;
+  -webkit-appearance: button;
+  border-style: none;
+	padding: 0;
+  background-color: transparent;
+  color: white;
+}
+
+input {
+  background-color: transparent;
+  border: none;
+}
+
+input:focus {
+  outline: transparent;
+  color: white;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}

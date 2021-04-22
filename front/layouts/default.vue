@@ -2,6 +2,7 @@
   <div>
     <World />
     <UI-HoldCursor />
+    <IntroLoader />
     <Nuxt />
   </div>
 </template>
