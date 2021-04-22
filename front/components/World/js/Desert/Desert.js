@@ -206,6 +206,7 @@ export default class Desert {
   }
 
   inhale(mousemove = false) {
+    gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
     // Movement when mousemove
     if(mousemove){
       gsap.to(
@@ -230,6 +231,7 @@ export default class Desert {
   }
 
   exhale() {
+    gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
     this.sporesElevation -= 1000
     gsap.to(
       this.spores.particles.material.uniforms.uZSpeed,
