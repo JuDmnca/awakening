@@ -5,6 +5,7 @@
             <path id="Tracé_124" data-name="Tracé 124" d="M9,16.2,4.8,12,3.4,13.4,9,19,21,7,19.6,5.6Z" transform="translate(-3.4 -5.6)" />
         </g>
     </svg>
+    
 </template>
 <script>
     export default {
@@ -15,11 +16,11 @@
                 },
             width: {
                 type: [Number, String],
-                default: 18
+                default: 17.6
             },
             height: {
                 type: [Number, String],
-                default: 18
+                default: 13.4
             },
             iconColor: {
                 type: String,
