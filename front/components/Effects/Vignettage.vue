@@ -15,6 +15,9 @@
             return {}
         },
         mounted() {
+            this.$refs.vignettage_1.style.opacity = 0
+            this.$refs.vignettage_2.style.opacity = 0
+            this.$refs.vignettage_3.style.opacity = 0
             this.$nextTick(() => {
                 window.addEventListener("mousedown", this.launchEffect)
                 window.addEventListener("mouseup", this.unLaunchEffect)
@@ -22,28 +25,50 @@
         },
         methods: {
             launchEffect() {
-                this.$refs.vignettage_1.style.opacity = 0
-                this.$refs.vignettage_2.style.opacity = 0
-                this.$refs.vignettage_3.style.opacity = 0
-                gsap.to(
-                    this.$refs.vignettage_1.style,
-                    {
-                        opacity: 1,
-                        duration: 1,
-                        ease: 'power3.in'
-                    }
-                )
+                console.log(this.$store.state.desert.counter)
+                if(this.$store.state.desert.counter === 0) {
+                    gsap.to(
+                        this.$refs.vignettage_1.style,
+                        {
+                            opacity: 1,
+                            duration: 2,
+                            ease: 'power3.in'
+                        }
+                    )
+                } else if(this.$store.state.desert.counter === 1) {
+                    gsap.to(
+                        this.$refs.vignettage_2.style,
+                        {
+                            opacity: 1,
+                            duration: 2,
+                            ease: 'power3.in'
+                        }
+                    )
+                }
             },
             unLaunchEffect() {
-                gsap.killTweensOf(this.$refs.vignettage_1)
-                gsap.to(
-                    this.$refs.vignettage_1.style,
-                    {
-                        opacity: 0,
-                        duration: 1,
-                        ease: 'power3.out'
-                    }
-                )
+                if(this.$store.state.desert.counter === 0) {
+                    gsap.killTweensOf(this.$refs.vignettage_1)
+                    gsap.to(
+                        this.$refs.vignettage_1.style,
+                        {
+                            opacity: 0,
+                            duration: 1,
+                            ease: 'power3.out'
+                        }
+                    )
+                } else if(this.$store.state.desert.counter === 1) {
+                    gsap.killTweensOf(this.$refs.vignettage_2)
+                    gsap.to(
+                        this.$refs.vignettage_2.style,
+                        {
+                            opacity: 0,
+                            duration: 1,
+                            ease: 'power3.out'
+                        }
+                    )
+                }
+
             }
         }
     }
