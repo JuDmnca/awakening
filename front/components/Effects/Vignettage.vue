@@ -24,70 +24,52 @@
             })
         },
         methods: {
+            launchTransition(vignettageRef) {
+                gsap.to(
+                    vignettageRef,
+                    {
+                        opacity: 1,
+                        duration: 2,
+                        ease: 'power3.inOut'
+                    }
+                )
+            },
+            unLaunchTransition(vignettageRef) {
+                gsap.killTweensOf(vignettageRef)
+                gsap.to(
+                    vignettageRef,
+                    {
+                        opacity: 0,
+                        duration: 1,
+                        ease: 'power3.out'
+                    }
+                )
+            },
             launchEffect() {
-                console.log(this.$store.state.desert.counter)
-                if(this.$store.state.desert.counter === 0) {
-                    gsap.to(
-                        this.$refs.vignettage_1.style,
-                        {
-                            opacity: 1,
-                            duration: 2,
-                            ease: 'power3.inOut'
-                        }
-                    )
-                } else if(this.$store.state.desert.counter === 1) {
-                    gsap.to(
-                        this.$refs.vignettage_2.style,
-                        {
-                            opacity: 1,
-                            duration: 2,
-                            ease: 'power3.inOut'
-                        }
-                    )
-                } else if(this.$store.state.desert.counter === 2) {
-                    gsap.to(
-                        this.$refs.vignettage_3.style,
-                        {
-                            opacity: 1,
-                            duration: 2,
-                            ease: 'power3.inOut'
-                        }
-                    )
+                switch (this.$store.state.desert.counter) {
+                   case 0:
+                        this.launchTransition(this.$refs.vignettage_1.style)
+                        break;
+                    case 1:
+                        this.launchTransition(this.$refs.vignettage_2.style)
+                        break;
+                    case 2:
+                        this.launchTransition(this.$refs.vignettage_3.style)
+                        break;
                 }
             },
             unLaunchEffect() {
-                if(this.$store.state.desert.counter === 0) {
-                    gsap.killTweensOf(this.$refs.vignettage_1)
-                    gsap.to(
-                        this.$refs.vignettage_1.style,
-                        {
-                            opacity: 0,
-                            duration: 1,
-                            ease: 'power3.out'
-                        }
-                    )
-                } else if(this.$store.state.desert.counter === 1) {
-                    gsap.killTweensOf(this.$refs.vignettage_2)
-                    gsap.to(
-                        this.$refs.vignettage_2.style,
-                        {
-                            opacity: 0,
-                            duration: 1,
-                            ease: 'power3.out'
-                        }
-                    )
-                } else if(this.$store.state.desert.counter === 2) {
-                    gsap.killTweensOf(this.$refs.vignettage_3)
-                    gsap.to(
-                        this.$refs.vignettage_3.style,
-                        {
-                            opacity: 0,
-                            duration: 1,
-                            ease: 'power3.out'
-                        }
-                    )
+                switch (this.$store.state.desert.counter) {
+                   case 0:
+                        this.unLaunchTransition(this.$refs.vignettage_1.style)
+                        break;
+                    case 1:
+                        this.unLaunchTransition(this.$refs.vignettage_2.style)
+                        break;
+                    case 2:
+                        this.unLaunchTransition(this.$refs.vignettage_3.style)
+                        break;
                 }
-
             }
         }
     }
