@@ -4,6 +4,9 @@
             <canvas id="canvas" ref="canvas" />
             <FormsQuestion v-if="isVisibleQ" :label="label" :step="step" />
             <EffectsVignettage v-if="isVisibleV" @onscreen="updateScene" />
+            
+            <!-- Just to test icons -->
+            <!-- <UIIconsValidation width="40" height="40" iconColor="#ffff00"/> -->
         </section>
     </transition>
 </template>
@@ -74,6 +77,12 @@ body {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+/* For icons */
+svg {
+    position: relative;
+    z-index: 9999;
 }
 </style>
 
