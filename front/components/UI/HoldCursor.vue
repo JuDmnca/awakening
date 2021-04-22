@@ -105,10 +105,8 @@ export default {
       if (this.hold) {
         if (this.$store.state.desert.counter != 3) {
           this.$store.commit('desert/increaseCounter')
-          console.log(this.$store.state.desert.counter)
         }
         if (this.$store.state.desert.counter === 3) {
-          console.log('Interaction done !')
           this.$nuxt.$emit('questionVisible', 2)
           this.hideCursor()
           window.removeEventListener("mousedown", this.showCursor)
