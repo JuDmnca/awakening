@@ -32,7 +32,7 @@
                         {
                             opacity: 1,
                             duration: 2,
-                            ease: 'power3.in'
+                            ease: 'power3.inOut'
                         }
                     )
                 } else if(this.$store.state.desert.counter === 1) {
@@ -41,7 +41,16 @@
                         {
                             opacity: 1,
                             duration: 2,
-                            ease: 'power3.in'
+                            ease: 'power3.inOut'
+                        }
+                    )
+                } else if(this.$store.state.desert.counter === 2) {
+                    gsap.to(
+                        this.$refs.vignettage_3.style,
+                        {
+                            opacity: 1,
+                            duration: 2,
+                            ease: 'power3.inOut'
                         }
                     )
                 }
@@ -61,6 +70,16 @@
                     gsap.killTweensOf(this.$refs.vignettage_2)
                     gsap.to(
                         this.$refs.vignettage_2.style,
+                        {
+                            opacity: 0,
+                            duration: 1,
+                            ease: 'power3.out'
+                        }
+                    )
+                } else if(this.$store.state.desert.counter === 2) {
+                    gsap.killTweensOf(this.$refs.vignettage_3)
+                    gsap.to(
+                        this.$refs.vignettage_3.style,
                         {
                             opacity: 0,
                             duration: 1,
