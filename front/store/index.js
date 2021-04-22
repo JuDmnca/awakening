@@ -7,7 +7,8 @@ const state = () => ({
     taste: '',
     sound: ''
   },
-  worldRotation: null
+  worldRotation: null,
+  sceneIndex: 1
 })
 
 const actions = {
@@ -34,7 +35,10 @@ const mutations = {
   },
   updateWorldRotation (state, resp) {
     state.worldRotation = resp
-  }
+  },
+  increaseSceneIndex (state) {
+    state.sceneIndex++
+  },
 }
 
 export default {

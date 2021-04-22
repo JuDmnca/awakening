@@ -12,8 +12,7 @@ export default class Loader {
         this.loader = new GLTFLoader()
 
         const position = this.props.position
-
-        const object = new THREE.Object3D()
+        const index = this.props.index
 
         this.loader.load( this.props.model, function ( gltf ) {
             gltf.scene.position.x = position.x
@@ -21,11 +20,11 @@ export default class Loader {
             gltf.scene.position.z = position.z
             gltf.scene.scale.set(3,3,3)
 
-            scene.add( gltf.scene );
+            scene.add( gltf.scene )
 
         }, undefined, function ( error ) {
-            console.error( error );
-        });
+            console.error( error )
+        })
     }
 
     initFlowerObject (type) {

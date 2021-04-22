@@ -3,6 +3,7 @@ import Camera from './Camera'
 import MainGui from './Utils/MainGui'
 
 import Desert from './Desert/Desert'
+import Prairie from './Prairie/Prairie'
 
 const desertCurve = [
     [44.085, 1.2081, -45.012],
@@ -43,6 +44,8 @@ class Common {
         this.camLook = start.clone()
         this.camTarget =start.clone()
 
+        this.events = false
+
         this.canMove = null
         this.addscroll = false
 
@@ -52,7 +55,6 @@ class Common {
         this.windowHalf = new THREE.Vector2()
 
         this.currentScene = null
-        this.desert = null
 
         this.size = {
             windowW: null,
@@ -107,10 +109,9 @@ class Common {
 
         this.addWheelEvent()
 
-        // Load for first scene
-        this.desert = new Desert({camera: this.camera})
-        this.desert.init(this.scene, this.renderer)
-        this.currentScene = this.desert
+        // Load first group (desert)
+        this.currentScene = new Desert({camera: this.camera})
+        this.currentScene.init(this.scene, this.renderer)
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
@@ -178,7 +179,7 @@ class Common {
 
         // Enable spores movement and inhale if end of path
         if(this.progression >= 0.98 && this.sporesCanMove === false){
-            this.desert.enableSporesMovement()
+            this.currentScene.enableSporesMovement()
             this.sporesCanMove = true
         }
     }
@@ -218,11 +219,45 @@ class Common {
         })
     }
 
+    addTransitionEvent() {
+        nuxt.$on('startSceneTransition', () => {
+            switch (store.state.sceneIndex) {
+                case 1:
+                    this.removeGroup(this.currentScene)
+                    console.log('new scene : prairie')
+                    // this.currentScene = new Prairie({camera: this.camera})
+                    // this.currentScene.init(this.scene, this.renderer)
+                    break;
+                case 2:
+                    this.removeGroup(this.currentScene)
+                    // this.currentScene = new Forest({camera: this.camera})
+                    // this.currentScene.init(this.scene, this.renderer)
+                    break;
+                case 3:
+                    this.removeGroup(this.currentScene)
+                    // this.currentScene = new Sky({camera: this.camera})
+                    // this.currentScene.init(this.scene, this.renderer)
+                    break;
+            }
+            store.commit('increaseSceneIndex')
+        })
+    }
+
+    removeGroup(group) {
+        const selectedObject = this.scene.getObjectByName(group.name);
+        this.scene.remove( selectedObject )
+    }
+
     render() {
+        if (nuxt && store && !this.events) {
+            this.addTransitionEvent()
+            this.events = true
+        }
+
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
 
-        this.desert.render(this.time.total)
+        this.currentScene.render(this.time.total)
 
         // Update camera rotation & look at
         this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)
@@ -231,7 +266,7 @@ class Common {
         this.camera.camera.lookAt(this.camLook)
 
         // TO DO : update code so camera moves like head following the mouse BUT needs to check camera rotation before
-        if (!this.desert.isFixedView()) {
+        if (!this.currentScene.isFixedView()) {
             this.target.x = ( 1 - this.mouse.x ) * 0.002;
             this.target.y = ( 1 - this.mouse.y ) * 0.002;
 

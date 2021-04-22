@@ -1,8 +1,8 @@
 <template>
     <section class="vignettage">
-        <div ref="vignettage_1" class="vignettage_1"></div>
-        <div ref="vignettage_2" class="vignettage_2"></div>
-        <div ref="vignettage_3" class="vignettage_3"></div>
+        <div ref="vignettage_1" class="vignettage_1" />
+        <div ref="vignettage_2" class="vignettage_2" />
+        <div ref="vignettage_3" class="vignettage_3" />
     </section>
 </template>
 
@@ -24,14 +24,19 @@
             })
         },
         methods: {
-            launchTransition(vignettageRef) {
+            launchTransition(vignettageRef, end) {
                 gsap.killTweensOf(vignettageRef)
                 gsap.to(
                     vignettageRef,
                     {
                         opacity: 1,
                         duration: 2,
-                        ease: 'power3.inOut'
+                        ease: 'power3.inOut',
+                        onComplete: () => {
+                            if (end) {
+                                this.$emit('onscreen')
+                            }
+                        }
                     }
                 )
             },
@@ -49,13 +54,13 @@
             launchEffect() {
                 switch (this.$store.state.desert.counter) {
                    case 0:
-                        this.launchTransition(this.$refs.vignettage_1.style)
+                        this.launchTransition(this.$refs.vignettage_1.style, false)
                         break;
                     case 1:
-                        this.launchTransition(this.$refs.vignettage_2.style)
+                        this.launchTransition(this.$refs.vignettage_2.style, false)
                         break;
                     case 2:
-                        this.launchTransition(this.$refs.vignettage_3.style)
+                        this.launchTransition(this.$refs.vignettage_3.style, true)
                         break;
                 }
             },
@@ -86,7 +91,7 @@
 .vignettage_1 {
     background: radial-gradient(circle, rgba(255,0,255,0) 66.66%, rgba(255,0,255,1) 100%); 
     opacity: 0;
-} 
+}
 
 .vignettage_2 {
     background: radial-gradient(circle, rgba(255,0,255,0) 33.33%, rgba(255,0,255,1) 100%);

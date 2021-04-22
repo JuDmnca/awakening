@@ -18,6 +18,7 @@ if (process.browser) {
 export default class Prairie {
   constructor(props) {
     this.props = props
+    this.name = 'prairie'
 
     // Generals params
     this.hold = false
