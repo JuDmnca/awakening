@@ -5,6 +5,7 @@ const state = () => ({
   done: false,
   velSpringiness: 0.1,
   velStem: 0.07,
+  initialRotation: null,
   fRotation: null,
   sRotation: null
 })
@@ -18,6 +19,9 @@ const mutations = {
   },
   updateDone (state, resp) {
     state.done = resp
+  },
+  updateInitialRotation (state) {
+    state.initialRotation = new THREE.Vector3( 0, 0, 0 )
   },
   updateFRotation (state, resp) {
     state.fRotation = new THREE.Vector3( resp.x, 0, -resp.z )

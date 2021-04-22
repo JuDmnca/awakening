@@ -1,18 +1,29 @@
 let store
+let nuxt
 if (process.browser) {
-  window.onNuxtReady(({$store}) => {
+  window.onNuxtReady(({$nuxt, $store}) => {
+    nuxt = $nuxt
     store = $store
   })
 }
-
 class RotationControl {
 
   constructor() {
     this.ratio = 10
 
+    let timer
     if(process.client) {
       window.addEventListener('mousemove', (event) => {
+        clearTimeout(timer)
+        if (nuxt) {
+          nuxt.$emit('startmove')
+        }
         this.onMouseMove(event)
+        timer = setTimeout(() => {
+          if (nuxt) {
+            nuxt.$emit('endmove')
+          }
+        }, 500)
       })
     }
   }
@@ -23,7 +34,7 @@ class RotationControl {
     this.rotateElement(x/this.ratio, z/this.ratio)
     let xS = (20 * (event.y - window.innerHeight/2)) / window.innerHeight/2,
         zS = (20 * (event.x - window.innerWidth/2)) / window.innerWidth/2
-    this.rotateElement(xS/this.ratio, zS/this.ratio, )
+    this.rotateElement(xS/this.ratio, zS/this.ratio)
   }
 
   rotateElement(x, z){

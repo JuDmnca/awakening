@@ -8,12 +8,13 @@ import budVert from "../../../../assets/shaders/plant/bud.vert"
 import budFrag from "../../../../assets/shaders/plant/bud.frag"
 
 let store
+let nuxt
 if (process.browser) {
-  window.onNuxtReady(({$store}) => {
+  window.onNuxtReady(({$nuxt, $store}) => {
+    nuxt = $nuxt
     store = $store
   })
 }
-
 export default class Plant {
   constructor(props) {
     this.props = props
@@ -28,6 +29,10 @@ export default class Plant {
 
     this.flowerType = this.props.flowerType
     this.flower = null
+    this.toInitial = false
+
+    this.events = false
+    this.moving = 0
 
     // Create Stem
     if (this.flowerType === 'lavender') {
@@ -90,8 +95,19 @@ export default class Plant {
   }
 
   update() {
+    if (nuxt && !this.events) {
+      this.addEvents()
+      store.commit('desert/updateInitialRotation')
+      this.events = true
+    }
+
     if (store && store.state.desert.sRotation != null) {
-      let distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3());
+      let distRotation
+      if (this.toInitial) {
+        distRotation = store.state.desert.initialRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3());
+      } else {
+        distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3());
+      }
       let distRotationMatrix = this.createRotationMatrix(distRotation);
 
       // Force to apply at flowerObject
@@ -103,8 +119,17 @@ export default class Plant {
       this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix;
 
       // Update flower petals
-      this.flower.update()
+      this.flower.update(this.toInitial)
     }
+  }
+
+  addEvents() {
+    nuxt.$on('endmove', () => {
+      this.toInitial = true
+    })
+    nuxt.$on('startmove', () => {
+      this.toInitial = false
+    })
   }
 
   createRotationMatrix(vectRotation) {
