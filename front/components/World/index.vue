@@ -2,6 +2,7 @@
     <section class="scene rel">
         <canvas id="canvas" ref="canvas" />
         <FormsQuestion v-if="isVisible" :label="label" :step="step" />
+        <EffectsVignettage />
     </section>
 </template>
 
