@@ -211,12 +211,8 @@ export default class Desert {
   }
 
   inhale(mousemove = false) {
-<<<<<<< HEAD
     gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
-    // Movement when mousemove
-=======
     // Movement on mousemove
->>>>>>> 6bfada0329d8ba1072ccc30e3742a2e5cf3a77a7
     if(mousemove){
       gsap.to(
         this.spores.particles.material.uniforms.uZSpeed,
