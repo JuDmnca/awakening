@@ -1,9 +1,11 @@
 <template>
-    <section class="scene rel">
-        <canvas id="canvas" ref="canvas" />
-        <FormsQuestion v-if="isVisible" :label="label" :step="step" />
-        <EffectsVignettage />
-    </section>
+    <transition name='fade'>
+        <section class="scene rel">
+            <canvas id="canvas" ref="canvas" />
+            <FormsQuestion v-if="isVisibleQ" :label="label" :step="step" />
+            <EffectsVignettage v-if="isVisibleV" @onscreen="updateScene" />
+        </section>
+    </transition>
 </template>
 
 <script>
@@ -13,14 +15,18 @@
         name: 'scene',
         data() {
             return {
-                visible: false,
+                visibleQ: false,
+                visibleV: true,
                 label: '',
                 step: 0
             }
         },
         computed: {
-            isVisible() {
-                return this.visible
+            isVisibleQ() {
+                return this.visibleQ
+            },
+            isVisibleV() {
+                return this.visibleV
             }
         },
         mounted() {
@@ -36,11 +42,19 @@
                 } else {
                     this.label = 'Son'
                 }
-                this.visible = true
+                this.visibleQ = true
             })
             this.$nuxt.$on('questionHidden', () => {
-                this.visible = false
+                this.visibleQ = false
             })
+            this.$nuxt.$on('endSceneTransition', () => {
+                this.visibleV = false
+            })
+        },
+        methods: {
+            updateScene() {
+                this.$nuxt.$emit('startSceneTransition')
+            }
         }
     }
 </script>
@@ -54,6 +68,12 @@ body {
     position: fixed;
     width: 100%;
     height: 100vh;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
 

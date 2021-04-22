@@ -23,6 +23,7 @@ if (process.browser) {
 export default class Desert {
   constructor(props) {
     this.props = props
+    this.name = 'desert'
 
     // Generals params
     this.params = {
@@ -68,7 +69,7 @@ export default class Desert {
 
   init(scene, renderer) {
 
-    this.land.load(this.desertGroup, modelDesert)
+    this.land.load(this.desertGroup, modelDesert, 1)
 
     // Cube - Hover zone for flowers
     this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
@@ -130,6 +131,7 @@ export default class Desert {
       this.handleClick()
     })
 
+    this.desertGroup.name = 'desert'
     scene.add(this.desertGroup)
   }
 

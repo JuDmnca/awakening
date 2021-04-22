@@ -59,6 +59,7 @@
                        this.$store.commit('setUserSound', data)
                        break;
                 }
+                this.$nuxt.$emit('endSceneTransition')
                 this.$nuxt.$emit('questionHidden')
             },
             other() {
@@ -84,6 +85,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 3;
     display: flex;
     align-items: center;
     justify-content: center;
