@@ -25,7 +25,6 @@
                 this.$refs.vignettage_1.style.opacity = 0
                 this.$refs.vignettage_2.style.opacity = 0
                 this.$refs.vignettage_3.style.opacity = 0
-                console.log(this.$refs.vignettage_1.style.opacity)
                 gsap.to(
                     this.$refs.vignettage_1.style,
                     {
