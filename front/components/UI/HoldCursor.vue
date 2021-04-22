@@ -119,7 +119,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 svg {
   position: absolute;
   top: 0;
