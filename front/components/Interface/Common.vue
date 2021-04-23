@@ -25,6 +25,8 @@
     display: flex;
     justify-content: space-between;
     align-items: end;
+    padding: 0 50px 50px 50px;
+    bottom: 50px;
   }
 </style>
 
