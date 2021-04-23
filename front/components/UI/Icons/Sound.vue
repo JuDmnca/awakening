@@ -106,7 +106,7 @@
     }
 
     .sound_icon:hover {
-        cursor: pointer;
+        cursor: none; 
     }
 
     #canvasSoundIcon {
