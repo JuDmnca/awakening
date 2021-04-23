@@ -67,12 +67,12 @@
 }
 
 button:first-of-type {
-  padding-right: 50px;
+  margin-right: 50px;
 }
 
 button:last-of-type {
   color: #888888;
-  padding-right: 0;
+  margin-right: 0;
 }
 
 .buttons {

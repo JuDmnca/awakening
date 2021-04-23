@@ -352,10 +352,6 @@ input[type="radio"]:checked + label .selected  {
     color: white !important;
 }
 
-.button:hover {
-    opacity: 0.5 !important;
-}
-
 .button {
     opacity: 0;
     font-size: 12px;
