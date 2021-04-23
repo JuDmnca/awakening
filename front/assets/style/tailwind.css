@@ -26,10 +26,11 @@ svg {
 }
 
 button {
+  position: relative;
   text-transform: none;
   overflow: visible;
   font-family: inherit;
-	font-size: 100%;
+	font-size: 12px;
 	line-height: 1.15;
 	margin: 0;
   -webkit-appearance: button;
@@ -37,6 +38,31 @@ button {
 	padding: 0;
   background-color: transparent;
   color: white;
+}
+
+button::after, button::before {
+  content: '';
+  width: 100%;
+  position: absolute;
+  height: 100%;
+  bottom: -2px;
+  left: 0;
+  border-bottom: solid 1px white;
+  transform: scaleX(0);
+  transition: transform .3s ease-out;
+}
+
+button::before{
+  transform-origin: 100% 0;
+}
+
+button::after{
+  transform-origin: 0 100%;
+}
+
+button:hover::after, button:hover::before {
+  transform-origin: 50% 0;
+  transform: scaleX(1);
 }
 
 input {
