@@ -3,6 +3,7 @@
     <World />
     <UI-HoldCursor />
     <!-- <IntroLoader /> -->
+    <Interface-Common />
     <Nuxt />
   </div>
 </template>

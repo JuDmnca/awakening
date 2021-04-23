@@ -1,7 +1,7 @@
 <template>
     <section class="sound_icon z-50">
         <!-- TO DO : Enable tailwind here -->
-        <canvas id="canvasSoundIcon" class="cursor-pointer" ref="canvasSoundIcon" width="100" height="50"></canvas>
+        <canvas id="canvasSoundIcon" class="cursor-pointer" ref="canvasSoundIcon" width="50" height="50"></canvas>
     </section>
 </template>
 <script>
@@ -51,10 +51,10 @@
                 const maxHeight = 40
                 const speedAttenuation = 1000
                 const heightPixelMute = 2
-                const widthBar = 2
+                const widthBar = 1
                 const nbBars = 8
                 const rect = {
-                    x: 25,
+                    x: 15,
                     y: 25
                 }
                 let rectangles = []
@@ -77,7 +77,7 @@
                         randomHeight.push(noise1d(timeTotal / speedAttenuation + i * randomLevel) * maxHeight)
                         rectangles[i].rect(rect.x + xOff, rect.y - randomHeight[i]/2, widthBar, randomHeight[i])
                     }
-                    xOff += 5
+                    xOff += 3
                     this.ctx.fill(rectangles[i])
                 }
                 if(!stopDrawing) {
@@ -100,7 +100,18 @@
 </script>
 
 <style scoped>
-    #canvasSoundIcon:hover {
+    .sound_icon {
+        position: relative;
+        display: flex;
+    }
+
+    .sound_icon:hover {
         cursor: pointer;
+    }
+
+    #canvasSoundIcon {
+        margin: auto;
+        border: solid 1px white;
+        border-radius: 9999px;
     }
 </style>

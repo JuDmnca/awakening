@@ -5,7 +5,7 @@
             <FormsQuestion v-if="isVisibleQ" :label="label" :step="step" />
             <EffectsVignettage v-if="isVisibleV" @onscreen="updateScene" />
             <!-- Just to test icons -->
-            <UIIconsSound width="40" height="40" iconColor="#fff"/>
+            <!-- <UI-IconsSound width="40" height="40" iconColor="#fff"/> -->
         </section>
     </transition>
 </template>
@@ -61,11 +61,17 @@
     }
 </script>
 
-<style>
+<style scoped>
 .scene {
   position: fixed;
   width: 100%;
   height: 100vh;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 </style>
 
