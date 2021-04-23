@@ -5,6 +5,7 @@
     <transition name="fadeOut">
       <IntroLoader v-if="loader" @done="hideLoader" />
     </transition>
+    <Interface-Common />
     <Nuxt />
   </div>
 </template>
