@@ -2,7 +2,7 @@
   <div>
     <World />
     <UI-HoldCursor />
-    <IntroLoader />
+    <!-- <IntroLoader /> -->
     <Nuxt />
   </div>
 </template>
