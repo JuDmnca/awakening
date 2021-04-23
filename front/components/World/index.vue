@@ -5,7 +5,7 @@
             <FormsQuestion v-if="isVisibleQ" :label="label" :step="step" />
             <EffectsVignettage v-if="isVisibleV" @onscreen="updateScene" />
             <!-- Just to test icons -->
-            <!-- <UIIconsValidation width="40" height="40" iconColor="#ffff00"/> -->
+            <UIIconsSound width="40" height="40" iconColor="#fff"/>
         </section>
     </transition>
 </template>
