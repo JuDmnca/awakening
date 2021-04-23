@@ -15,6 +15,7 @@ body {
   height: 100vh;
   overflow: hidden;
   font-family: 'Sofia Pro';
+  line-height: 56px;
   margin: 0;
   padding: 0;
 }
@@ -23,6 +24,11 @@ body {
 svg {
   position: relative;
   z-index: 9999;
+}
+
+label {
+  font-size: 40px;
+  text-align: center;
 }
 
 button {
@@ -38,6 +44,8 @@ button {
 	padding: 0;
   background-color: transparent;
   color: white;
+  font-family: 'Sofia Pro';
+  text-transform: uppercase;
 }
 
 button::after, button::before {
@@ -68,9 +76,14 @@ button:hover::after, button:hover::before {
 input {
   background-color: transparent;
   border: none;
+  font-family: 'Sofia Pro';
 }
 
-input:focus {
+button:hover {
+  cursor: pointer;
+}
+
+input:focus, button:focus {
   outline: transparent;
   color: white;
 }
@@ -81,3 +94,11 @@ input:focus {
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
+
+.fadeOut-enter-active, .fadeOut-leave-active {
+  transition: opacity 1s;
+}
+.fadeOut-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+

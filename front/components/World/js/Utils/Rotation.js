@@ -12,6 +12,7 @@ class RotationControl {
     this.ratio = 10
 
     let timer
+    // TO DO : launch when nuxt has emitted 'startExperience'
     if(process.client) {
       window.addEventListener('mousemove', (event) => {
         clearTimeout(timer)
