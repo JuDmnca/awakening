@@ -10,5 +10,6 @@ export default {}
 <style>
 body {
   background-color: black;
+  cursor: none;
 }
 </style>
