@@ -24,7 +24,7 @@
     position: relative;
     display: flex;
     justify-content: space-between;
-    align-items: end;
+    align-items: flex-end;
     padding: 0 50px 50px 50px;
     bottom: 50px;
   }

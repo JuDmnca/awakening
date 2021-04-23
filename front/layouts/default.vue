@@ -2,7 +2,9 @@
   <div>
     <World />
     <UI-HoldCursor />
-    <!-- <IntroLoader /> -->
+    <transition name="fadeOut">
+      <IntroLoader v-if="loader" @done="hideLoader" />
+    </transition>
     <Interface-Common />
     <Nuxt />
   </div>
@@ -14,6 +16,16 @@
   export default {
     components: {
       World
-    }
+    },
+    data() {
+      return {
+        loader: false
+      }
+    },
+    methods: {
+      hideLoader() {
+        this.loader = false
+      }
+    },
   }
 </script>
