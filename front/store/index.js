@@ -2,6 +2,7 @@ const state = () => ({
   user: {
     id: '',
     name: '',
+    mic: false,
     color: '',
     smell: '',
     taste: '',
@@ -20,6 +21,9 @@ const mutations = {
   },
   setUserName (state, resp) {
     state.user.name = resp
+  },
+  setUserMic (state, resp) {
+    state.user.mic = resp
   },
   setUserColor (state, resp) {
     state.user.color = resp

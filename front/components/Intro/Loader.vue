@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="loader__container">
     <transition name="fade">
       <div v-if="!loaded" class="loader">
         <div class="progress" />
@@ -16,6 +16,18 @@
         :label="'Quel est votre surnom ?'"
         :step="0"
         :confirmation="`C'est bon`"
+        @done="nextQuestion"
+      />
+      <IntroMic
+        v-if="showMic"
+        @done="nextQuestion"
+      />
+      <FormsQuestion
+        v-if="showColor"
+        :label="'Quelle est la couleur de votre humeur aujourd’hui ?'"
+        :step="1"
+        :confirmation="`Commencer l'expérience`"
+        @done="startExperience"
       />
     </transition>
   </section>
@@ -27,13 +39,17 @@
       return {
         loaded: false,
         showLogo: false,
-        showName: false
+        showName: false,
+        showMic: false,
+        showColor: false
       }
     },
     mounted() {
+      // TO DO : Get real data from the 3D Loader
       setTimeout(() => {
         this.loaded = true
       }, 500)
+
       setTimeout(() => {
         this.showLogo = true
       }, 1500)
@@ -44,11 +60,33 @@
         this.showName = true
       }, 4500)
     },
+    methods: {
+      nextQuestion() {
+        if (this.showName) {
+          this.showName = false
+          setTimeout(() => {
+            this.showMic = true
+          }, 1000)
+        } else {
+          this.showMic = false
+          setTimeout(() => {
+            this.showColor = true
+          }, 1000)
+        }
+      },
+      startExperience() {
+        this.showColor = false
+        setTimeout(() => {
+          this.$emit('done')
+          this.$nuxt.$emit('startExperience')
+        }, 1000)
+      }
+    },
   }
 </script>
 
 <style>
-section {
+.loader__container {
   position: absolute;
   width: 100%;
   height: 100vh;
