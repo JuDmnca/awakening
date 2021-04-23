@@ -1,7 +1,7 @@
 <template>
   <section class="cursor">
     <svg class="circle" ref="circle" viewBox="0 0 200 200">
-      <path
+      <path class="circle__path"
         d="
           M 100, 100
           m -75, 0
@@ -33,8 +33,8 @@ export default {
     this.$nextTick(() => {
       window.addEventListener("mouseover", this.followCursor)
       window.addEventListener("mousemove", this.followCursor)
-      window.addEventListener("mousedown", this.showCursor)
-      window.addEventListener("mouseup", this.hideCursor)
+      window.addEventListener("mousedown", this.holdCursor)
+      window.addEventListener("mouseup", this.unHoldCursor)
     })
   },
   methods: {
@@ -43,6 +43,7 @@ export default {
       this.inner = this.$refs.inner
       this.point = this.$refs.point
       gsap.set(this.circle, { scale: 1. })
+      gsap.set(this.circle, { fillOpacity: 0 })
     },
     followCursor(e) {
       gsap.to([this.circle, this.inner, this.point], {
@@ -51,7 +52,35 @@ export default {
         duration: 0,
       })
     },
-    showCursor () {
+    activeCursor () {
+      this.hold = true
+      gsap.to(
+        this.circle,
+        {
+        scale: 0.4,
+        strokeOpacity: 0,
+        fillOpacity: 0.4,
+        duration: 2,
+        ease: "power3.out",
+        onComplete: this.increaseCounter
+        }
+      )
+    },
+    unActiveCursor () {
+      gsap.killTweensOf([this.circle, this.inner])
+      this.hold = false
+      gsap.to(
+        this.circle,
+        {
+        scale: 1,
+        strokeOpacity: 1,
+        fillOpacity: 0,
+        duration: 1,
+        ease: "power3.out",
+        }
+      )
+    },
+    holdCursor () {
       this.hold = true
       gsap.to(
         this.circle,
@@ -63,7 +92,7 @@ export default {
         }
       )
     },
-    hideCursor () {
+    unHoldCursor () {
       gsap.killTweensOf([this.circle, this.inner])
       this.hold = false
       gsap.to(
@@ -109,6 +138,11 @@ svg {
 .circle {
   opacity: 1;
   stroke-width: 2px;
+}
+
+.circle__path {
+  fill:#fff;
+  /* fill-opacity:0; */
 }
 
 .point {
