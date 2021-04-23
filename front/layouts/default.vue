@@ -19,7 +19,7 @@
     },
     data() {
       return {
-        loader: true
+        loader: false
       }
     },
     methods: {
