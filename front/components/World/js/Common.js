@@ -76,7 +76,7 @@ class Common {
             light: {
                 angle: Math.PI / 2,
                 color: '#ffffff',
-                intensity: 7,
+                intensity: 1,
                 distance: 400
             }
         }
@@ -115,9 +115,10 @@ class Common {
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-        this.light.position.x = Math.cos(this.params.light.angle) + 300
-        this.light.position.y = Math.sin(this.params.light.angle) + 300
-        this.light.position.z = 100
+        this.light.position.set(240, 46, 300)
+        // this.light.position.x = Math.cos(this.params.light.angle) + 300
+        // this.light.position.y = Math.sin(this.params.light.angle) + 300
+        // this.light.position.z = 100
         this.scene.add(this.light)
 
         // Common GUI
@@ -128,6 +129,7 @@ class Common {
         lightFolder.add(this.light.position, 'x', -300, 300, 1).name('x')
         lightFolder.add(this.light.position, 'y', -300, 300, 1).name('y')
         lightFolder.add(this.light.position, 'z', -300, 300, 1).name('z')
+        lightFolder.add(this.light, 'intensity', 0, 20, 0.01).name('intensity')
         // lightFolder.add(this.params.light, 'angle', 0, Math.PI * 2, 0.1).name('angle')
         // lightFolder.add(this.light, 'intensity', 0, 10, 1).name('Intensity')
     }
