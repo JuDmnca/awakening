@@ -70,23 +70,42 @@ export default class Desert {
   init(scene, renderer) {
 
     this.land.load(this.desertGroup, modelDesert, 1)
+    
     /*
       * Material rocks
       * Need to do this shit to wait the complete load
       * TO DO : Have to find an other way
     */
+    const cubeMap = [
+      require('../../../../assets/textures/png/rocks/px.png'),
+      require('../../../../assets/textures/png/rocks/nx.png'),
+      require('../../../../assets/textures/png/rocks/py.png'),
+      require('../../../../assets/textures/png/rocks/ny.png'),
+      require('../../../../assets/textures/png/rocks/pz.png'),
+      require('../../../../assets/textures/png/rocks/nz.png')
+    ];
+
+    const textureCrystals = new THREE.CubeTextureLoader().load( cubeMap );
+    textureCrystals.mapping = THREE.CubeRefractionMapping;
+    textureCrystals.encoding = THREE.sRGBEncoding;
+    const crystalsMaterial = new THREE.MeshBasicMaterial( {
+      color: 0x210021,
+      envMap: textureCrystals,
+      refractionRatio: 0.8,
+      reflectivity: 1,
+      combine: THREE.AddOperation
+    } );
+
+    // Have to setTimouté to wait the generation of crystals
     setTimeout(() => {
-      let rocksMaterial = new THREE.MeshStandardMaterial({
-        color: '#ffffff',
-      })
-      this.desertGroup.children[2].children[1].material = rocksMaterial
+      this.desertGroup.children[2].children[1].material = crystalsMaterial
 
       // Material Rocks GUI
       const materialRocksFolder = this.gui.gui.addFolder('Material rocks folder')
       materialRocksFolder.addColor(new ColorGUIHelper(this.desertGroup.children[2].children[1].material, 'color'), 'value').name('Color material')
-      materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'roughness', 0, 1, .01).name('roughness')
-      materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'metalness', 0, 1, .01).name('metalness')
-    }, 1000)
+      materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'refractionRatio', 0, 1, .01).name('refractionRatio')
+      materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'reflectivity', 0, 1, .01).name('reflectivity')
+    }, 100)
 
     // Cube - Hover zone for flowers
     this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
@@ -130,7 +149,7 @@ export default class Desert {
     // Fog
     const colorBG = new THREE.Color('#877d6f')
     scene.fog = new THREE.Fog(colorBG, 10, 300)
-    scene.background = new THREE.Color(colorBG)
+    scene.background = colorBG
 
     // GUI
     // Lights
