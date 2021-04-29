@@ -98,7 +98,8 @@ class Common {
         this.renderer.setPixelRatio(window.devicePixelRatio)
 
         this.renderer.setSize(this.size.windowW, this.size.windowH)
-        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.enabled = true
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 
         this.clock = new THREE.Clock()
         this.clock.start()
@@ -118,6 +119,10 @@ class Common {
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
         this.light.position.set(-69, 266, -123)
         this.light.castShadow = true
+        this.light.shadow.mapSize.width = 1024
+        this.light.shadow.mapSize.height = 1024
+        // Blur of the shadows
+        this.light.shadow.radius = 3
         // this.light.position.x = Math.cos(this.params.light.angle) + 300
         // this.light.position.y = Math.sin(this.params.light.angle) + 300
         // this.light.position.z = 100
@@ -132,6 +137,8 @@ class Common {
         lightFolder.add(this.light.position, 'y', -300, 300, 1).name('y')
         lightFolder.add(this.light.position, 'z', -300, 300, 1).name('z')
         lightFolder.add(this.light, 'intensity', 0, 20, 0.01).name('intensity')
+        lightFolder.add(this.light, 'distance', 0, 600, 1).name('distance')
+        // lightFolder.add(this.light, 'shadow', 0, 500, 0.01).name('shadow')
         // lightFolder.add(this.params.light, 'angle', 0, Math.PI * 2, 0.1).name('angle')
         // lightFolder.add(this.light, 'intensity', 0, 10, 1).name('Intensity')
     }
