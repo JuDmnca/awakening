@@ -76,7 +76,7 @@ class Common {
             light: {
                 angle: Math.PI / 2,
                 color: '#ffffff',
-                intensity: 1,
+                intensity: 2.85,
                 distance: 400
             }
         }
@@ -98,6 +98,7 @@ class Common {
         this.renderer.setPixelRatio(window.devicePixelRatio)
 
         this.renderer.setSize(this.size.windowW, this.size.windowH)
+        this.renderer.shadowMap.enabled = true;
 
         this.clock = new THREE.Clock()
         this.clock.start()
@@ -115,7 +116,8 @@ class Common {
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-        this.light.position.set(240, 46, 300)
+        this.light.position.set(-69, 266, -123)
+        this.light.castShadow = true
         // this.light.position.x = Math.cos(this.params.light.angle) + 300
         // this.light.position.y = Math.sin(this.params.light.angle) + 300
         // this.light.position.z = 100
