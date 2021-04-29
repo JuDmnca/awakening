@@ -88,17 +88,27 @@ export default class Desert {
     const textureCrystals = new THREE.CubeTextureLoader().load( cubeMap );
     textureCrystals.mapping = THREE.CubeRefractionMapping;
     textureCrystals.encoding = THREE.sRGBEncoding;
-    const crystalsMaterial = new THREE.MeshBasicMaterial( {
+    const crystalsMaterial = new THREE.MeshLambertMaterial( {
       color: 0x210021,
       envMap: textureCrystals,
       refractionRatio: 0.8,
       reflectivity: 1,
-      combine: THREE.AddOperation
+      combine: THREE.AddOperation,
+      transparent: true,
+      opacity: .9,
+      side: THREE.DoubleSide,
+      premultipliedAlpha: true
     } );
 
     // Have to setTimouté to wait the generation of crystals
-    setTimeout(() => {
+    setTimeout(() => {      
+      // Plane
+      this.desertGroup.children[2].children[0].receiveShadow = true
+      // this.desertGroup.children[2].children[0].castShadow = true
+
+      // Crytals
       this.desertGroup.children[2].children[1].material = crystalsMaterial
+      this.desertGroup.children[2].children[1].castShadow = true;
 
       // Material Rocks GUI
       const materialRocksFolder = this.gui.gui.addFolder('Material rocks folder')
@@ -108,7 +118,7 @@ export default class Desert {
     }, 100)
 
     // Cube - Hover zone for flowers
-    this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
+    // this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
 
     // Add Plants (Flower + Stem)
     let index = -1
@@ -140,7 +150,7 @@ export default class Desert {
 
     // SpotLights on Flowers
     this.spotLightOnFlowers = new THREE.PointLight( this.params.spotLightOnFlowersColor, 1, 0 );
-    this.spotLightOnFlowers.position.y += 5
+    this.spotLightOnFlowers.position.y += 15
     this.spotLightOnFlowers.position.x -= 3
     this.spotLightOnFlowers.position.z -= 3
     // this.spotLightOnFlowers.color = '#ffffff'
