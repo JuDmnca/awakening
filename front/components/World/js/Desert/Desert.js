@@ -10,7 +10,7 @@ import Particles from './Particles'
 import MainGui from '../Utils/MainGui'
 import ColorGUIHelper from '../Utils/ColorGUIHelper'
 import Rotation from '../Utils/Rotation'
-
+import Sound from '../Sound'
 const sandTexture = require("../../../../assets/textures/t_sand.png")
 
 let store
@@ -65,6 +65,7 @@ export default class Desert {
 
     this.sporesElevation = 0
     this.cameraIsZoomed = false
+    this.sound
   }
 
   init(scene, renderer) {
@@ -177,6 +178,7 @@ export default class Desert {
       this.handleClick()
     })
 
+    this.sound = new Sound({camera: this.camera})
     this.desertGroup.name = 'desert'
     scene.add(this.desertGroup)
   }
