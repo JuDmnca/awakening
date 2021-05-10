@@ -7,7 +7,8 @@ const state = () => ({
   velStem: 0.07,
   initialRotation: null,
   fRotation: null,
-  sRotation: null
+  sRotation: null,
+  isMuted: false
 })
 
 const actions = {
@@ -36,6 +37,9 @@ const mutations = {
     } else {
       state.sRotation = state.sRotation.applyEuler(resp.euler)
     }
+  },
+  toggleMute(state) {
+    state.isMuted = !state.isMuted
   }
 }
 

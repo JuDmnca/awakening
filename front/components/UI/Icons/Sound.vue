@@ -1,5 +1,5 @@
 <template>
-    <section class="sound_icon z-50">
+    <section @click="onClick()" class="sound_icon z-50">
         <!-- TO DO : Enable tailwind here -->
         <canvas id="canvasSoundIcon" class="cursor-pointer" ref="canvasSoundIcon" width="50" height="50"></canvas>
     </section>
@@ -94,6 +94,9 @@
                 this.ctx.clearRect(0, 0, 400, 120)
                 this.draw(this.timeTotal, this.isClicked)
                 this.myReq = requestAnimationFrame(this.update)
+            },
+            onClick() {
+                this.$store.commit('desert/toggleMute')
             }
         },
     };

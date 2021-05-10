@@ -10,7 +10,7 @@ import Particles from './Particles'
 import MainGui from '../Utils/MainGui'
 import ColorGUIHelper from '../Utils/ColorGUIHelper'
 import Rotation from '../Utils/Rotation'
-import Sound from '../Sound'
+import Sound from '../Utils/SoundLoader'
 const sandTexture = require("../../../../assets/textures/t_sand.png")
 
 let store
@@ -65,12 +65,18 @@ export default class Desert {
 
     this.sporesElevation = 0
     this.cameraIsZoomed = false
+
+    // Audio 
+    this.ambiantFile = require("../../../../assets/sounds/wind.ogg")
     this.sound
   }
 
   init(scene, renderer) {
 
     this.land.load(this.desertGroup, modelDesert, 1)
+
+    // Sound
+    this.sound = new Sound({camera: this.camera, audioFile: this.ambiantFile})
     
     /*
       * Material rocks
@@ -101,7 +107,7 @@ export default class Desert {
       premultipliedAlpha: true
     } );
 
-    // Have to setTimouté to wait the generation of crystals
+    // Have to setTimouté to wait the generation of crystals and the watcher of the sound 
     setTimeout(() => {      
       // Plane
       this.desertGroup.children[2].children[0].receiveShadow = true
@@ -116,7 +122,19 @@ export default class Desert {
       materialRocksFolder.addColor(new ColorGUIHelper(this.desertGroup.children[2].children[1].material, 'color'), 'value').name('Color material')
       materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'refractionRatio', 0, 1, .01).name('refractionRatio')
       materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'reflectivity', 0, 1, .01).name('reflectivity')
-    }, 100)
+
+      // Watch on store if we have to mute sounds
+      store.watch(() => store.state.desert.isMuted, isMuted => {
+        console.log('coucou', isMuted)
+        if(isMuted) {
+          this.sound.sound.pause()
+        } else {
+          this.sound.sound.play()
+        }
+      })
+      // by default, the sound is playing
+      this.sound.sound.play()
+    }, 1000)
 
     // Cube - Hover zone for flowers
     // this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
@@ -177,8 +195,8 @@ export default class Desert {
     window.addEventListener('click', () => {
       this.handleClick()
     })
-
-    this.sound = new Sound({camera: this.camera})
+  
+    // Add desert scene to main scene
     this.desertGroup.name = 'desert'
     scene.add(this.desertGroup)
   }
