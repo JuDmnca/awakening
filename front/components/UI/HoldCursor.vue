@@ -29,6 +29,7 @@ export default {
     };
   },
   mounted() {
+    
     this.init();
     this.$nextTick(() => {
       window.addEventListener("mouseover", this.followCursor)
@@ -86,8 +87,9 @@ export default {
         this.circle,
         {
         scale: 0.6,
-        duration: 2,
-        ease: "power3.out",
+        // - 0.2 because we have the impression that the hold ends at the right time
+        duration: this.$store.state.durationHold - 0.2,
+        ease: "power.out",
         onComplete: this.increaseCounter
         }
       )

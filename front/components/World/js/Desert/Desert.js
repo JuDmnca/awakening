@@ -295,7 +295,7 @@ export default class Desert {
         this.spores.particles.material.uniforms.uZSpeed,
         {
           value: this.sporesElevation / 1000,
-          duration: 1,
+          duration: store.state.durationHold,
           ease: "power4.inOut"
         }
       )
