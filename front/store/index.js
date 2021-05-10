@@ -9,7 +9,8 @@ const state = () => ({
     sound: ''
   },
   worldRotation: null,
-  sceneIndex: 1
+  sceneIndex: 1,
+  durationHold: 1.5
 })
 
 const actions = {

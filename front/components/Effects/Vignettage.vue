@@ -30,7 +30,7 @@
                     vignettageRef,
                     {
                         opacity: 1,
-                        duration: 2,
+                        duration: this.$store.state.durationHold,
                         ease: 'power3.inOut',
                         onComplete: () => {
                             if (end) {
