@@ -125,7 +125,6 @@ export default class Desert {
 
       // Watch on store if we have to mute sounds
       store.watch(() => store.state.desert.isMuted, isMuted => {
-        console.log('coucou', isMuted)
         if(isMuted) {
           this.sound.sound.pause()
         } else {
