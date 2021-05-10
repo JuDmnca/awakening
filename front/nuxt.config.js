@@ -78,6 +78,7 @@ export default {
         config.module.rules.push({ test: /\.(vert|frag)$/i, use: ["raw-loader"] });
         config.module.rules.push({ test: /\.(glb|gltf)$/, use: ["file-loader"] });
         config.module.rules.push({ test: /\.(fbx|obj)$/, use: ["file-loader"] });
+        config.module.rules.push({ test: /\.(ogg|mp3|wav|mpe?g)$/i, use: ["file-loader"] });
       }
     }
   }
