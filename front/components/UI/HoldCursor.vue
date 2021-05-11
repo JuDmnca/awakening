@@ -37,6 +37,14 @@ export default {
       window.addEventListener("mousedown", this.holdCursor)
       window.addEventListener("mouseup", this.unHoldCursor)
     })
+    // Watcher for active cursor with raycaster on scene 3D
+    this.$store.watch(() => this.$store.state.desert.isCursorActive, isCursorActive => {
+      if(isCursorActive) {
+        this.activeCursor()
+      } else {
+        this.unActiveCursor()
+      }
+    })
   },
   methods: {
     init() {
@@ -113,9 +121,9 @@ export default {
         }
         if (this.$store.state.desert.counter === 3) {
           this.$nuxt.$emit('questionVisible', 2)
-          this.hideCursor()
+          // this.hideCursor()
           window.removeEventListener("mousedown", this.showCursor)
-          window.removeEventListener("mouseup", this.hideCursor)
+          // window.removeEventListener("mouseup", this.hideCursor)
           this.terminate()
         }
       }
