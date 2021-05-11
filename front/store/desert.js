@@ -8,7 +8,8 @@ const state = () => ({
   initialRotation: null,
   fRotation: null,
   sRotation: null,
-  isMuted: false
+  isMuted: false,
+  isCursorActive: false 
 })
 
 const actions = {
@@ -40,6 +41,9 @@ const mutations = {
   },
   toggleMute(state) {
     state.isMuted = !state.isMuted
+  },
+  toggleCursorActive(state) {
+    state.isCursorActive = !state.isCursorActive
   }
 }
 

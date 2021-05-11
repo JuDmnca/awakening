@@ -55,12 +55,16 @@ export default class Desert {
       z: 2
     }
 
+    // init Noise
     this.noise = new perlinNoise3d()
 
+    // Particles
     this.spores = null
 
+    // Lights
     this.spotLightOnFlowers = null
 
+    // GUI
     this.gui = new MainGui()
 
     this.sporesElevation = 0
@@ -69,6 +73,9 @@ export default class Desert {
     // Audio 
     this.ambiantFile = require("../../../../assets/sounds/wind.ogg")
     this.sound
+    
+    // Cursor
+    this.isCursorActive = false
   }
 
   init(scene, renderer) {
@@ -136,7 +143,7 @@ export default class Desert {
     }, 1000)
 
     // Cube - Hover zone for flowers
-    // this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
+    this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
 
     // Add Plants (Flower + Stem)
     let index = -1
@@ -316,9 +323,18 @@ export default class Desert {
   }
 
   render(elapsedTime) {
-    if(this.desertGroup.children[2]) {
-      this.intersects = this.raycaster.render(this.desertGroup.children[2].children)
+    if(this.plantsGroup.children[0]) {
+      this.intersects = this.raycaster.render(this.plantsGroup)
+      // console.log(this.intersects.length)
     }
+    if(this.intersects.length > 0 && this.isCursorActive === false && store) {
+      this.isCursorActive = true
+      store.commit('desert/toggleCursorActive')
+    } else if (this.intersects.length === 0 && store && this.isCursorActive === true) {
+      this.isCursorActive = false
+      store.commit('desert/toggleCursorActive')
+    }
+    // console.log(this.intersects)
     this.spores.particles.material.uniforms.uTime.value = elapsedTime
     // this.handleCubeHover()
     this.plants.forEach(plant => {
