@@ -123,7 +123,7 @@ export default class Desert {
 
       // Crytals
       this.desertGroup.children[2].children[1].material = crystalsMaterial
-      this.desertGroup.children[2].children[1].castShadow = true;
+      // this.desertGroup.children[2].children[1].castShadow = true;
 
       // Material Rocks GUI
       const materialRocksFolder = this.gui.gui.addFolder('Material rocks folder')
