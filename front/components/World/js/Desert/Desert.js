@@ -116,9 +116,10 @@ export default class Desert {
 
     // Have to setTimouté to wait the generation of crystals and the watcher of the sound 
     setTimeout(() => {      
-      // Plane
-      this.desertGroup.children[2].children[0].receiveShadow = true
-      // this.desertGroup.children[2].children[0].castShadow = true
+    //   // Plane
+      // For now : comment shadows because it breaks the performance
+      // this.desertGroup.children[2].children[0].receiveShadow = true
+    //   // this.desertGroup.children[2].children[0].castShadow = true
 
       // Crytals
       this.desertGroup.children[2].children[1].material = crystalsMaterial
