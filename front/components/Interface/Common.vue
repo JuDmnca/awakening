@@ -27,6 +27,7 @@
     align-items: flex-end;
     padding: 0 50px 50px 50px;
     bottom: 50px;
+    z-index: 10;
   }
 </style>
 
