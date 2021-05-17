@@ -86,20 +86,21 @@
     position: absolute;
     width: 100vw;
     height: 100vh;
+    filter: blur(80px);
 }
 
 .vignettage_1 {
-    background: radial-gradient(circle, rgba(255,0,255,0) 66.66%, rgba(255,0,255,1) 100%); 
+    background: radial-gradient(circle, rgba(255,0,255,0) 66.66%, #BED9FD 100%);
     opacity: 0;
 }
 
 .vignettage_2 {
-    background: radial-gradient(circle, rgba(255,0,255,0) 33.33%, rgba(255,0,255,1) 100%);
+    background: radial-gradient(circle, rgba(255,0,255,0) 33.33%, #BED9FD 100%);
     opacity: 0;
 }
 
 .vignettage_3 {
-    background: rgb(255,0,255);
+    background: #BED9FD;
     opacity: 0;
 }
 </style>

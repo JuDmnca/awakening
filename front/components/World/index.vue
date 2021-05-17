@@ -2,7 +2,7 @@
     <transition name='fade'>
         <section class="scene rel">
             <canvas id="canvas" ref="canvas" />
-            <FormsQuestion v-if="isVisibleQ" :label="label" :step="step" />
+            <FormsQuestion v-if="isVisibleQ" :label="label" :step="step" :intro="false" />
             <EffectsVignettage v-if="isVisibleV" @onscreen="updateScene" />
             <!-- Just to test icons -->
             <!-- <UI-IconsSound width="40" height="40" iconColor="#fff"/> -->
@@ -38,7 +38,7 @@
             this.$nuxt.$on('questionVisible', (step) => {
                 this.step = step
                 if (step === 2) {
-                    this.label = 'Odeur'
+                    this.label = 'Quelle odeur vous a déjà procuré une telle sensation ?'
                 } else if (step === 3) {
                     this.label = 'Goût'
                 } else {
