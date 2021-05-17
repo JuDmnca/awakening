@@ -1,7 +1,10 @@
 import Land from '../Land'
 import Cube from './Cube'
 import Plant from './Plant'
+
 import modelDesert from '../../../../assets/models/m_desert.glb'
+const sandTexture = require("../../../../assets/textures/t_sand.png")
+
 import Raycaster from "../Utils/Raycaster"
 import { gsap } from "gsap"
 import * as THREE from 'three'
@@ -11,7 +14,6 @@ import MainGui from '../Utils/MainGui'
 import ColorGUIHelper from '../Utils/ColorGUIHelper'
 import Rotation from '../Utils/Rotation'
 import Sound from '../Utils/SoundLoader'
-const sandTexture = require("../../../../assets/textures/t_sand.png")
 
 let store, nuxt
 if (process.browser) {
@@ -28,7 +30,7 @@ export default class Desert {
 
     // Generals params
     this.params = {
-      spotLightOnFlowersColor: '#ff57e9'
+      spotLightOnFlowersColor: '#BED9FD'
     }
 
     this.hold = false
@@ -48,7 +50,7 @@ export default class Desert {
     // this.cubeLight = new THREE.PointLight(0xffffff, 0, 5)
 
     this.plantsGroup = new THREE.Group()
-    this.flowerTypes = ['lavender', 'orchid', 'daisy']
+    this.flowerTypes = ['lavender', 'tulip', 'daisy']
     this.plants = []
     this.plantsOffsets = {
       x: 10,
@@ -71,10 +73,10 @@ export default class Desert {
     this.sporesElevation = 0
     this.cameraIsZoomed = false
 
-    // Audio 
+    // Audio
     this.ambiantFile = require("../../../../assets/sounds/wind.ogg")
     this.sound
-    
+
     // Cursor
     this.isCursorActive = false
   }
@@ -85,7 +87,7 @@ export default class Desert {
 
     // Sound
     this.sound = new Sound({camera: this.camera, audioFile: this.ambiantFile})
-    
+
     /*
       * Material rocks
       * Need to do this shit to wait the complete load
@@ -98,11 +100,11 @@ export default class Desert {
       require('../../../../assets/textures/png/rocks/ny.png'),
       require('../../../../assets/textures/png/rocks/pz.png'),
       require('../../../../assets/textures/png/rocks/nz.png')
-    ];
+    ]
 
-    const textureCrystals = new THREE.CubeTextureLoader().load( cubeMap );
-    textureCrystals.mapping = THREE.CubeRefractionMapping;
-    textureCrystals.encoding = THREE.sRGBEncoding;
+    const textureCrystals = new THREE.CubeTextureLoader().load( cubeMap )
+    textureCrystals.mapping = THREE.CubeRefractionMapping
+    textureCrystals.encoding = THREE.sRGBEncoding
     const crystalsMaterial = new THREE.MeshLambertMaterial( {
       color: 0x210021,
       envMap: textureCrystals,
@@ -113,24 +115,24 @@ export default class Desert {
       opacity: .9,
       side: THREE.DoubleSide,
       premultipliedAlpha: true
-    } );
+    })
 
-    // Have to setTimouté to wait the generation of crystals and the watcher of the sound 
-    setTimeout(() => {      
-    //   // Plane
+    // Have to setTimouté to wait the generation of crystals and the watcher of the sound
+    setTimeout(() => {
+      // Plane
       // For now : comment shadows because it breaks the performance
       // this.desertGroup.children[2].children[0].receiveShadow = true
-    //   // this.desertGroup.children[2].children[0].castShadow = true
+      // this.desertGroup.children[2].children[0].castShadow = true
 
       // Crytals
       this.desertGroup.children[2].children[1].material = crystalsMaterial
       // this.desertGroup.children[2].children[1].castShadow = true;
 
       // Material Rocks GUI
-      const materialRocksFolder = this.gui.gui.addFolder('Material rocks folder')
-      materialRocksFolder.addColor(new ColorGUIHelper(this.desertGroup.children[2].children[1].material, 'color'), 'value').name('Color material')
-      materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'refractionRatio', 0, 1, .01).name('refractionRatio')
-      materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'reflectivity', 0, 1, .01).name('reflectivity')
+      // const materialRocksFolder = this.gui.gui.addFolder('Material rocks folder')
+      // materialRocksFolder.addColor(new ColorGUIHelper(this.desertGroup.children[2].children[1].material, 'color'), 'value').name('Color material')
+      // materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'refractionRatio', 0, 1, .01).name('refractionRatio')
+      // materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'reflectivity', 0, 1, .01).name('reflectivity')
 
       // Watch on store if we have to mute sounds
       store.watch(() => store.state.desert.isMuted, isMuted => {
@@ -149,7 +151,7 @@ export default class Desert {
 
     // Add Plants (Flower + Stem)
     let index = -1
-    for(let nbPlants = 0; nbPlants <= 14; nbPlants++) {
+    for(let nbPlants = 0; nbPlants <= 15; nbPlants++) {
       index++
       if (index >= 3) {
         index = 0
@@ -160,13 +162,11 @@ export default class Desert {
       this.plantsGroup.add(plant.init())
     }
 
-    this.plantsGroup.position.set(-2.2075, 3, -1.7811)
+    this.plantsGroup.position.set(-30, 5, -30)
     this.plantsGroup.scale.set(2.5,2.5,2.5)
+    this.plantsGroup.name = 'Plants'
 
     this.desertGroup.add(this.plantsGroup)
-
-    // Lights
-    // this.desertGroup.add( this.cubeLight );
 
     // Raycaster
     this.raycaster.init(this.camera, renderer)
@@ -176,12 +176,12 @@ export default class Desert {
     this.desertGroup.add(this.spores.particles)
 
     // SpotLights on Flowers
-    this.spotLightOnFlowers = new THREE.PointLight( this.params.spotLightOnFlowersColor, 1, 0 );
+    this.spotLightOnFlowers = new THREE.PointLight( this.params.spotLightOnFlowersColor, 1, 10 )
     this.spotLightOnFlowers.position.y += 15
     this.spotLightOnFlowers.position.x -= 3
     this.spotLightOnFlowers.position.z -= 3
     // this.spotLightOnFlowers.color = '#ffffff'
-    this.spores.particles.add( this.spotLightOnFlowers );
+    this.spores.particles.add( this.spotLightOnFlowers )
 
     // Fog
     const colorBG = new THREE.Color('#877d6f')
@@ -190,20 +190,20 @@ export default class Desert {
 
     // GUI
     // Lights
-    const currentSceneFolder = this.gui.gui.addFolder('Current Scene')
-    const lightsFolder = currentSceneFolder.addFolder('Lights')
-    lightsFolder.addColor(new ColorGUIHelper(this.spotLightOnFlowers, 'color'), 'value').name('flowers color')
-    lightsFolder.add(this.spotLightOnFlowers, 'intensity', 0, 2, 0.1).name('intensity flowers')
-    // Fog and Background
-    const fogFolder = currentSceneFolder.addFolder('Fog')
-    fogFolder.addColor(new ColorGUIHelper(scene.fog, 'color'), 'value').name('fog color')
-    fogFolder.addColor(new ColorGUIHelper(scene, 'background'), 'value').name('background color')
+    // const currentSceneFolder = this.gui.gui.addFolder('Current Scene')
+    // const lightsFolder = currentSceneFolder.addFolder('Lights')
+    // lightsFolder.addColor(new ColorGUIHelper(this.spotLightOnFlowers, 'color'), 'value').name('flowers color')
+    // lightsFolder.add(this.spotLightOnFlowers, 'intensity', 0, 2, 0.1).name('intensity flowers')
+    // // Fog and Background
+    // const fogFolder = currentSceneFolder.addFolder('Fog')
+    // fogFolder.addColor(new ColorGUIHelper(scene.fog, 'color'), 'value').name('fog color')
+    // fogFolder.addColor(new ColorGUIHelper(scene, 'background'), 'value').name('background color')
 
     // Listeners
     window.addEventListener('click', () => {
       this.handleClick()
     })
-  
+
     // Add desert scene to main scene
     this.desertGroup.name = 'desert'
     scene.add(this.desertGroup)
@@ -327,7 +327,6 @@ export default class Desert {
   render(elapsedTime) {
     if(this.plantsGroup.children[0]) {
       this.intersects = this.raycaster.render(this.plantsGroup)
-      // console.log(this.intersects.length)
     }
     if(this.intersects.length > 0 && this.isCursorActive === false && nuxt) {
       this.isCursorActive = true
@@ -336,9 +335,7 @@ export default class Desert {
       this.isCursorActive = false
       nuxt.$emit('unactiveCursor')
     }
-    // console.log(this.intersects)
     this.spores.particles.material.uniforms.uTime.value = elapsedTime
-    // this.handleCubeHover()
     this.plants.forEach(plant => {
       plant.update()
     })

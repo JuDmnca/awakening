@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import Loader from '../Loader'
-import modelOrchid from '../../../../assets/models/m_flower.gltf'
+import modelTulip from '../../../../assets/models/m_tulip.gltf'
 import modelLavender from '../../../../assets/models/m_lavender.gltf'
 import modelDaisy from '../../../../assets/models/m_daisy.gltf'
 
@@ -31,8 +31,8 @@ export default class Flower {
         flowerFrag = require("../../../../assets/textures/t_petal0.jpg")
         flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
         break;
-      case 'orchid':
-        modelFlower = modelOrchid
+      case 'tulip':
+        modelFlower = modelTulip
         flowerFrag = require("../../../../assets/textures/t_petal2.png")
         flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
         break;
@@ -66,14 +66,10 @@ export default class Flower {
     return this.flowerObject
   }
 
-  update(toInitial) {
+  update() {
     if (store && store.state.desert.fRotation != null) {
       let distRotation
-      if (toInitial) {
-        distRotation = store.state.desert.initialRotation.clone().sub(this.flowerObject.rotation.toVector3())
-      } else {
-        distRotation = store.state.desert.fRotation.clone().sub(this.flowerObject.rotation.toVector3())
-      }
+      distRotation = store.state.desert.fRotation.clone().sub(this.flowerObject.rotation.toVector3())
       let distRotationMatrix = this.createRotationMatrix(distRotation)
 
       // force to apply at flowerObject
