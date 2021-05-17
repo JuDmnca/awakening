@@ -97,29 +97,25 @@ export default class Plant {
   update() {
     if (nuxt && !this.events) {
       this.addEvents()
-      store.commit('desert/updateInitialRotation')
+      // store.commit('desert/updateInitialRotation')
       this.events = true
     }
 
     if (store && store.state.desert.sRotation != null) {
       let distRotation
-      if (this.toInitial) {
-        distRotation = store.state.desert.initialRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3());
-      } else {
-        distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3());
-      }
-      let distRotationMatrix = this.createRotationMatrix(distRotation);
+      distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3())
+      let distRotationMatrix = this.createRotationMatrix(distRotation)
 
       // Force to apply at flowerObject
-      let rotationForce = distRotation.multiplyScalar(store.state.desert.velStem);
+      let rotationForce = distRotation.multiplyScalar(store.state.desert.velStem)
 
       // Update rotation with rotationForce
-      this.plantMesh.children[0].rotation.setFromVector3(this.plantMesh.children[0].rotation.toVector3().add(rotationForce));
+      this.plantMesh.children[0].rotation.setFromVector3(this.plantMesh.children[0].rotation.toVector3().add(rotationForce))
 
-      this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix;
+      this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix
 
       // Update flower petals
-      this.flower.update(this.toInitial)
+      this.flower.update()
     }
   }
 

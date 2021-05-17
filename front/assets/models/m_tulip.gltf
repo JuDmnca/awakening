@@ -1,0 +1,116 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "tulipe",
+            "rotation" : [
+                0,
+                -0.3826834559440613,
+                0,
+                0.9238795638084412
+            ],
+            "scale" : [
+                0.051487959921360016,
+                0.051487959921360016,
+                0.051487959921360016
+            ],
+            "translation" : [
+                3.5575591027736664e-05,
+                2.2359192371368408e-05,
+                -1.6502803191542625e-05
+            ]
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "tulipe",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "indices" : 3
+                }
+            ]
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 53248,
+            "max" : [
+                1.79865300655365,
+                4.660315036773682,
+                2.0673162937164307
+            ],
+            "min" : [
+                -1.8085256814956665,
+                -0.00039818882942199707,
+                -1.792378544807434
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 53248,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 53248,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 79872,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 638976,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 638976,
+            "byteOffset" : 638976
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 425984,
+            "byteOffset" : 1277952
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 159744,
+            "byteOffset" : 1703936
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 1863680,
+            "uri" : "../tulip.bin"
+        }
+    ]
+}

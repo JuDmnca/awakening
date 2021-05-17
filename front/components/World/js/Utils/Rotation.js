@@ -30,23 +30,26 @@ class RotationControl {
   }
 
   onMouseMove(event) {
-    let x = (45 * (event.y - window.innerHeight/2)) / window.innerHeight/2,
-        z = (45 * (event.x - window.innerWidth/2)) / window.innerWidth/2
-    this.rotateElement(x/this.ratio, z/this.ratio)
-    let xS = (20 * (event.y - window.innerHeight/2)) / window.innerHeight/2,
-        zS = (20 * (event.x - window.innerWidth/2)) / window.innerWidth/2
-    this.rotateElement(xS/this.ratio, zS/this.ratio)
+    let x = ((event.y - window.innerHeight / 2) / window.innerHeight / 2) * 4,
+        z = ((event.x - window.innerWidth / 2) / window.innerWidth / 2 ) * 4
+    this.rotateElement(x / 2, z / 2, 'flower')
+    let xS = ((event.y - window.innerHeight / 2) / window.innerHeight / 2) * 4,
+        zS = ((event.x - window.innerWidth / 2) / window.innerWidth / 2 ) * 4
+    this.rotateElement(xS / 2, zS / 2, 'stem')
   }
 
-  rotateElement(x, z){
+  rotateElement(x, z, type) {
     if(store) {
       let euler
       if (store.state.worldRotation) {
         euler = store.state.worldRotation.clone()
         euler.x = 0
       }
-      store.commit('desert/updateFRotation', {x: x, z: z, euler: euler})
-      store.commit('desert/updateSRotation', {x: x, z: z, euler: euler})
+      if (type === 'stem') {
+        store.commit('desert/updateSRotation', {x: x, z: z, euler: euler})
+      } else {
+        store.commit('desert/updateFRotation', {x: x, z: z, euler: euler})
+      }
     }
   }
 }
