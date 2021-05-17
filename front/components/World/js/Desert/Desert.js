@@ -145,7 +145,7 @@ export default class Desert {
     }, 1000)
 
     // Cube - Hover zone for flowers
-    this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0, y: 0, z: -1.5}})
+    this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0.2, y: 0, z: 0.7}})
 
     // Add Plants (Flower + Stem)
     let index = -1

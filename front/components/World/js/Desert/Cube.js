@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import MainGui from '../Utils/MainGui'
 
 // Futur composant flower
 export default class Cube {
@@ -9,7 +10,7 @@ export default class Cube {
     }
 
     init(scene) {
-        this.geometry = new THREE.BoxGeometry(2.5, 2, 2.5)
+        this.geometry = new THREE.BoxGeometry(3, 3, 2.5,)
         // this.material = new THREE.MeshNormalMaterial()
         this.material = new THREE.MeshStandardMaterial({
             color: "grey",
@@ -27,5 +28,12 @@ export default class Cube {
         this.cube.position.z = this.props.position.z
 
         scene.add(this.cube)
+
+        // Gui 
+        this.gui = new MainGui()
+        const positions = this.gui.gui.addFolder('Position Cube')
+        positions.add(this.cube.position, 'x', 0, 10, .1).name('x')
+        positions.add(this.cube.position, 'y', 0, 10, .1).name('y')
+        positions.add(this.cube.position, 'z', 0, 10, .1).name('z')
     }
 }
