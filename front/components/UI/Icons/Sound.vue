@@ -104,12 +104,14 @@
 
 <style scoped>
     .sound_icon {
-        position: relative;
+        position: absolute;
+        right: 50px;
+        bottom: 50px;
         display: flex;
     }
 
     .sound_icon:hover {
-        cursor: none; 
+        cursor: none;
     }
 
     #canvasSoundIcon {
