@@ -30,8 +30,7 @@ export default {
     }
   },
   mounted() {
-    
-    this.init();
+    this.init()
     this.$nextTick(() => {
       window.addEventListener("mouseover", this.followCursor)
       window.addEventListener("mousemove", this.followCursor)
@@ -122,7 +121,7 @@ export default {
           // this.hideCursor()
           window.removeEventListener("mousedown", this.showCursor)
           // window.removeEventListener("mouseup", this.hideCursor)
-          this.terminate()
+          // this.terminate()
         }
       }
     }
