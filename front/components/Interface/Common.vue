@@ -22,7 +22,11 @@
   .about {
     position: absolute;
     bottom: 50px;
+<<<<<<< HEAD
+    z-index: 10;
+=======
     left: 50px;
+>>>>>>> cfdd687fd35ce5b1f543e0ddb918f8fa72a59285
   }
 </style>
 
