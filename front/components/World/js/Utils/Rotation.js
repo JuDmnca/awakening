@@ -17,12 +17,12 @@ class RotationControl {
       window.addEventListener('mousemove', (event) => {
         clearTimeout(timer)
         if (nuxt) {
-          nuxt.$emit('startmove')
+          // nuxt.$emit('startmove')
         }
         this.onMouseMove(event)
         timer = setTimeout(() => {
           if (nuxt) {
-            nuxt.$emit('endmove')
+            // nuxt.$emit('endmove')
           }
         }, 500)
       })

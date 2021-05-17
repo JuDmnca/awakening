@@ -25,8 +25,9 @@ export default {
     return {
       circle: null,
       inner: null,
-      hold: false
-    };
+      hold: false,
+      active: false
+    }
   },
   mounted() {
     
@@ -37,13 +38,11 @@ export default {
       window.addEventListener("mousedown", this.holdCursor)
       window.addEventListener("mouseup", this.unHoldCursor)
     })
-    // Watcher for active cursor with raycaster on scene 3D
-    this.$store.watch(() => this.$store.state.desert.isCursorActive, isCursorActive => {
-      if(isCursorActive) {
-        this.activeCursor()
-      } else {
-        this.unActiveCursor()
-      }
+    this.$nuxt.$on('activeCursor', () => {
+      this.activeCursor()
+    })
+    this.$nuxt.$on('unactiveCursor', () => {
+      this.unActiveCursor()
     })
   },
   methods: {
@@ -61,7 +60,7 @@ export default {
         duration: 0,
       })
     },
-    activeCursor () {
+    holdCursor () {
       this.hold = true
       gsap.to(
         this.circle,
@@ -69,35 +68,8 @@ export default {
         scale: 0.4,
         strokeOpacity: 0,
         fillOpacity: 0.4,
-        duration: 2,
+        duration: this.$store.state.durationHold,
         ease: "power3.out",
-        onComplete: this.increaseCounter
-        }
-      )
-    },
-    unActiveCursor () {
-      gsap.killTweensOf([this.circle, this.inner])
-      this.hold = false
-      gsap.to(
-        this.circle,
-        {
-        scale: 1,
-        strokeOpacity: 1,
-        fillOpacity: 0,
-        duration: 1,
-        ease: "power3.out",
-        }
-      )
-    },
-    holdCursor () {
-      this.hold = true
-      gsap.to(
-        this.circle,
-        {
-        scale: 0.6,
-        // - 0.2 because we have the impression that the hold ends at the right time
-        duration: this.$store.state.durationHold - 0.2,
-        ease: "power.out",
         onComplete: this.increaseCounter
         }
       )
@@ -105,6 +77,32 @@ export default {
     unHoldCursor () {
       gsap.killTweensOf([this.circle, this.inner])
       this.hold = false
+      gsap.to(
+        this.circle,
+        {
+        scale: this.active? 0.6 : 1,
+        strokeOpacity: 1,
+        fillOpacity: 0,
+        duration: 1,
+        ease: "power3.out",
+        }
+      )
+    },
+    activeCursor () {
+      this.active = true
+      gsap.to(
+        this.circle,
+        {
+        scale: 0.6,
+        // - 0.2 because we have the impression that the hold ends at the right time
+        duration: this.$store.state.durationHold - 1,
+        ease: "power.out"
+        }
+      )
+    },
+    unActiveCursor () {
+      gsap.killTweensOf([this.circle, this.inner])
+      this.active = false
       gsap.to(
         this.circle,
         {

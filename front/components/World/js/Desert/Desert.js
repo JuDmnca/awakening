@@ -13,10 +13,11 @@ import Rotation from '../Utils/Rotation'
 import Sound from '../Utils/SoundLoader'
 const sandTexture = require("../../../../assets/textures/t_sand.png")
 
-let store
+let store, nuxt
 if (process.browser) {
-  window.onNuxtReady(({$store}) => {
+  window.onNuxtReady(({$nuxt, $store}) => {
     store = $store
+    nuxt = $nuxt
   })
 }
 
@@ -328,12 +329,12 @@ export default class Desert {
       this.intersects = this.raycaster.render(this.plantsGroup)
       // console.log(this.intersects.length)
     }
-    if(this.intersects.length > 0 && this.isCursorActive === false && store) {
+    if(this.intersects.length > 0 && this.isCursorActive === false && nuxt) {
       this.isCursorActive = true
-      store.commit('desert/toggleCursorActive')
-    } else if (this.intersects.length === 0 && store && this.isCursorActive === true) {
+      nuxt.$emit('activeCursor')
+    } else if (this.intersects.length === 0 && nuxt && this.isCursorActive === true) {
       this.isCursorActive = false
-      store.commit('desert/toggleCursorActive')
+      nuxt.$emit('unactiveCursor')
     }
     // console.log(this.intersects)
     this.spores.particles.material.uniforms.uTime.value = elapsedTime
