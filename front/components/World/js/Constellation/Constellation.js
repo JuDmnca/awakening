@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import Camera from '../Camera'
 import MainGui from '../Utils/MainGui'
+import Cube from '../Desert/Cube'
 
 let store
 let nuxt
@@ -79,7 +80,7 @@ class Constellation {
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-        this.light.position.set(-69, 266, -123)
+        this.light.position.set(0, 10, 0)
         this.light.castShadow = true
         this.light.shadow.mapSize.width = 1024
         this.light.shadow.mapSize.height = 1024
@@ -98,9 +99,22 @@ class Constellation {
         // lightFolder.add(this.light, 'intensity', 0, 20, 0.01).name('intensity')
         // lightFolder.add(this.light, 'distance', 0, 600, 1).name('distance')
 
-        this.scene.background = new THREE.Color('blue')
-    }
+        this.scene.background = new THREE.Color('#003c66')
 
+        // Cube
+        const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
+        const cubeMaterial = new THREE.MeshStandardMaterial({
+            color: "red",
+            // wireframe: true,
+            // flatShading: true,
+            opacity: 1
+        })
+
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
+        cube.position.z = -10
+        this.scene.add(cube)
+        // console.log(this.camera.camera.position, cube.position, this.light.position)
+    }
     initCamera() {
         this.camera = new Camera({
         window: this.size,
