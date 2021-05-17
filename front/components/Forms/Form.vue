@@ -175,7 +175,12 @@ input {
   font-size: 24px;
   color: white;
   padding-bottom: 10px;
-  border-bottom: 1px #888888 solid;
+  border-bottom: 1px #fff solid;
+}
+
+input::placeholder {
+  color: white;
+  opacity: 0.4;
 }
 
 .colors {
