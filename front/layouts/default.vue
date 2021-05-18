@@ -1,7 +1,7 @@
 <template>
   <div>
-    <World />
-    <UI-HoldCursor />
+    <!-- <World /> -->
+    <!-- <UI-HoldCursor /> -->
     <transition name="fadeOut">
       <IntroLoader v-if="loader" @done="hideLoader" />
     </transition>
@@ -11,12 +11,7 @@
 </template>
 
 <script>
-  import World from '~/components/World/index'
-
   export default {
-    components: {
-      World
-    },
     data() {
       return {
         loader: false

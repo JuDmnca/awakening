@@ -1,10 +1,17 @@
 <template>
   <div class="container">
+    <World />
   </div>
 </template>
 
 <script>
-export default {}
+import World from '~/components/World/index'
+
+export default {
+  components: {
+    World
+  },
+}
 </script>
 
 <style>
