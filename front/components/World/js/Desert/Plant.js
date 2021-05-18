@@ -19,8 +19,8 @@ export default class Plant {
   constructor(props) {
     this.props = props
 
-		this.POZ = new THREE.Vector3(this.getRandomFloat(-1, 1), 0.03, this.getRandomFloat(-1, 1))
-		this.ROTATION = new THREE.Vector3(-this.getRandomFloat(0.5, 1), 0.5 - (this.props.orientation/2), 0)
+		this.POZ = new THREE.Vector3( this.getRandomFloat(-1, 1), 0.03, this.getRandomFloat(-1, 1) )
+		this.ROTATION = new THREE.Vector3( - this.getRandomFloat(0.5, 1), 0.5 - ( this.props.orientation / 2 ), 0 )
 
     this.segments = 32
     this.radiusSegment = 100
@@ -35,11 +35,11 @@ export default class Plant {
     this.moving = 0
 
     // Create Stem
-    if (this.flowerType === 'lavender') {
-      this.length = 1.3
-    }
-    this.curve = new CustomSinCurve({length: this.length})
-    this.stemGeometry = new THREE.TubeGeometry(this.curve, this.segments, this.size, this.radiusSegment)
+    // if (this.flowerType === 'lavender') {
+    //   this.length = 1.3
+    // }
+    this.curve = new CustomSinCurve({ length: this.length })
+    this.stemGeometry = new THREE.TubeGeometry( this.curve, this.segments, this.size, this.radiusSegment )
 
     // Import flower petals texture
     const stemAsset = require("../../../../assets/textures/t_stem.png")
@@ -54,11 +54,11 @@ export default class Plant {
       fragmentShader: stemFrag
     })
 
-    this.stemMesh = new THREE.Mesh(this.stemGeometry, this.stemShaderMaterial)
+    this.stemMesh = new THREE.Mesh( this.stemGeometry, this.stemShaderMaterial )
 
     // Create Bud
     this.budPosition = this.curve.getPoints()[this.curve.getPoints().length-1]
-    this.budGeometry = new THREE.SphereGeometry(this.size*2, this.radiusSegment, this.segment)
+    this.budGeometry = new THREE.SphereGeometry( this.size*2, this.radiusSegment, this.segment )
 		this.budShaderMaterial = new THREE.ShaderMaterial({
 			uniforms : {
 				rotationForceMatrix : { type : 'm4', value : new THREE.Matrix4() }
@@ -66,7 +66,7 @@ export default class Plant {
 			vertexShader: budVert,
 			fragmentShader: budFrag
 		})
-    this.budMesh = new THREE.Mesh(this.budGeometry, this.budShaderMaterial)
+    this.budMesh = new THREE.Mesh( this.budGeometry, this.budShaderMaterial )
 		this.budMesh.position.set( this.budPosition.x, this.budPosition.y, this.budPosition.z)
 
     // Create Plant Object3D (which contains stem, bud & flower)
@@ -95,11 +95,11 @@ export default class Plant {
   }
 
   update() {
-    if (nuxt && !this.events) {
-      this.addEvents()
-      // store.commit('desert/updateInitialRotation')
-      this.events = true
-    }
+    // if (nuxt && !this.events) {
+    //   this.addEvents()
+    //   store.commit('desert/updateInitialRotation')
+    //   this.events = true
+    // }
 
     if (store && store.state.desert.sRotation != null) {
       let distRotation
@@ -119,14 +119,14 @@ export default class Plant {
     }
   }
 
-  addEvents() {
-    nuxt.$on('endmove', () => {
-      this.toInitial = true
-    })
-    nuxt.$on('startmove', () => {
-      this.toInitial = false
-    })
-  }
+  // addEvents() {
+  //   nuxt.$on('endmove', () => {
+  //     this.toInitial = true
+  //   })
+  //   nuxt.$on('startmove', () => {
+  //     this.toInitial = false
+  //   })
+  // }
 
   createRotationMatrix(vectRotation) {
     let m = new THREE.Matrix4();

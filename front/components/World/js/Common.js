@@ -86,11 +86,11 @@ class Common {
         }
 
         this.gui = null
-
         this.sporesCanMove = false
     }
 
     init($canvas) {
+        // FPS
         (function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
 
         this.setSize()
@@ -123,7 +123,7 @@ class Common {
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-        this.light.position.set(0, 300, 0)
+        this.light.position.set(0, 500, 0)
         this.light.castShadow = true
         this.light.shadow.mapSize.width = 1024
         this.light.shadow.mapSize.height = 1024
@@ -135,12 +135,12 @@ class Common {
         this.scene.add(this.light)
 
         // Common GUI
-        this.gui = new MainGui()
+        // this.gui = new MainGui()
         // const commonFolder = this.gui.gui.addFolder('Common')
         // commonFolder.add(this.params, 'scrollSpeed', 0, 10, 0.1)
-        // const lightFolder = commonFolder.addFolder('Sun')
+        // const lightFolder = this.gui.gui.addFolder('Sun')
         // lightFolder.add(this.light.position, 'x', -300, 300, 1).name('x')
-        // lightFolder.add(this.light.position, 'y', -300, 300, 1).name('y')
+        // lightFolder.add(this.light.position, 'y', -300, 500, 1).name('y')
         // lightFolder.add(this.light.position, 'z', -300, 300, 1).name('z')
         // lightFolder.add(this.light, 'intensity', 0, 20, 0.01).name('intensity')
         // lightFolder.add(this.light, 'distance', 0, 600, 1).name('distance')
