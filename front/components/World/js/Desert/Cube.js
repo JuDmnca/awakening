@@ -29,11 +29,11 @@ export default class Cube {
 
         scene.add(this.cube)
 
-        // Gui 
+        // Gui
         this.gui = new MainGui()
-        const positions = this.gui.gui.addFolder('Position Cube')
-        positions.add(this.cube.position, 'x', 0, 10, .1).name('x')
-        positions.add(this.cube.position, 'y', 0, 10, .1).name('y')
-        positions.add(this.cube.position, 'z', 0, 10, .1).name('z')
+        // const positions = this.gui.gui.addFolder('Position Cube')
+        // positions.add(this.cube.position, 'x', 0, 10, .1).name('x')
+        // positions.add(this.cube.position, 'y', 0, 10, .1).name('y')
+        // positions.add(this.cube.position, 'z', 0, 10, .1).name('z')
     }
 }
