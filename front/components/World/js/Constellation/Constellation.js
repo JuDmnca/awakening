@@ -3,6 +3,7 @@ import Camera from '../Camera'
 import MainGui from '../Utils/MainGui'
 import Cube from '../Desert/Cube'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import Raycaster from '../Utils/Raycaster'
 
 let store
 let nuxt
@@ -53,6 +54,12 @@ class Constellation {
         this.controls = null
 
         this.nbEtoiles = 20
+
+        this.raycaster = null
+        this.intersectedObject = null
+        this.lastIntersectedObject = null
+        this.isIntersected = false
+        this.cristalScale = 1.5
     }
 
     init($canvas) {
@@ -94,7 +101,10 @@ class Constellation {
         // Generation of cubes
         for(let i = 0; i < this.nbEtoiles; i++) {
             cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
+            
             cubes[i].position.set(this.getRandomArbitrary(-30, 30) , this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
+            
+            // cubes[i].scale = new THREE.Vector3(0.5, 0.5, 0.5)
             this.scene.add(cubes[i])
         }
 
@@ -119,8 +129,12 @@ class Constellation {
         this.controls.minPolarAngle = Math.PI / 2
         this.controls.rotateSpeed = 1
         this.controls.enableRotate = true
-
         this.controls.minDistance = 1
+
+        // Raycaster
+        this.raycaster = new Raycaster()
+        this.raycaster.init(this.camera, this.renderer)
+        this.raycaster.render(this.scene)
 
         // Skybox
         const loader = new THREE.CubeTextureLoader()
@@ -177,7 +191,19 @@ class Constellation {
 
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
-        
+
+        // Intersections
+        const intersectedObject = this.raycaster.render(this.scene)
+        if(intersectedObject.length > 0 && this.isIntersected === false) {
+            this.lastIntersectedObject = intersectedObject[0]
+            this.lastIntersectedObject.object.geometry.scale(this.cristalScale, this.cristalScale, this.cristalScale)
+            this.isIntersected = true
+        } else if(!intersectedObject.length > 0 && this.isIntersected === true) {
+            this.lastIntersectedObject.object.geometry.scale(1/this.cristalScale, 1/this.cristalScale, 1/this.cristalScale)
+            this.lastIntersectedObject = null
+            this.isIntersected = false
+        }
+
         this.controls.update()
 
         this.renderer.render(this.scene, this.camera.camera)
