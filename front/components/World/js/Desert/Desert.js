@@ -50,7 +50,7 @@ export default class Desert {
     // this.cubeLight = new THREE.PointLight(0xffffff, 0, 5)
 
     this.plantsGroup = new THREE.Group()
-    this.flowerTypes = ['lavender', 'tulip', 'daisy']
+    this.flowerTypes = ['white', 'tulip', 'blue']
     this.plants = []
     this.plantsOffsets = {
       x: 10,
@@ -68,7 +68,7 @@ export default class Desert {
     this.spotLightOnFlowers = null
 
     // GUI
-    this.gui = new MainGui()
+    // this.gui = new MainGui()
 
     this.sporesElevation = 0
     this.cameraIsZoomed = false
@@ -119,6 +119,7 @@ export default class Desert {
 
     // Have to setTimouté to wait the generation of crystals and the watcher of the sound
     setTimeout(() => {
+      console.log(this.desertGroup)
       // Plane
       // For now : comment shadows because it breaks the performance
       // this.desertGroup.children[2].children[0].receiveShadow = true

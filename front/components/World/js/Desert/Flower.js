@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import Loader from '../Loader'
 import modelTulip from '../../../../assets/models/m_tulip.gltf'
-import modelLavender from '../../../../assets/models/m_lavender.gltf'
-import modelDaisy from '../../../../assets/models/m_daisy.gltf'
+import modelwhite from '../../../../assets/models/m_white_flower.gltf'
+import modelblue from '../../../../assets/models/m_blue_flower.gltf'
 
 import petalVert from "../../../../assets/shaders/flower/flower.vert"
 import petalFrag from "../../../../assets/shaders/flower/flower.frag"
@@ -26,8 +26,8 @@ export default class Flower {
     let flowerVert = null
 
     switch (flowerType) {
-      case 'lavender':
-        modelFlower = modelLavender
+      case 'white':
+        modelFlower = modelwhite
         flowerFrag = require("../../../../assets/textures/t_petal0.jpg")
         flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
         break;
@@ -36,17 +36,16 @@ export default class Flower {
         flowerFrag = require("../../../../assets/textures/t_petal2.png")
         flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
         break;
-      case 'daisy':
-        modelFlower = modelDaisy
+      case 'blue':
+        modelFlower = modelblue
         flowerFrag = require("../../../../assets/textures/t_petal2.png")
         flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
         break;
     }
 
-    // Import flower petals texture
+    // Petal texture
     const flowerTexture = new THREE.TextureLoader().load(flowerFrag)
-
-    // Import flower petals springiness texture
+    // Petal springiness texture
     const flowerSpringiness = new THREE.TextureLoader().load(flowerVert)
 
     const flowerShaderMaterial = new THREE.ShaderMaterial( {
@@ -72,21 +71,13 @@ export default class Flower {
       distRotation = store.state.desert.fRotation.clone().sub(this.flowerObject.rotation.toVector3())
       let distRotationMatrix = this.createRotationMatrix(distRotation)
 
-      // force to apply at flowerObject
+      // Apply force to flowerObject
       let rotationForce = distRotation.multiplyScalar(store.state.desert.velSpringiness)
-
-      if (this.flowerObject.name === 'lavender') {
-        // update rotation with rotationForce
-        this.flowerObject.children[0].children.forEach(petal => {
-          petal.rotation.setFromVector3(petal.rotation.toVector3().add(rotationForce))
-        })
-      } else {
-        this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce))
-      }
+      this.flowerObject.rotation.setFromVector3(this.flowerObject.rotation.toVector3().add(rotationForce))
 
       if (this.flowerObject.children[0]) {
         this.traversePetalsChilds( ( child ) => {
-          // apply shader only to petal with shader material
+          // Update uniforms to shaders petals
           if (child.material instanceof THREE.ShaderMaterial) {
             child.material.uniforms.rotationForceMatrix.value = distRotationMatrix;
           }
