@@ -46,11 +46,9 @@ export default class Desert {
     this.desertGroup = new THREE.Group()
 
     this.myCube = null
-    // TO DO : Maybe remove that
-    // this.cubeLight = new THREE.PointLight(0xffffff, 0, 5)
 
     this.plantsGroup = new THREE.Group()
-    this.flowerTypes = ['white', 'tulip', 'blue']
+    this.flowerTypes = ['white', 'tulip', 'blue', 'lavender']
     this.plants = []
     this.plantsOffsets = {
       x: 10,
@@ -58,7 +56,7 @@ export default class Desert {
       z: 2
     }
 
-    // init Noise
+    // Noise
     this.noise = new perlinNoise3d()
 
     // Particles
@@ -119,21 +117,10 @@ export default class Desert {
 
     // Have to setTimouté to wait the generation of crystals and the watcher of the sound
     setTimeout(() => {
-      console.log(this.desertGroup)
-      // Plane
-      // For now : comment shadows because it breaks the performance
-      // this.desertGroup.children[2].children[0].receiveShadow = true
-      // this.desertGroup.children[2].children[0].castShadow = true
-
       // Crytals
-      this.desertGroup.children[2].children[1].material = crystalsMaterial
-      // this.desertGroup.children[2].children[1].castShadow = true;
-
-      // Material Rocks GUI
-      // const materialRocksFolder = this.gui.gui.addFolder('Material rocks folder')
-      // materialRocksFolder.addColor(new ColorGUIHelper(this.desertGroup.children[2].children[1].material, 'color'), 'value').name('Color material')
-      // materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'refractionRatio', 0, 1, .01).name('refractionRatio')
-      // materialRocksFolder.add(this.desertGroup.children[2].children[1].material, 'reflectivity', 0, 1, .01).name('reflectivity')
+      for (let i = 1; i <= 19; i++) {
+        this.desertGroup.children[2].children[i].material = crystalsMaterial
+      }
 
       // Watch on store if we have to mute sounds
       store.watch(() => store.state.desert.isMuted, isMuted => {
@@ -143,12 +130,11 @@ export default class Desert {
           this.sound.sound.play()
         }
       })
-      // by default, the sound is playing
       this.sound.sound.play()
-    }, 1000)
+    }, 2000)
 
     // Cube - Hover zone for flowers
-    this.myCube = new Cube({scene: this.plantsGroup, position: {x: 0.2, y: 0, z: 0.7}})
+    this.myCube = new Cube( { scene: this.plantsGroup, position: {x: 0.2, y: 0, z: 0.7} } )
 
     // Add Plants (Flower + Stem)
     let index = -1
@@ -157,13 +143,13 @@ export default class Desert {
       if (index >= 3) {
         index = 0
       }
-      const plant = new Plant({orientation: nbPlants, flowerType: this.flowerTypes[index]})
+      const plant = new Plant( { orientation: nbPlants, flowerType: this.flowerTypes[index] } )
       this.plants.push(plant)
 
-      this.plantsGroup.add(plant.init())
+      this.plantsGroup.add( plant.init() )
     }
 
-    this.plantsGroup.position.set(-30, 5, -30)
+    this.plantsGroup.position.set(-42, 1, 6)
     this.plantsGroup.scale.set(2.5,2.5,2.5)
     this.plantsGroup.name = 'Plants'
 
@@ -172,8 +158,9 @@ export default class Desert {
     // Raycaster
     this.raycaster.init(this.camera, renderer)
 
-    // Add Spores
+    // Spores
     this.spores = new Particles()
+    this.spores.particles.position.set(-41, 1, 6)
     this.desertGroup.add(this.spores.particles)
 
     // SpotLights on Flowers
@@ -242,9 +229,10 @@ export default class Desert {
   }
 
   handleClick() {
-    // if (this.intersects.length > 0) {
-    //   gsap.to(this, {progression: 1, duration: 1, ease: "power3.out"} )
-    // }
+    if (this.intersects.length > 0) {
+      console.log(this.camera.camera)
+      // gsap.to(this, {progression: 1, duration: 1, ease: "power3.out"} )
+    }
   }
 
   cameraOnHold(){

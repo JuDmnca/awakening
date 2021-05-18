@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import Camera from './Camera'
 import MainGui from './Utils/MainGui'
+import Bloom from './Utils/Bloom'
 
 import Desert from './Desert/Desert'
 import Prairie from './Prairie/Prairie'
@@ -11,11 +12,7 @@ const desertCurve = [
     [22.111, 1.6593, -25.574],
     [15.148, 2.2951, -4.389],
     [-4.7436, 1.6304, 6.2753],
-    [-18.112, 3.9526, 1.2379],
-    [-24.312, 8.8616, 0.11898],
-    [-29.01, 15.216, -0.010826],
-    [-30.104, 16.142, -0.073841],
-    [-30.765, 15.651, -0.073841]
+    [-18.112, 3.9526, 1.2379]
 ]
 
 const prairieCurve = [
@@ -26,7 +23,7 @@ const forestCurve = [
 
 const allCurves = [desertCurve, prairieCurve, forestCurve]
 
-const start = new THREE.Vector3(-30, 10, -30)
+const start = new THREE.Vector3(-42, 1, 6)
 
 let store
 let nuxt
@@ -84,6 +81,9 @@ class Common {
                 distance: 400
             }
         }
+
+        // BLOOM
+        this.bloom = null
 
         this.gui = null
         this.sporesCanMove = false
@@ -148,6 +148,10 @@ class Common {
         // lightFolder.add(this.light, 'shadow', 0, 500, 0.01).name('shadow')
         // lightFolder.add(this.params.light, 'angle', 0, Math.PI * 2, 0.1).name('angle')
         // lightFolder.add(this.light, 'intensity', 0, 10, 1).name('Intensity')
+
+
+        this.bloom = new Bloom({scene: this.scene, camera: this.camera.camera, renderer: this.renderer})
+        this.bloom.init()
     }
 
     initCamera() {
@@ -292,7 +296,8 @@ class Common {
             // this.camera.camera.rotation.y += 0.2 * ( this.target.x - this.camera.camera.rotation.y )
         }
 
-        this.renderer.render(this.scene, this.camera.camera)
+        // this.renderer.render(this.scene, this.camera.camera)
+        this.bloom.animate()
     }
 }
 

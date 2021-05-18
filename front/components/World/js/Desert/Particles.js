@@ -74,6 +74,7 @@ class Particles {
         this.particlesGeometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1))
         this.particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
         // this.particlesGeometry.attributes.color = new THREE.Vector3(1.0, 1.0, 0.0)
+
         // Material
         this.particlesMaterial = new THREE.ShaderMaterial({
             depthWrite: true,

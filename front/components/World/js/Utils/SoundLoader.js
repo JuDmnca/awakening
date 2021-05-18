@@ -13,7 +13,7 @@ export default class SoundLoader {
     init() {
         this.listener = new THREE.AudioListener();
         this.camera.camera.add( this.listener );
-        
+
         this.audioLoader = new THREE.AudioLoader()
 
         this.sound = new THREE.PositionalAudio( this.listener );

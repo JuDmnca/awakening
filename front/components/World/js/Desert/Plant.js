@@ -4,14 +4,13 @@ import CustomSinCurve from '../Utils/CustomSinCurve'
 
 import stemVert from "../../../../assets/shaders/plant/stem.vert"
 import stemFrag from "../../../../assets/shaders/plant/stem.frag"
+
 import budVert from "../../../../assets/shaders/plant/bud.vert"
 import budFrag from "../../../../assets/shaders/plant/bud.frag"
 
 let store
-let nuxt
 if (process.browser) {
-  window.onNuxtReady(({$nuxt, $store}) => {
-    nuxt = $nuxt
+  window.onNuxtReady(({$store}) => {
     store = $store
   })
 }
@@ -35,9 +34,9 @@ export default class Plant {
     this.moving = 0
 
     // Create Stem
-    // if (this.flowerType === 'lavender') {
-    //   this.length = 1.3
-    // }
+    if (this.flowerType === 'blue') {
+      this.length = 0.1
+    }
     this.curve = new CustomSinCurve({ length: this.length })
     this.stemGeometry = new THREE.TubeGeometry( this.curve, this.segments, this.size, this.radiusSegment )
 
@@ -95,12 +94,6 @@ export default class Plant {
   }
 
   update() {
-    // if (nuxt && !this.events) {
-    //   this.addEvents()
-    //   store.commit('desert/updateInitialRotation')
-    //   this.events = true
-    // }
-
     if (store && store.state.desert.sRotation != null) {
       let distRotation
       distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3())
@@ -111,22 +104,12 @@ export default class Plant {
 
       // Update rotation with rotationForce
       this.plantMesh.children[0].rotation.setFromVector3(this.plantMesh.children[0].rotation.toVector3().add(rotationForce))
-
       this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix
 
       // Update flower petals
       this.flower.update()
     }
   }
-
-  // addEvents() {
-  //   nuxt.$on('endmove', () => {
-  //     this.toInitial = true
-  //   })
-  //   nuxt.$on('startmove', () => {
-  //     this.toInitial = false
-  //   })
-  // }
 
   createRotationMatrix(vectRotation) {
     let m = new THREE.Matrix4();

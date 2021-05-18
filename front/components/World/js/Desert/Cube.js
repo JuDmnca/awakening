@@ -1,7 +1,5 @@
 import * as THREE from 'three'
 import MainGui from '../Utils/MainGui'
-
-// Futur composant flower
 export default class Cube {
     constructor(props) {
         this.props = props
@@ -11,13 +9,12 @@ export default class Cube {
 
     init(scene) {
         this.geometry = new THREE.BoxGeometry(3, 3, 2.5,)
-        // this.material = new THREE.MeshNormalMaterial()
         this.material = new THREE.MeshStandardMaterial({
             color: "grey",
-            // wireframe: true,
             flatShading: true,
             opacity: 0,
             transparent: true,
+            depthWrite: false
         })
         this.material.color.convertSRGBToLinear()
 
