@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- <World /> -->
-    <!-- <UI-HoldCursor /> -->
+    <UI-HoldCursor />
     <transition name="fadeOut">
       <IntroLoader v-if="loader" @done="hideLoader" />
     </transition>
@@ -24,3 +24,5 @@
     },
   }
 </script>
+<style scoped>
+</style>
