@@ -1,0 +1,127 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "FleurBlanche",
+            "scale" : [
+                0.04647024720907211,
+                0.04647024720907211,
+                0.04647024720907211
+            ],
+            "translation" : [
+                2.4683773517608643e-05,
+                3.0201859772205353e-05,
+                -3.6509125493466854e-05
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "Blanc.003",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929,
+                    1
+                ],
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "fleurblanche",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "indices" : 3,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 140800,
+            "max" : [
+                2.8298325538635254,
+                2.7467238903045654,
+                3.1254098415374756
+            ],
+            "min" : [
+                -3.2383224964141846,
+                -0.0002090930938720703,
+                -3.031306028366089
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 140800,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 140800,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5125,
+            "count" : 211200,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 1689600,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 1689600,
+            "byteOffset" : 1689600
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 1126400,
+            "byteOffset" : 3379200
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 844800,
+            "byteOffset" : 4505600
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 5350400,
+            "uri" : "../white_flower.bin"
+        }
+    ]
+}
