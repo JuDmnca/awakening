@@ -51,6 +51,8 @@ class Constellation {
         this.gui = null
 
         this.controls = null
+
+        this.nbEtoiles = 20
     }
 
     init($canvas) {
@@ -74,24 +76,38 @@ class Constellation {
 
         // Cube
         const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
-        const cubeMaterial = new THREE.MeshStandardMaterial({
+        const cubeTransparentMaterial = new THREE.MeshStandardMaterial({
             color: "red",
             opacity: 0,
             transparent: 0
         })
-        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
-        this.scene.add(cube)
+
+        const cubeMaterial = new THREE.MeshStandardMaterial({
+            color: "red",
+            opacity: 1,
+            transparent: 1
+        })
+        // const cube = new THREE.Mesh(cubeGeometry, cubeTransparentMaterial)
+        // this.scene.add(cube)
+
+        let cubes = []
+        // Generation of cubes
+        for(let i = 0; i < this.nbEtoiles; i++) {
+            cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
+            cubes[i].position.set(this.getRandomArbitrary(-30, 30) , this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
+            this.scene.add(cubes[i])
+        }
 
         // Init camera
         this.initCamera()
-        this.camera.camera.position.z = -2
+        // this.camera.camera.position.z = -2
 
         // Listeners
         this.addWheelEvent()
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-        this.light.position.set(0, 10, 0)
+        this.light.position.set(0, 0, 0)
         this.scene.add(this.light)
 
         this.scene.background = new THREE.Color('#003c66')
@@ -101,8 +117,8 @@ class Constellation {
         this.controls.enableDamping = true
         this.controls.enableZoom = false
         this.controls.minPolarAngle = Math.PI / 2
-        this.controls.rotateSpeed = 0.1
-        // this.controls.enableRotate = true
+        this.controls.rotateSpeed = 1
+        this.controls.enableRotate = true
 
         this.controls.minDistance = 1
 
@@ -129,6 +145,10 @@ class Constellation {
             window: this.size,
         })
         // this.scene.add(this.camera.camera)
+    }
+
+    getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min
     }
 
     setSize() {
