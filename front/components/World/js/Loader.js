@@ -11,6 +11,7 @@ export default class Loader {
     init(scene) {
         this.loader = new GLTFLoader()
 
+        const materialImported = this.material
         const position = this.props.position
         const index = this.props.index
 
@@ -19,6 +20,12 @@ export default class Loader {
             gltf.scene.position.y = position.y
             gltf.scene.position.z = position.z
             gltf.scene.scale.set(3,3,3)
+
+            const texture = new THREE.TextureLoader().load( materialImported )
+            const material = new THREE.MeshBasicMaterial ({
+                map: texture,
+            })
+            gltf.scene.children[6].material = material
 
             scene.add( gltf.scene )
 
@@ -62,12 +69,11 @@ export default class Loader {
                     gltf.scene.children[4].position.set(0,0.24,-0.04)
                     gltf.scene.children[5].position.set(0,0.3,0.01)
                   break;
-                case 'orchid':
+                case 'tulip':
                     gltf.scene.position.multiplyScalar(-1)
                     gltf.scene.scale.set(1.6,1.6,1.6)
-                    gltf.scene.position.y = -0.5 * 1.6
-                    gltf.scene.position.z = -0.15
-                    gltf.scene.rotation.x = 0.2;
+                    gltf.scene.position.set(0,-0.03,0)
+                    gltf.scene.rotation.x = 0.3;
                   break;
                 case 'daisy':
                     gltf.scene.position.multiplyScalar(-1)

@@ -6,12 +6,16 @@ import Desert from './Desert/Desert'
 import Prairie from './Prairie/Prairie'
 
 const desertCurve = [
-    [44.085, 1.2081, -45.012],
-    [23.59, 1.2736, -44.35],
-    [13.896, 1.8958, -34.535],
-    [10.96, 1.4074, -12.929],
-    [0.060661, 1.4757, -7.4292],
-    [-2.2075, 1.896, -1.7811]
+    [41.891, 0.85967, -41.585],
+    [37.092, 2.2471, -25.002],
+    [22.111, 1.6593, -25.574],
+    [15.148, 2.2951, -4.389],
+    [-4.7436, 1.6304, 6.2753],
+    [-18.112, 3.9526, 1.2379],
+    [-24.312, 8.8616, 0.11898],
+    [-29.01, 15.216, -0.010826],
+    [-30.104, 16.142, -0.073841],
+    [-30.765, 15.651, -0.073841]
 ]
 
 const prairieCurve = [
@@ -22,7 +26,7 @@ const forestCurve = [
 
 const allCurves = [desertCurve, prairieCurve, forestCurve]
 
-const start = new THREE.Vector3(0, 0, 0)
+const start = new THREE.Vector3(-30, 10, -30)
 
 let store
 let nuxt
@@ -42,7 +46,7 @@ class Common {
         this.progression = null
         this.curveNumber = 0
         this.camLook = start.clone()
-        this.camTarget =start.clone()
+        this.camTarget = start.clone()
 
         this.events = false
 
@@ -119,7 +123,7 @@ class Common {
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-        this.light.position.set(-69, 266, -123)
+        this.light.position.set(0, 300, 0)
         this.light.castShadow = true
         this.light.shadow.mapSize.width = 1024
         this.light.shadow.mapSize.height = 1024
@@ -132,14 +136,15 @@ class Common {
 
         // Common GUI
         this.gui = new MainGui()
-        const commonFolder = this.gui.gui.addFolder('Common')
-        commonFolder.add(this.params, 'scrollSpeed', 0, 10, 0.1)
-        const lightFolder = commonFolder.addFolder('Sun')
-        lightFolder.add(this.light.position, 'x', -300, 300, 1).name('x')
-        lightFolder.add(this.light.position, 'y', -300, 300, 1).name('y')
-        lightFolder.add(this.light.position, 'z', -300, 300, 1).name('z')
-        lightFolder.add(this.light, 'intensity', 0, 20, 0.01).name('intensity')
-        lightFolder.add(this.light, 'distance', 0, 600, 1).name('distance')
+        // const commonFolder = this.gui.gui.addFolder('Common')
+        // commonFolder.add(this.params, 'scrollSpeed', 0, 10, 0.1)
+        // const lightFolder = commonFolder.addFolder('Sun')
+        // lightFolder.add(this.light.position, 'x', -300, 300, 1).name('x')
+        // lightFolder.add(this.light.position, 'y', -300, 300, 1).name('y')
+        // lightFolder.add(this.light.position, 'z', -300, 300, 1).name('z')
+        // lightFolder.add(this.light, 'intensity', 0, 20, 0.01).name('intensity')
+        // lightFolder.add(this.light, 'distance', 0, 600, 1).name('distance')
+
         // lightFolder.add(this.light, 'shadow', 0, 500, 0.01).name('shadow')
         // lightFolder.add(this.params.light, 'angle', 0, Math.PI * 2, 0.1).name('angle')
         // lightFolder.add(this.light, 'intensity', 0, 10, 1).name('Intensity')
