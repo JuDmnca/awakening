@@ -2,6 +2,7 @@ import * as THREE from "three"
 import Camera from '../Camera'
 import MainGui from '../Utils/MainGui'
 import Cube from '../Desert/Cube'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 let store
 let nuxt
@@ -49,6 +50,7 @@ class Constellation {
 
         this.gui = null
 
+        this.controls = null
     }
 
     init($canvas) {
@@ -66,14 +68,23 @@ class Constellation {
         this.renderer.setPixelRatio(window.devicePixelRatio)
 
         this.renderer.setSize(this.size.windowW, this.size.windowH)
-        // this.renderer.shadowMap.enabled = true
-        // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 
         this.clock = new THREE.Clock()
         this.clock.start()
 
+        // Cube
+        const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
+        const cubeMaterial = new THREE.MeshStandardMaterial({
+            color: "red",
+            opacity: 0,
+            transparent: 0
+        })
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
+        this.scene.add(cube)
+
         // Init camera
         this.initCamera()
+        this.camera.camera.position.z = -2
 
         // Listeners
         this.addWheelEvent()
@@ -81,45 +92,35 @@ class Constellation {
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
         this.light.position.set(0, 10, 0)
-        this.light.castShadow = true
-        this.light.shadow.mapSize.width = 1024
-        this.light.shadow.mapSize.height = 1024
-        // Blur of the shadows
-        this.light.shadow.radius = 3
         this.scene.add(this.light)
-
-        // Common GUI
-        // this.gui = new MainGui()
-        // const commonFolder = this.gui.gui.addFolder('Common')
-        // commonFolder.add(this.params, 'scrollSpeed', 0, 10, 0.1)
-        // const lightFolder = commonFolder.addFolder('Sun')
-        // lightFolder.add(this.light.position, 'x', -300, 300, 1).name('x')
-        // lightFolder.add(this.light.position, 'y', -300, 300, 1).name('y')
-        // lightFolder.add(this.light.position, 'z', -300, 300, 1).name('z')
-        // lightFolder.add(this.light, 'intensity', 0, 20, 0.01).name('intensity')
-        // lightFolder.add(this.light, 'distance', 0, 600, 1).name('distance')
 
         this.scene.background = new THREE.Color('#003c66')
 
-        // Cube
-        const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
-        const cubeMaterial = new THREE.MeshStandardMaterial({
-            color: "red",
-            // wireframe: true,
-            // flatShading: true,
-            opacity: 1
-        })
+        // Controls
+        this.controls = new OrbitControls( this.camera.camera, this.renderer.domElement );
+        this.controls.enableDamping = true
+        // this.controls.enableRotate = true
 
-        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
-        cube.position.z = -10
-        this.scene.add(cube)
-        // console.log(this.camera.camera.position, cube.position, this.light.position)
+        this.controls.minDistance = 1
+
+        // Skybox
+        const loader = new THREE.CubeTextureLoader()
+        const texture = loader.load([
+            require('../../../../assets/textures/png/rocks/px.png'),
+            require('../../../../assets/textures/png/rocks/nx.png'),
+            require('../../../../assets/textures/png/rocks/py.png'),
+            require('../../../../assets/textures/png/rocks/ny.png'),
+            require('../../../../assets/textures/png/rocks/pz.png'),
+            require('../../../../assets/textures/png/rocks/nz.png')
+        ]);
+        this.scene.background = texture
+
     }
     initCamera() {
         this.camera = new Camera({
-        window: this.size,
+            window: this.size,
         })
-        this.scene.add(this.camera.camera)
+        // this.scene.add(this.camera.camera)
     }
 
     setSize() {
@@ -145,9 +146,11 @@ class Constellation {
     }
 
     render() {
-        
+
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
+        
+        this.controls.update()
 
         this.renderer.render(this.scene, this.camera.camera)
     }
