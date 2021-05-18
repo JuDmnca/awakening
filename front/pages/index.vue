@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <UI-HoldCursor />
     <World />
   </div>
 </template>

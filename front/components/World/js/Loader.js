@@ -13,7 +13,7 @@ export default class Loader {
 
         const materialImported = this.material
         const position = this.props.position
-        const index = this.props.index
+        // const index = this.props.index
 
         this.loader.load( this.props.model, function ( gltf ) {
             gltf.scene.position.x = position.x
@@ -26,7 +26,7 @@ export default class Loader {
             const material = new THREE.MeshBasicMaterial ({
                 map: texture,
             })
-            gltf.scene.children[2].children[0].material = material
+            gltf.scene.children[0].material = material
 
             scene.add( gltf.scene )
 
@@ -52,22 +52,24 @@ export default class Loader {
             gltf.scene.rotation.y = rotation
 
             // Center 3D object
-            const box = new THREE.Box3().setFromObject( gltf.scene );
-            box.getCenter( gltf.scene.position );
+            const box = new THREE.Box3().setFromObject( gltf.scene )
+            box.getCenter( gltf.scene.position )
+
+            gltf.scene.position.multiplyScalar(-1)
 
             // Position flower object on the top of the stem
             switch (type) {
                 case 'white':
-                    gltf.scene.position.multiplyScalar(-1)
+                    gltf.scene.position.set(0,-0.02,0)
                   break;
                 case 'tulip':
-                    gltf.scene.position.multiplyScalar(-1)
                     gltf.scene.scale.set(1.6,1.6,1.6)
                     gltf.scene.position.set(0,-0.03,0)
                     gltf.scene.rotation.x = 0.3;
                   break;
                 case 'blue':
-                    gltf.scene.position.multiplyScalar(-1)
+                  break;
+                case 'lavender':
                   break;
             }
 

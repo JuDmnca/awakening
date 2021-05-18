@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import Loader from '../Loader'
 import modelTulip from '../../../../assets/models/m_tulip.gltf'
-import modelwhite from '../../../../assets/models/m_white_flower.gltf'
+import modelwhite from '../../../../assets/models/m_white_flower.glb'
 import modelblue from '../../../../assets/models/m_blue_flower.gltf'
 
 import petalVert from "../../../../assets/shaders/flower/flower.vert"
@@ -18,6 +18,8 @@ export default class Flower {
     this.props = props
     this.flowerObject = null
     this.ready = false
+
+    this.count= 0
   }
 
   init(flowerType) {
@@ -28,12 +30,12 @@ export default class Flower {
     switch (flowerType) {
       case 'white':
         modelFlower = modelwhite
-        flowerFrag = require("../../../../assets/textures/t_petal0.jpg")
+        flowerFrag = require("../../../../assets/textures/t_petal3.png")
         flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
         break;
       case 'tulip':
         modelFlower = modelTulip
-        flowerFrag = require("../../../../assets/textures/t_petal2.png")
+        flowerFrag = require("../../../../assets/textures/t_petal3.png")
         flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
         break;
       case 'blue':
