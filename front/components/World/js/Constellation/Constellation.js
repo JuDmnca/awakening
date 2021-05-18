@@ -99,6 +99,9 @@ class Constellation {
         // Controls
         this.controls = new OrbitControls( this.camera.camera, this.renderer.domElement );
         this.controls.enableDamping = true
+        this.controls.enableZoom = false
+        this.controls.minPolarAngle = Math.PI / 2
+        this.controls.rotateSpeed = 0.1
         // this.controls.enableRotate = true
 
         this.controls.minDistance = 1
@@ -114,6 +117,11 @@ class Constellation {
             require('../../../../assets/textures/png/rocks/nz.png')
         ]);
         this.scene.background = texture
+
+        // GUI
+        this.gui = new MainGui()
+        const controlsFolder = this.gui.gui.addFolder('Controls')
+        controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
 
     }
     initCamera() {
