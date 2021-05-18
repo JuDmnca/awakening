@@ -89,17 +89,20 @@ class Constellation {
             transparent: 0
         })
 
-        const cubeMaterial = new THREE.MeshStandardMaterial({
-            color: "red",
-            opacity: 1,
-            transparent: 1
-        })
+
         // const cube = new THREE.Mesh(cubeGeometry, cubeTransparentMaterial)
         // this.scene.add(cube)
-
+        // console.log(Math.floor(Math.random()*16777215).toString(16))
         let cubes = []
         // Generation of cubes
         for(let i = 0; i < this.nbEtoiles; i++) {
+            const cubeMaterial = new THREE.MeshStandardMaterial({
+                
+                color: new THREE.Color('#' + Math.floor(Math.random()*16777215).toString(16)),
+                opacity: 1,
+                transparent: 1
+            })
+
             cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
             
             cubes[i].position.set(this.getRandomArbitrary(-30, 30) , this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
@@ -107,6 +110,7 @@ class Constellation {
             // cubes[i].scale = new THREE.Vector3(0.5, 0.5, 0.5)
             this.scene.add(cubes[i])
         }
+        console.log(cubes)
 
         // Init camera
         this.initCamera()
@@ -196,10 +200,11 @@ class Constellation {
         const intersectedObject = this.raycaster.render(this.scene)
         if(intersectedObject.length > 0 && this.isIntersected === false) {
             this.lastIntersectedObject = intersectedObject[0]
-            this.lastIntersectedObject.object.geometry.scale(this.cristalScale, this.cristalScale, this.cristalScale)
+            console.log(this.lastIntersectedObject.object)
+            this.lastIntersectedObject.object.scale.set(this.cristalScale, this.cristalScale, this.cristalScale)
             this.isIntersected = true
         } else if(!intersectedObject.length > 0 && this.isIntersected === true) {
-            this.lastIntersectedObject.object.geometry.scale(1/this.cristalScale, 1/this.cristalScale, 1/this.cristalScale)
+            this.lastIntersectedObject.object.scale.set(1/this.cristalScale, 1/this.cristalScale, 1/this.cristalScale)
             this.lastIntersectedObject = null
             this.isIntersected = false
         }
