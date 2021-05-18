@@ -4,6 +4,10 @@ import MainGui from '../Utils/MainGui'
 import Cube from '../Desert/Cube'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Raycaster from '../Utils/Raycaster'
+import gsap from "gsap"
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 
 let store
 let nuxt
@@ -53,13 +57,21 @@ class Constellation {
 
         this.controls = null
 
-        this.nbEtoiles = 20
+        this.nbEtoiles = 40
 
         this.raycaster = null
         this.intersectedObject = null
         this.lastIntersectedObject = null
         this.isIntersected = false
         this.cristalScale = 1.5
+
+        this.cubes = []
+        this.randomCubesSpeed = []
+
+        // Post Processing
+        this.renderScene = null
+        this.bloomPass = null
+        this.composer = null
     }
 
     init($canvas) {
@@ -93,8 +105,7 @@ class Constellation {
         // const cube = new THREE.Mesh(cubeGeometry, cubeTransparentMaterial)
         // this.scene.add(cube)
         // console.log(Math.floor(Math.random()*16777215).toString(16))
-        let cubes = []
-        // Generation of cubes
+        // Generation of this.cubes
         for(let i = 0; i < this.nbEtoiles; i++) {
             const cubeMaterial = new THREE.MeshStandardMaterial({
                 
@@ -103,14 +114,18 @@ class Constellation {
                 transparent: 1
             })
 
-            cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
+            this.cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
             
-            cubes[i].position.set(this.getRandomArbitrary(-30, 30) , this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
+            this.cubes[i].position.set(this.getRandomArbitrary(-30, 30) , this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
             
-            // cubes[i].scale = new THREE.Vector3(0.5, 0.5, 0.5)
-            this.scene.add(cubes[i])
+            // this.cubes[i].scale = new THREE.Vector3(0.5, 0.5, 0.5)
+            this.scene.add(this.cubes[i])
         }
-        console.log(cubes)
+
+        // Generation of random cube speed
+        for(let i = 0; i < this.cubes.length; i++) {
+            this.randomCubesSpeed.push(Math.random())
+        }
 
         // Init camera
         this.initCamera()
@@ -140,6 +155,24 @@ class Constellation {
         this.raycaster.init(this.camera, this.renderer)
         this.raycaster.render(this.scene)
 
+        // Post Processing
+        this.renderScene = new RenderPass(this.scene, this.camera.camera)
+        this.bloomPass = new UnrealBloomPass( new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85)
+        const paramsBloomPass = {
+            exposure: 1.5,
+            bloomStrength: 3,
+            bloomThreshold: 0,
+            bloomRadius: 10
+        }
+        this.bloomPass.threshold = paramsBloomPass.bloomThreshold
+        this.bloomPass.strength = paramsBloomPass.bloomStrength
+        this.bloomPass.radius = paramsBloomPass.bloomRadius
+
+        this.composer = new EffectComposer( this.renderer )
+        this.composer.addPass(this.renderScene)
+        this.composer.addPass(this.bloomPass)
+
+
         // Skybox
         const loader = new THREE.CubeTextureLoader()
         const texture = loader.load([
@@ -150,12 +183,22 @@ class Constellation {
             require('../../../../assets/textures/png/rocks/pz.png'),
             require('../../../../assets/textures/png/rocks/nz.png')
         ]);
-        this.scene.background = texture
+        this.scene.background = new THREE.Color('black')
 
         // GUI
         this.gui = new MainGui()
         const controlsFolder = this.gui.gui.addFolder('Controls')
         controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
+
+        const postProcessingFolder = this.gui.gui.addFolder('Post Processing')
+        this.gui.gui.add( paramsBloomPass, 'exposure', 0.1, 2 ).onChange( function ( value ) {
+
+            renderer.toneMappingExposure = Math.pow( value, 4.0 );
+
+        } )
+        postProcessingFolder.add(this.bloomPass, 'strength', 0, 3, 0.1).name('BloomStrength')
+        postProcessingFolder.add(this.bloomPass, 'threshold', 0, 3, 0.1).name('bloomThreshold')
+        postProcessingFolder.add(this.bloomPass, 'radius', 0, 3, 0.1).name('bloomRadius')
 
     }
     initCamera() {
@@ -195,16 +238,42 @@ class Constellation {
 
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
-
+        for(let i = 0; i < this.cubes.length; i++) {
+            this.cubes[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
+            this.cubes[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
+        }
         // Intersections
         const intersectedObject = this.raycaster.render(this.scene)
         if(intersectedObject.length > 0 && this.isIntersected === false) {
             this.lastIntersectedObject = intersectedObject[0]
             console.log(this.lastIntersectedObject.object)
-            this.lastIntersectedObject.object.scale.set(this.cristalScale, this.cristalScale, this.cristalScale)
+            // this.lastIntersectedObject.object.scale.set(this.cristalScale, this.cristalScale, this.cristalScale)
+            gsap.to(
+                this.lastIntersectedObject.object.scale,
+                {
+                    x: this.cristalScale,
+                    y: this.cristalScale,
+                    z: this.cristalScale,
+                    duration: 1,
+                    ease: "power3.out",
+                    onComplete: this.increaseCounter
+                }
+              )
             this.isIntersected = true
         } else if(!intersectedObject.length > 0 && this.isIntersected === true) {
-            this.lastIntersectedObject.object.scale.set(1/this.cristalScale, 1/this.cristalScale, 1/this.cristalScale)
+            gsap.killTweensOf(this.lastIntersectedObject.object.scale)
+            gsap.to(
+                this.lastIntersectedObject.object.scale,
+                {
+                    x: 1/this.cristalScale,
+                    y: 1/this.cristalScale,
+                    z: 1/this.cristalScale,
+                    duration: 1,
+                    ease: "power3.out",
+                    onComplete: this.increaseCounter
+                }
+            )
+            // this.lastIntersectedObject.object.scale.set(1/this.cristalScale, 1/this.cristalScale, 1/this.cristalScale)
             this.lastIntersectedObject = null
             this.isIntersected = false
         }
