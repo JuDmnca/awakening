@@ -3,6 +3,7 @@ import Camera from '../Camera'
 import MainGui from '../Utils/MainGui'
 import Cube from '../Desert/Cube'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import Raycaster from '../Utils/Raycaster'
 
 let store
 let nuxt
@@ -51,6 +52,14 @@ class Constellation {
         this.gui = null
 
         this.controls = null
+
+        this.nbEtoiles = 20
+
+        this.raycaster = null
+        this.intersectedObject = null
+        this.lastIntersectedObject = null
+        this.isIntersected = false
+        this.cristalScale = 1.5
     }
 
     init($canvas) {
@@ -74,24 +83,45 @@ class Constellation {
 
         // Cube
         const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
-        const cubeMaterial = new THREE.MeshStandardMaterial({
+        const cubeTransparentMaterial = new THREE.MeshStandardMaterial({
             color: "red",
             opacity: 0,
             transparent: 0
         })
-        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
-        this.scene.add(cube)
+
+
+        // const cube = new THREE.Mesh(cubeGeometry, cubeTransparentMaterial)
+        // this.scene.add(cube)
+        // console.log(Math.floor(Math.random()*16777215).toString(16))
+        let cubes = []
+        // Generation of cubes
+        for(let i = 0; i < this.nbEtoiles; i++) {
+            const cubeMaterial = new THREE.MeshStandardMaterial({
+                
+                color: new THREE.Color('#' + Math.floor(Math.random()*16777215).toString(16)),
+                opacity: 1,
+                transparent: 1
+            })
+
+            cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
+            
+            cubes[i].position.set(this.getRandomArbitrary(-30, 30) , this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
+            
+            // cubes[i].scale = new THREE.Vector3(0.5, 0.5, 0.5)
+            this.scene.add(cubes[i])
+        }
+        console.log(cubes)
 
         // Init camera
         this.initCamera()
-        this.camera.camera.position.z = -2
+        // this.camera.camera.position.z = -2
 
         // Listeners
         this.addWheelEvent()
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-        this.light.position.set(0, 10, 0)
+        this.light.position.set(0, 0, 0)
         this.scene.add(this.light)
 
         this.scene.background = new THREE.Color('#003c66')
@@ -99,9 +129,16 @@ class Constellation {
         // Controls
         this.controls = new OrbitControls( this.camera.camera, this.renderer.domElement );
         this.controls.enableDamping = true
-        // this.controls.enableRotate = true
-
+        this.controls.enableZoom = false
+        this.controls.minPolarAngle = Math.PI / 2
+        this.controls.rotateSpeed = 1
+        this.controls.enableRotate = true
         this.controls.minDistance = 1
+
+        // Raycaster
+        this.raycaster = new Raycaster()
+        this.raycaster.init(this.camera, this.renderer)
+        this.raycaster.render(this.scene)
 
         // Skybox
         const loader = new THREE.CubeTextureLoader()
@@ -115,12 +152,21 @@ class Constellation {
         ]);
         this.scene.background = texture
 
+        // GUI
+        this.gui = new MainGui()
+        const controlsFolder = this.gui.gui.addFolder('Controls')
+        controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
+
     }
     initCamera() {
         this.camera = new Camera({
             window: this.size,
         })
         // this.scene.add(this.camera.camera)
+    }
+
+    getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min
     }
 
     setSize() {
@@ -149,7 +195,20 @@ class Constellation {
 
         this.time.delta = this.clock.getDelta()
         this.time.total += this.time.delta
-        
+
+        // Intersections
+        const intersectedObject = this.raycaster.render(this.scene)
+        if(intersectedObject.length > 0 && this.isIntersected === false) {
+            this.lastIntersectedObject = intersectedObject[0]
+            console.log(this.lastIntersectedObject.object)
+            this.lastIntersectedObject.object.scale.set(this.cristalScale, this.cristalScale, this.cristalScale)
+            this.isIntersected = true
+        } else if(!intersectedObject.length > 0 && this.isIntersected === true) {
+            this.lastIntersectedObject.object.scale.set(1/this.cristalScale, 1/this.cristalScale, 1/this.cristalScale)
+            this.lastIntersectedObject = null
+            this.isIntersected = false
+        }
+
         this.controls.update()
 
         this.renderer.render(this.scene, this.camera.camera)
