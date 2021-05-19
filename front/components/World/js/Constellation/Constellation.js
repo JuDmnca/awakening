@@ -99,10 +99,6 @@ class Constellation {
             transparent: 0
         })
 
-
-        // const cube = new THREE.Mesh(cubeGeometry, cubeTransparentMaterial)
-        // this.scene.add(cube)
-        // console.log(Math.floor(Math.random()*16777215).toString(16))
         // Generation of this.cubes
         for(let i = 0; i < this.nbEtoiles; i++) {
             const cubeMaterial = new THREE.MeshStandardMaterial({
@@ -116,7 +112,6 @@ class Constellation {
             
             this.cubes[i].position.set(this.getRandomArbitrary(-30, 30) , this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
             
-            // this.cubes[i].scale = new THREE.Vector3(0.5, 0.5, 0.5)
             this.scene.add(this.cubes[i])
         }
 
@@ -127,7 +122,6 @@ class Constellation {
 
         // Init camera
         this.initCamera()
-        // this.camera.camera.position.z = -2
 
         // Listeners
         this.addWheelEvent()
@@ -174,21 +168,11 @@ class Constellation {
         const controlsFolder = this.gui.gui.addFolder('Controls')
         controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
 
-        // const postProcessingFolder = this.gui.gui.addFolder('Post Processing')
-        // this.gui.gui.add( paramsBloomPass, 'exposure', 0.1, 2 ).onChange( function ( value ) {
-
-        //     renderer.toneMappingExposure = Math.pow( value, 4.0 );
-
-        // } )
-        // postProcessingFolder.add(this.bloomPass, 'strength', 0, 3, 0.1).name('BloomStrength')
-        // postProcessingFolder.add(this.bloomPass, 'threshold', 0, 3, 0.1).name('bloomThreshold')
-        // postProcessingFolder.add(this.bloomPass, 'radius', 0, 3, 0.1).name('bloomRadius')
     }
     initCamera() {
         this.camera = new Camera({
             window: this.size,
         })
-        // this.scene.add(this.camera.camera)
     }
 
     getRandomArbitrary(min, max) {
