@@ -180,8 +180,45 @@ export default class Desert {
     this.spores.particles.add( this.spotLightOnFlowers )
 
     // Fog
-    const colorBG = new THREE.Color('#13171C')
+    const colorBG = new THREE.Color('#404040')
     scene.fog = new THREE.Fog(colorBG, 10, 300)
+    const loader = new THREE.CubeTextureLoader()
+    loader.premultiplyAlpha = true
+    const texture = loader.load([
+      require('../../../../assets/textures/png/rocks/px.png'),
+      require('../../../../assets/textures/png/rocks/nx.png'),
+      require('../../../../assets/textures/png/rocks/py.png'),
+      require('../../../../assets/textures/png/rocks/ny.png'),
+      require('../../../../assets/textures/png/rocks/pz.png'),
+      require('../../../../assets/textures/png/rocks/nz.png')
+  ]);
+  texture.encoding = THREE.sRGBEncoding;
+  const skybox = new THREE.Mesh(
+    new THREE.BoxBufferGeometry(20000, 20000, 20000),
+    new THREE.ShaderMaterial({
+      uniforms: THREE.UniformsUtils.clone(THREE.ShaderLib.cube.uniforms),
+      vertexShader: THREE.ShaderLib.cube.vertexShader,
+      fragmentShader: THREE.ShaderLib.cube.fragmentShader,
+      depthTest: false,
+      depthWrite: false,
+      side: THREE.BackSide,
+      toneMapped: false
+    })
+  );
+
+  skybox.material.uniforms.envMap.value = texture;
+
+  Object.defineProperty(skybox.material, 'envMap', {
+
+    get: function() {
+
+      return this.uniforms.envMap.value;
+
+    }
+
+  });
+
+  scene.add(skybox)
 
     // GUI
     // Lights
