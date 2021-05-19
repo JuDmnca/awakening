@@ -23,6 +23,7 @@
     position: absolute;
     bottom: 50px;
     left: 50px;
+    z-index: 10;
   }
 </style>
 

@@ -108,6 +108,7 @@
         right: 50px;
         bottom: 50px;
         display: flex;
+        z-index: 10;
     }
 
     .sound_icon:hover {
