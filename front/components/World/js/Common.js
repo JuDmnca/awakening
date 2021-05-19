@@ -150,7 +150,17 @@ class Common {
         // lightFolder.add(this.params.light, 'angle', 0, Math.PI * 2, 0.1).name('angle')
         // lightFolder.add(this.light, 'intensity', 0, 10, 1).name('Intensity')
 
-        this.bloom = new Bloom( {scene: this.scene, camera: this.camera.camera, renderer: this.renderer} )
+        this.bloom = new Bloom({
+            scene: this.scene,
+            camera: this.camera.camera,
+            renderer: this.renderer,
+            params: {
+                exposure: 1.1,
+                bloomStrength: 1.8,
+                bloomThreshold: 0,
+                bloomRadius: 1
+            }
+        })
     }
 
     initCamera() {

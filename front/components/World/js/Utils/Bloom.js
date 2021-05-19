@@ -23,13 +23,7 @@ export default class Bloom {
     this.renderer = props.renderer
     this.camera = props.camera
     this.scene = props.scene
-
-    const params = {
-      exposure: 1.1,
-      bloomStrength: 1.8,
-      bloomThreshold: 0,
-      bloomRadius: 1.1
-    }
+    const params = props.params
 
     if (process.client) {
       effectComposer = require('three/examples/jsm/postprocessing/EffectComposer.js')
