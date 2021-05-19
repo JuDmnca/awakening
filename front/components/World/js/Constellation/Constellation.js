@@ -7,7 +7,7 @@ import Raycaster from '../Utils/Raycaster'
 import gsap from "gsap"
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+import Bloom from '../Utils/Bloom.js'
 
 let store
 let nuxt
@@ -69,9 +69,7 @@ class Constellation {
         this.randomCubesSpeed = []
 
         // Post Processing
-        this.renderScene = null
-        this.bloomPass = null
-        this.composer = null
+        this.bloom = null
     }
 
     init($canvas) {
@@ -156,22 +154,8 @@ class Constellation {
         this.raycaster.render(this.scene)
 
         // Post Processing
-        this.renderScene = new RenderPass(this.scene, this.camera.camera)
-        this.bloomPass = new UnrealBloomPass( new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85)
-        const paramsBloomPass = {
-            exposure: 1.5,
-            bloomStrength: 3,
-            bloomThreshold: 0,
-            bloomRadius: 10
-        }
-        this.bloomPass.threshold = paramsBloomPass.bloomThreshold
-        this.bloomPass.strength = paramsBloomPass.bloomStrength
-        this.bloomPass.radius = paramsBloomPass.bloomRadius
-
-        this.composer = new EffectComposer( this.renderer )
-        this.composer.addPass(this.renderScene)
-        this.composer.addPass(this.bloomPass)
-
+        this.bloom = new Bloom({scene: this.scene, camera: this.camera.camera, renderer: this.renderer})
+        // Params for constellation : BT : 0, BS: 1, BR : 0.4
 
         // Skybox
         const loader = new THREE.CubeTextureLoader()
@@ -190,16 +174,15 @@ class Constellation {
         const controlsFolder = this.gui.gui.addFolder('Controls')
         controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
 
-        const postProcessingFolder = this.gui.gui.addFolder('Post Processing')
-        this.gui.gui.add( paramsBloomPass, 'exposure', 0.1, 2 ).onChange( function ( value ) {
+        // const postProcessingFolder = this.gui.gui.addFolder('Post Processing')
+        // this.gui.gui.add( paramsBloomPass, 'exposure', 0.1, 2 ).onChange( function ( value ) {
 
-            renderer.toneMappingExposure = Math.pow( value, 4.0 );
+        //     renderer.toneMappingExposure = Math.pow( value, 4.0 );
 
-        } )
-        postProcessingFolder.add(this.bloomPass, 'strength', 0, 3, 0.1).name('BloomStrength')
-        postProcessingFolder.add(this.bloomPass, 'threshold', 0, 3, 0.1).name('bloomThreshold')
-        postProcessingFolder.add(this.bloomPass, 'radius', 0, 3, 0.1).name('bloomRadius')
-
+        // } )
+        // postProcessingFolder.add(this.bloomPass, 'strength', 0, 3, 0.1).name('BloomStrength')
+        // postProcessingFolder.add(this.bloomPass, 'threshold', 0, 3, 0.1).name('bloomThreshold')
+        // postProcessingFolder.add(this.bloomPass, 'radius', 0, 3, 0.1).name('bloomRadius')
     }
     initCamera() {
         this.camera = new Camera({
@@ -247,7 +230,6 @@ class Constellation {
         if(intersectedObject.length > 0 && this.isIntersected === false) {
             this.lastIntersectedObject = intersectedObject[0]
             console.log(this.lastIntersectedObject.object)
-            // this.lastIntersectedObject.object.scale.set(this.cristalScale, this.cristalScale, this.cristalScale)
             gsap.to(
                 this.lastIntersectedObject.object.scale,
                 {
@@ -273,14 +255,14 @@ class Constellation {
                     onComplete: this.increaseCounter
                 }
             )
-            // this.lastIntersectedObject.object.scale.set(1/this.cristalScale, 1/this.cristalScale, 1/this.cristalScale)
             this.lastIntersectedObject = null
             this.isIntersected = false
         }
 
+
         this.controls.update()
 
-        this.renderer.render(this.scene, this.camera.camera)
+        this.bloom.animate()
     }
 }
 
