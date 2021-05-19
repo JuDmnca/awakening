@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import { ReinhardToneMapping } from "three"
 import Camera from './Camera'
 import MainGui from './Utils/MainGui'
 import Bloom from './Utils/Bloom'
@@ -98,14 +99,14 @@ class Common {
         this.scene = new THREE.Scene()
 
         this.renderer = new THREE.WebGLRenderer({
-            canvas: $canvas
+            canvas: $canvas,
+            antialias: true,
+            alpha: true
         })
-
+        this.renderer.toneMapping = ReinhardToneMapping
         this.renderer.setPixelRatio(window.devicePixelRatio)
-
         this.renderer.setSize(this.size.windowW, this.size.windowH)
-        this.renderer.shadowMap.enabled = true
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+        this.renderer.setClearColor(0x000000)
 
         this.clock = new THREE.Clock()
         this.clock.start()
@@ -149,9 +150,7 @@ class Common {
         // lightFolder.add(this.params.light, 'angle', 0, Math.PI * 2, 0.1).name('angle')
         // lightFolder.add(this.light, 'intensity', 0, 10, 1).name('Intensity')
 
-
-        this.bloom = new Bloom({scene: this.scene, camera: this.camera.camera, renderer: this.renderer})
-        this.bloom.init()
+        this.bloom = new Bloom( {scene: this.scene, camera: this.camera.camera, renderer: this.renderer} )
     }
 
     initCamera() {
@@ -288,16 +287,16 @@ class Common {
         this.camera.camera.lookAt(this.camLook)
 
         // TO DO : update code so camera moves like head following the mouse BUT needs to check camera rotation before
-        if (!this.currentScene.isFixedView()) {
-            this.target.x = ( 1 - this.mouse.x ) * 0.002;
-            this.target.y = ( 1 - this.mouse.y ) * 0.002;
+        // if (!this.currentScene.isFixedView()) {
+        //     this.target.x = ( 1 - this.mouse.x ) * 0.002;
+        //     this.target.y = ( 1 - this.mouse.y ) * 0.002;
 
-            // this.camera.camera.rotation.x += 0.01 * ( this.target.y - this.camera.camera.rotation.x )
-            // this.camera.camera.rotation.y += 0.2 * ( this.target.x - this.camera.camera.rotation.y )
-        }
+        //     // this.camera.camera.rotation.x += 0.01 * ( this.target.y - this.camera.camera.rotation.x )
+        //     // this.camera.camera.rotation.y += 0.2 * ( this.target.x - this.camera.camera.rotation.y )
+        // }
 
+        this.bloom.render()
         // this.renderer.render(this.scene, this.camera.camera)
-        this.bloom.animate()
     }
 }
 
