@@ -125,6 +125,15 @@ class Constellation {
 
         // Listeners
         this.addWheelEvent()
+        window.addEventListener('click', () => {
+            if(this.intersectedObject.length > 0) {
+                const datas = {
+                    name: 'Julie',
+                    smell: 'Muscade'
+                }
+                store.commit('constellation/toggleClick', datas)       
+            }
+        })
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
@@ -167,7 +176,6 @@ class Constellation {
         this.gui = new MainGui()
         const controlsFolder = this.gui.gui.addFolder('Controls')
         controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
-
     }
     initCamera() {
         this.camera = new Camera({
@@ -210,10 +218,9 @@ class Constellation {
             this.cubes[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
         }
         // Intersections
-        const intersectedObject = this.raycaster.render(this.scene)
-        if(intersectedObject.length > 0 && this.isIntersected === false) {
-            this.lastIntersectedObject = intersectedObject[0]
-            console.log(this.lastIntersectedObject.object)
+        this.intersectedObject = this.raycaster.render(this.scene)
+        if(this.intersectedObject.length > 0 && this.isIntersected === false) {
+            this.lastIntersectedObject = this.intersectedObject[0]
             gsap.to(
                 this.lastIntersectedObject.object.scale,
                 {
@@ -226,7 +233,7 @@ class Constellation {
                 }
               )
             this.isIntersected = true
-        } else if(!intersectedObject.length > 0 && this.isIntersected === true) {
+        } else if(!this.intersectedObject.length > 0 && this.isIntersected === true) {
             gsap.killTweensOf(this.lastIntersectedObject.object.scale)
             gsap.to(
                 this.lastIntersectedObject.object.scale,
@@ -242,7 +249,6 @@ class Constellation {
             this.lastIntersectedObject = null
             this.isIntersected = false
         }
-
 
         this.controls.update()
 
