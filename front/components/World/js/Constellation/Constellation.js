@@ -131,7 +131,8 @@ class Constellation {
                     name: 'Julie',
                     smell: 'Muscade'
                 }
-                store.commit('constellation/toggleClick', datas)       
+                store.commit('constellation/getDatas', datas)       
+                store.commit('constellation/toggleVisible')       
             }
         })
 

@@ -12,8 +12,10 @@ const actions = {
 }
 
 const mutations = {
-  toggleClick(state, resp) {
+  toggleVisible(state) {
     state.isClicked = !state.isClicked
+  },
+  getDatas(state, resp) {
     state.dataUsers.name = resp.name
     state.dataUsers.smell = resp.smell
   }

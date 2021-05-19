@@ -26,7 +26,6 @@ export default {
             // Watch of the window have to be open
             this.$store.watch(() => this.$store.state.constellation.isClicked, isClicked => {
               isClicked ? this.isVisible = true : this.isVisible = false
-              console.log(this.isVisible)
             })
         },
         methods: {
