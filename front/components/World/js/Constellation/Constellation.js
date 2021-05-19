@@ -7,7 +7,7 @@ import Raycaster from '../Utils/Raycaster'
 import gsap from "gsap"
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+import Bloom from '../Utils/Bloom.js'
 
 let store
 let nuxt
@@ -69,9 +69,7 @@ class Constellation {
         this.randomCubesSpeed = []
 
         // Post Processing
-        this.renderScene = null
-        this.bloomPass = null
-        this.composer = null
+        this.bloom = null
     }
 
     init($canvas) {
@@ -101,10 +99,6 @@ class Constellation {
             transparent: 0
         })
 
-
-        // const cube = new THREE.Mesh(cubeGeometry, cubeTransparentMaterial)
-        // this.scene.add(cube)
-        // console.log(Math.floor(Math.random()*16777215).toString(16))
         // Generation of this.cubes
         for(let i = 0; i < this.nbEtoiles; i++) {
             const cubeMaterial = new THREE.MeshStandardMaterial({
@@ -118,7 +112,6 @@ class Constellation {
             
             this.cubes[i].position.set(this.getRandomArbitrary(-30, 30) , this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
             
-            // this.cubes[i].scale = new THREE.Vector3(0.5, 0.5, 0.5)
             this.scene.add(this.cubes[i])
         }
 
@@ -129,10 +122,19 @@ class Constellation {
 
         // Init camera
         this.initCamera()
-        // this.camera.camera.position.z = -2
 
         // Listeners
         this.addWheelEvent()
+        window.addEventListener('click', () => {
+            if(this.intersectedObject.length > 0) {
+                const datas = {
+                    name: 'Julie',
+                    smell: 'Muscade'
+                }
+                store.commit('constellation/getDatas', datas)       
+                store.commit('constellation/toggleVisible')       
+            }
+        })
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
@@ -156,22 +158,8 @@ class Constellation {
         this.raycaster.render(this.scene)
 
         // Post Processing
-        this.renderScene = new RenderPass(this.scene, this.camera.camera)
-        this.bloomPass = new UnrealBloomPass( new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85)
-        const paramsBloomPass = {
-            exposure: 1.5,
-            bloomStrength: 3,
-            bloomThreshold: 0,
-            bloomRadius: 10
-        }
-        this.bloomPass.threshold = paramsBloomPass.bloomThreshold
-        this.bloomPass.strength = paramsBloomPass.bloomStrength
-        this.bloomPass.radius = paramsBloomPass.bloomRadius
-
-        this.composer = new EffectComposer( this.renderer )
-        this.composer.addPass(this.renderScene)
-        this.composer.addPass(this.bloomPass)
-
+        this.bloom = new Bloom({scene: this.scene, camera: this.camera.camera, renderer: this.renderer})
+        // Params for constellation : BT : 0, BS: 1, BR : 0.4
 
         // Skybox
         const loader = new THREE.CubeTextureLoader()
@@ -189,23 +177,11 @@ class Constellation {
         this.gui = new MainGui()
         const controlsFolder = this.gui.gui.addFolder('Controls')
         controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
-
-        const postProcessingFolder = this.gui.gui.addFolder('Post Processing')
-        this.gui.gui.add( paramsBloomPass, 'exposure', 0.1, 2 ).onChange( function ( value ) {
-
-            renderer.toneMappingExposure = Math.pow( value, 4.0 );
-
-        } )
-        postProcessingFolder.add(this.bloomPass, 'strength', 0, 3, 0.1).name('BloomStrength')
-        postProcessingFolder.add(this.bloomPass, 'threshold', 0, 3, 0.1).name('bloomThreshold')
-        postProcessingFolder.add(this.bloomPass, 'radius', 0, 3, 0.1).name('bloomRadius')
-
     }
     initCamera() {
         this.camera = new Camera({
             window: this.size,
         })
-        // this.scene.add(this.camera.camera)
     }
 
     getRandomArbitrary(min, max) {
@@ -243,11 +219,9 @@ class Constellation {
             this.cubes[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
         }
         // Intersections
-        const intersectedObject = this.raycaster.render(this.scene)
-        if(intersectedObject.length > 0 && this.isIntersected === false) {
-            this.lastIntersectedObject = intersectedObject[0]
-            console.log(this.lastIntersectedObject.object)
-            // this.lastIntersectedObject.object.scale.set(this.cristalScale, this.cristalScale, this.cristalScale)
+        this.intersectedObject = this.raycaster.render(this.scene)
+        if(this.intersectedObject.length > 0 && this.isIntersected === false) {
+            this.lastIntersectedObject = this.intersectedObject[0]
             gsap.to(
                 this.lastIntersectedObject.object.scale,
                 {
@@ -260,7 +234,7 @@ class Constellation {
                 }
               )
             this.isIntersected = true
-        } else if(!intersectedObject.length > 0 && this.isIntersected === true) {
+        } else if(!this.intersectedObject.length > 0 && this.isIntersected === true) {
             gsap.killTweensOf(this.lastIntersectedObject.object.scale)
             gsap.to(
                 this.lastIntersectedObject.object.scale,
@@ -273,14 +247,13 @@ class Constellation {
                     onComplete: this.increaseCounter
                 }
             )
-            // this.lastIntersectedObject.object.scale.set(1/this.cristalScale, 1/this.cristalScale, 1/this.cristalScale)
             this.lastIntersectedObject = null
             this.isIntersected = false
         }
 
         this.controls.update()
 
-        this.renderer.render(this.scene, this.camera.camera)
+        this.bloom.animate()
     }
 }
 
