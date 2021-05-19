@@ -1,6 +1,9 @@
 <template>
   <div class="constellation">
     <canvas id="canvas" ref="canvas" />
+    <transition name="fade" >
+      <Interface-Constellation-Common v-if="isVisible" />
+    </transition>
   </div>
 </template>
 
@@ -10,6 +13,7 @@ export default {
     name: 'constellation',
         data() {
             return {
+              isVisible: false
             }
         },
         computed: {
@@ -17,6 +21,12 @@ export default {
         mounted() {
             new Scene({
                 $canvas: this.$refs.canvas
+            })
+
+            // Watch of the window have to be open
+            this.$store.watch(() => this.$store.state.constellation.isClicked, isClicked => {
+              isClicked ? this.isVisible = true : this.isVisible = false
+              console.log(this.isVisible)
             })
         },
         methods: {
@@ -30,6 +40,7 @@ body {
 }
 
 canvas {
+    z-index: -1;
     position: absolute;
     top: 0;
 }
