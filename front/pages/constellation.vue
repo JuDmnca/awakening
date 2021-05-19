@@ -2,7 +2,7 @@
   <div class="constellation">
     <canvas id="canvas" ref="canvas" />
     <transition name="fade" >
-      <Interface-Constellation-Common v-if="isVisible" />
+      <Interface-Constellation-Profile v-if="isVisible" />
     </transition>
   </div>
 </template>
@@ -39,7 +39,7 @@ body {
 }
 
 canvas {
-    z-index: -1;
+    z-index: 0;
     position: absolute;
     top: 0;
 }

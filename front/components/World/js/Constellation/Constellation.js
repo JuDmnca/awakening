@@ -171,7 +171,7 @@ class Constellation {
             require('../../../../assets/textures/png/rocks/pz.png'),
             require('../../../../assets/textures/png/rocks/nz.png')
         ]);
-        this.scene.background = new THREE.Color('black')
+        this.scene.background = texture
 
         // GUI
         this.gui = new MainGui()
@@ -219,41 +219,49 @@ class Constellation {
             this.cubes[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
         }
         // Intersections
-        this.intersectedObject = this.raycaster.render(this.scene)
-        if(this.intersectedObject.length > 0 && this.isIntersected === false) {
-            this.lastIntersectedObject = this.intersectedObject[0]
-            gsap.to(
-                this.lastIntersectedObject.object.scale,
-                {
-                    x: this.cristalScale,
-                    y: this.cristalScale,
-                    z: this.cristalScale,
-                    duration: 1,
-                    ease: "power3.out",
-                    onComplete: this.increaseCounter
-                }
-              )
-            this.isIntersected = true
-        } else if(!this.intersectedObject.length > 0 && this.isIntersected === true) {
-            gsap.killTweensOf(this.lastIntersectedObject.object.scale)
-            gsap.to(
-                this.lastIntersectedObject.object.scale,
-                {
-                    x: 1/this.cristalScale,
-                    y: 1/this.cristalScale,
-                    z: 1/this.cristalScale,
-                    duration: 1,
-                    ease: "power3.out",
-                    onComplete: this.increaseCounter
-                }
-            )
-            this.lastIntersectedObject = null
-            this.isIntersected = false
-        }
+        // if(store) {
+        //     console.log(store.state.constellation.isVisible)  
+        // }
+        
+            this.intersectedObject = this.raycaster.render(this.scene)
+            if(this.intersectedObject.length > 0 && this.isIntersected === false) {
+                this.lastIntersectedObject = this.intersectedObject[0]
+                gsap.to(
+                    this.lastIntersectedObject.object.scale,
+                    {
+                        x: this.cristalScale,
+                        y: this.cristalScale,
+                        z: this.cristalScale,
+                        duration: 1,
+                        ease: "power3.out",
+                        onComplete: this.increaseCounter
+                    }
+                  )
+                this.isIntersected = true
+            } else if(!this.intersectedObject.length > 0 && this.isIntersected === true) {
+                gsap.killTweensOf(this.lastIntersectedObject.object.scale)
+                gsap.to(
+                    this.lastIntersectedObject.object.scale,
+                    {
+                        x: 1/this.cristalScale,
+                        y: 1/this.cristalScale,
+                        z: 1/this.cristalScale,
+                        duration: 1,
+                        ease: "power3.out",
+                        onComplete: this.increaseCounter
+                    }
+                )
+                this.lastIntersectedObject = null
+                this.isIntersected = false
+            }
+        
+
+
+        // this.bloom.animate()
+        this.renderer.render(this.scene, this.camera.camera)
 
         this.controls.update()
 
-        this.bloom.animate()
     }
 }
 
