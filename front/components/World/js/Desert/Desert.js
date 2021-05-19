@@ -110,9 +110,14 @@ export default class Desert {
       reflectivity: 1,
       combine: THREE.AddOperation,
       transparent: true,
-      opacity: .9,
-      side: THREE.DoubleSide,
-      premultipliedAlpha: true
+      opacity: 0.3,
+      premultipliedAlpha: true,
+      depthWrite: false
+    })
+    const innerCrystalsMaterial = new THREE.MeshBasicMaterial({
+      color: "white",
+      opacity: 0.1,
+      transparent: true
     })
 
     // Have to setTimouté to wait the generation of crystals and the watcher of the sound
@@ -120,6 +125,9 @@ export default class Desert {
       // Crytals
       for (let i = 1; i <= 19; i++) {
         this.desertGroup.children[2].children[i].material = crystalsMaterial
+        this.desertGroup.children[2].children[i].layers.enable(1)
+        this.desertGroup.children[2].children[i + 19].material = innerCrystalsMaterial
+        this.desertGroup.children[2].children[i + 19].layers.enable(1)
       }
 
       // Watch on store if we have to mute sounds
@@ -172,9 +180,8 @@ export default class Desert {
     this.spores.particles.add( this.spotLightOnFlowers )
 
     // Fog
-    const colorBG = new THREE.Color('#877d6f')
+    const colorBG = new THREE.Color('#13171C')
     scene.fog = new THREE.Fog(colorBG, 10, 300)
-    scene.background = colorBG
 
     // GUI
     // Lights
