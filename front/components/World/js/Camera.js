@@ -1,13 +1,13 @@
 import * as THREE from 'three'
 
 export default class Camera {
-  constructor(options) {
+  constructor (options) {
     this.window = options.window
 
     this.setCamera()
   }
 
-  setCamera() {
+  setCamera () {
     this.camera = new THREE.PerspectiveCamera(
       75,
       this.window.windowW / this.window.windowH,

@@ -10,12 +10,19 @@
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
+    "-": "0.0.1",
+    "@nuxtjs/eslint-config": "^6.0.0",
+    "@nuxtjs/eslint-module": "^3.0.2",
     "@nuxtjs/firebase": "^7.5.0",
-    "core-js": "^3.10.1",
-    "firebase": "^8.4.1",
+    "D": "^1.0.0",
+    "babel-eslint": "^10.1.0",
+    "core-js": "^3.12.1",
+    "eslint": "^7.26.0",
+    "eslint-plugin-nuxt": "^2.0.0",
+    "firebase": "^8.6.1",
     "gsap": "^3.6.1",
-    "heroku": "^7.52.0",
-    "nuxt": "^2.15.4",
+    "heroku": "^7.54.0",
+    "nuxt": "^2.15.6",
     "perlin-noise-3d": "^0.5.4",
     "three": "^0.126.1"
   },
