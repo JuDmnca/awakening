@@ -69,7 +69,7 @@ class Constellation {
         this.randomCubesSpeed = []
 
         // Post Processing
-        this.bloom = null
+        // this.bloom = null
     }
 
     init($canvas) {
@@ -90,6 +90,47 @@ class Constellation {
 
         this.clock = new THREE.Clock()
         this.clock.start()
+
+        // Skybox
+        const loader = new THREE.CubeTextureLoader()
+        loader.premultiplyAlpha = true
+        const texture = loader.load([
+            require('../../../../assets/textures/png/rocks/px.png'),
+            require('../../../../assets/textures/png/rocks/nx.png'),
+            require('../../../../assets/textures/png/rocks/py.png'),
+            require('../../../../assets/textures/png/rocks/ny.png'),
+            require('../../../../assets/textures/png/rocks/pz.png'),
+            require('../../../../assets/textures/png/rocks/nz.png')
+        ]);
+        texture.encoding = THREE.sRGBEncoding;
+        const skybox = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(200, 200, 200),
+            new THREE.ShaderMaterial({
+            uniforms: THREE.UniformsUtils.clone(THREE.ShaderLib.cube.uniforms),
+            vertexShader: THREE.ShaderLib.cube.vertexShader,
+            fragmentShader: THREE.ShaderLib.cube.fragmentShader,
+            depthTest: false,
+            depthWrite: false,
+            side: THREE.BackSide,
+            toneMapped: false,
+            })
+        );
+        
+        skybox.material.uniforms.envMap.value = texture;
+        
+        Object.defineProperty(skybox.material, 'envMap', {
+        
+            get: function() {
+        
+            return this.uniforms.envMap.value;
+        
+            }
+        
+        });
+
+        const skyboxGroup = new THREE.Group()
+        skyboxGroup.add(skybox)
+        this.scene.add(skyboxGroup)
 
         // Cube
         const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
@@ -141,7 +182,7 @@ class Constellation {
         this.light.position.set(0, 0, 0)
         this.scene.add(this.light)
 
-        this.scene.background = new THREE.Color('#003c66')
+        // this.scene.background = new THREE.Color('#003c66')
 
         // Controls
         this.controls = new OrbitControls( this.camera.camera, this.renderer.domElement );
@@ -158,25 +199,26 @@ class Constellation {
         this.raycaster.render(this.scene)
 
         // Post Processing
-        this.bloom = new Bloom({scene: this.scene, camera: this.camera.camera, renderer: this.renderer})
+        // this.bloom = new Bloom({
+        //     scene: this.scene,
+        //     camera: this.camera.camera,
+        //     renderer: this.renderer,
+        //     params: {
+        //         exposure: 1.1,
+        //         bloomStrength: 1.8,
+        //         bloomThreshold: 0,
+        //         bloomRadius: 1
+        //     }
+        // })
         // Params for constellation : BT : 0, BS: 1, BR : 0.4
 
-        // Skybox
-        const loader = new THREE.CubeTextureLoader()
-        const texture = loader.load([
-            require('../../../../assets/textures/png/rocks/px.png'),
-            require('../../../../assets/textures/png/rocks/nx.png'),
-            require('../../../../assets/textures/png/rocks/py.png'),
-            require('../../../../assets/textures/png/rocks/ny.png'),
-            require('../../../../assets/textures/png/rocks/pz.png'),
-            require('../../../../assets/textures/png/rocks/nz.png')
-        ]);
-        this.scene.background = texture
-
-        // GUI
-        this.gui = new MainGui()
-        const controlsFolder = this.gui.gui.addFolder('Controls')
-        controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
+    // GUI
+    this.gui = new MainGui()
+    const controlsFolder = this.gui.gui.addFolder('Controls')
+    controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
+    this.gui.gui.add(skybox.position, 'x', -200, 200, 1).name('x')
+    this.gui.gui.add(skybox.position, 'y', -200, 200, 1).name('y')
+    this.gui.gui.add(skybox.position, 'z', -200, 200, 1).name('z')
     }
     initCamera() {
         this.camera = new Camera({
@@ -225,7 +267,9 @@ class Constellation {
 
             this.intersectedObject = this.raycaster.render(this.scene)
             if(this.intersectedObject.length > 0 && this.isIntersected === false) {
+                
                 this.lastIntersectedObject = this.intersectedObject[0]
+                gsap.killTweensOf(this.lastIntersectedObject.object.scale)
                 gsap.to(
                     this.lastIntersectedObject.object.scale,
                     {
@@ -255,10 +299,11 @@ class Constellation {
                 this.isIntersected = false
             }
 
-        // this.bloom.animate()
         this.renderer.render(this.scene, this.camera.camera)
 
         this.controls.update()
+
+        // this.bloom.render()
 
     }
 }
