@@ -110,7 +110,7 @@ export default class Desert {
       reflectivity: 1,
       combine: THREE.AddOperation,
       transparent: true,
-      opacity: 0.3,
+      opacity: 0.5,
       premultipliedAlpha: true,
       depthWrite: false
     })
@@ -122,7 +122,7 @@ export default class Desert {
 
     // Have to setTimouté to wait the generation of crystals and the watcher of the sound
     setTimeout(() => {
-      // Crytals
+      // Crytals materials
       for (let i = 1; i <= 19; i++) {
         this.desertGroup.children[2].children[i].material = crystalsMaterial
         this.desertGroup.children[2].children[i].layers.enable(1)
@@ -154,10 +154,12 @@ export default class Desert {
       const plant = new Plant( { orientation: nbPlants, flowerType: this.flowerTypes[index] } )
       this.plants.push(plant)
 
-      this.plantsGroup.add( plant.init() )
+      setTimeout(() => {
+        this.plantsGroup.add( plant.init() )
+      }, 1000)
     }
 
-    this.plantsGroup.position.set(-42, 1, 6)
+    this.plantsGroup.position.set(-41, 1, 1.4)
     this.plantsGroup.scale.set(2.5,2.5,2.5)
     this.plantsGroup.name = 'Plants'
 
@@ -168,7 +170,7 @@ export default class Desert {
 
     // Spores
     this.spores = new Particles()
-    this.spores.particles.position.set(-41, 1, 6)
+    this.spores.particles.position.set(-41, 1, 1.4)
     this.desertGroup.add(this.spores.particles)
 
     // SpotLights on Flowers

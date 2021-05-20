@@ -5,7 +5,6 @@ import MainGui from './Utils/MainGui'
 import Bloom from './Utils/Bloom'
 
 import Desert from './Desert/Desert'
-import Prairie from './Prairie/Prairie'
 
 const desertCurve = [
     [41.891, 0.85967, -41.585],
@@ -24,7 +23,7 @@ const forestCurve = [
 
 const allCurves = [desertCurve, prairieCurve, forestCurve]
 
-const start = new THREE.Vector3(-42, 1, 6)
+const start = new THREE.Vector3(-41, 1, 1.4)
 
 let store
 let nuxt
@@ -124,7 +123,7 @@ class Common {
 
         // Init light
         this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-        this.light.position.set(0, 500, 0)
+        this.light.position.set(0, 400, 0)
         this.light.castShadow = true
         this.light.shadow.mapSize.width = 1024
         this.light.shadow.mapSize.height = 1024

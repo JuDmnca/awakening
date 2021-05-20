@@ -40,9 +40,9 @@ export default class Plant {
     this.curve = new CustomSinCurve({ length: this.length })
     this.stemGeometry = new THREE.TubeGeometry( this.curve, this.segments, this.size, this.radiusSegment )
 
-    // Import flower petals texture
+    // Import stem texture
     const stemAsset = require("../../../../assets/textures/t_stem.png")
-    const stemTexture = new THREE.TextureLoader().load(stemAsset)
+    const stemTexture = new THREE.TextureLoader().load( stemAsset )
 
     this.stemShaderMaterial = new THREE.ShaderMaterial({
       uniforms : {
@@ -54,10 +54,11 @@ export default class Plant {
     })
 
     this.stemMesh = new THREE.Mesh( this.stemGeometry, this.stemShaderMaterial )
+    this.stemMesh.name = "stem"
 
     // Create Bud
     this.budPosition = this.curve.getPoints()[this.curve.getPoints().length-1]
-    this.budGeometry = new THREE.SphereGeometry( this.size*2, this.radiusSegment, this.segment )
+    this.budGeometry = new THREE.SphereGeometry( this.size * 2, this.radiusSegment, this.segment )
 		this.budShaderMaterial = new THREE.ShaderMaterial({
 			uniforms : {
 				rotationForceMatrix : { type : 'm4', value : new THREE.Matrix4() }
@@ -112,22 +113,22 @@ export default class Plant {
   }
 
   createRotationMatrix(vectRotation) {
-    let m = new THREE.Matrix4();
-    let m1 = new THREE.Matrix4();
-    let m2 = new THREE.Matrix4();
-    let m3 = new THREE.Matrix4();
+    let m = new THREE.Matrix4()
+    let m1 = new THREE.Matrix4()
+    let m2 = new THREE.Matrix4()
+    let m3 = new THREE.Matrix4()
 
-    m1.makeRotationX( -vectRotation.x );
-    m2.makeRotationY( -vectRotation.y );
-    m3.makeRotationY( -vectRotation.z );
+    m1.makeRotationX( -vectRotation.x )
+    m2.makeRotationY( -vectRotation.y )
+    m3.makeRotationY( -vectRotation.z )
 
-    m.multiplyMatrices( m1, m2 );
-    m.multiply( m3 );
+    m.multiplyMatrices( m1, m2 )
+    m.multiply( m3 )
 
-    return m;
+    return m
   }
 
   getRandomFloat(min, max) {
-    return Math.random() * (max - min) + min;
+    return Math.random() * (max - min) + min
   }
 }

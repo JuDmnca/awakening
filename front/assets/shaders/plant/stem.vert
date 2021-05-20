@@ -9,7 +9,7 @@ void main() {
 	vec4 targetPos = vec4(position, 1.0) * rotationForceMatrix;
 	vec4 oldPos = vec4(position, 1.0);
 
-	vec4 pos = oldPos + ( (targetPos - oldPos) * vel ) ;
+	vec4 pos = oldPos + ( (targetPos - oldPos) * vel );
 
 	gl_Position = projectionMatrix *
 	                modelViewMatrix *
