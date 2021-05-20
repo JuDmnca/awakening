@@ -6,11 +6,10 @@ export default class Loader {
     this.loader = null
     this.props = props
     this.material = this.props.material
+    this.loader = new GLTFLoader()
   }
 
   init (scene) {
-    this.loader = new GLTFLoader()
-
     const materialImported = this.material
     const position = this.props.position
     // const index = this.props.index
@@ -36,17 +35,22 @@ export default class Loader {
   }
 
   initFlowerObject (type) {
-    this.loader = new GLTFLoader()
     const materialImported = this.material
     let rotation = 0
 
-    const object = new THREE.Object3D()
+    const flower = new THREE.Object3D()
 
     this.loader.load(this.props.model, function (gltf) {
       rotation = rotation + (Math.floor(Math.random() * 360))
 
-      for (let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 1); nbChildren++) {
-        gltf.scene.children[nbChildren].material = materialImported
+      if (type !== 'blue') {
+        for (let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 1); nbChildren++) {
+          gltf.scene.children[nbChildren].material = materialImported
+        }
+      } else {
+        for (let nbChildren = 0; nbChildren <= (gltf.scene.children[0].children.length - 1); nbChildren++) {
+          gltf.scene.children[0].children[nbChildren].material = materialImported
+        }
       }
 
       gltf.scene.rotation.y = rotation
@@ -73,13 +77,27 @@ export default class Loader {
           break
       }
 
-      object.name = type
-      object.add(gltf.scene)
+      flower.name = type
+      flower.add(gltf.scene)
     }, undefined, function (error) {
       // eslint-disable-next-line no-console
       console.error(error)
     })
 
-    return object
+    return flower
+  }
+
+  initGrass () {
+    const grass = new THREE.Object3D()
+    this.loader.load(this.props.model, function (gltf) {
+      gltf.scene.scale.set(1.6, 1.6, 1.6)
+      gltf.scene.position.set(2.5, -1.5, 2)
+      grass.add(gltf.scene)
+      grass.name = 'grass'
+    }, undefined, function (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    })
+    return grass
   }
 }

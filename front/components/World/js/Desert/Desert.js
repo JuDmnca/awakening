@@ -5,6 +5,8 @@ import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
 import Raycaster from '../Utils/Raycaster'
 import modelDesert from '../../../../assets/models/m_desert.glb'
+import modelGrass from '../../../../assets/models/m_grass.gltf'
+import Loader from '../Loader'
 import Land from '../Land'
 import MainGui from '../Utils/MainGui'
 import ColorGUIHelper from '../Utils/ColorGUIHelper'
@@ -48,6 +50,7 @@ export default class Desert {
     this.myCube = null
 
     this.plantsGroup = new THREE.Group()
+    this.grass = null
     this.flowerTypes = ['white', 'tulip', 'blue', 'lavender']
     this.plants = []
     this.plantsOffsets = {
@@ -158,7 +161,12 @@ export default class Desert {
       }, 1000)
     }
 
-    this.plantsGroup.position.set(-41, 1, 1.4)
+    this.grass = new Loader({ model: modelGrass })
+    setTimeout(() => {
+      this.plantsGroup.add(this.grass.initGrass())
+    }, 1000)
+
+    this.plantsGroup.position.set(-41, 0.5, 1.4)
     this.plantsGroup.scale.set(2.5, 2.5, 2.5)
     this.plantsGroup.name = 'Plants'
 
