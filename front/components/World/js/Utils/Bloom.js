@@ -10,7 +10,6 @@ bloomLayer.set( BLOOM_SCENE )
 
 const darkMaterial = new THREE.MeshBasicMaterial( { color: "black", fog: false } )
 const materials = {}
-let condition = false
 
 let bloomComposer = null
 let finalComposer = null
