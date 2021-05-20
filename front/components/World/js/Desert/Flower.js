@@ -30,17 +30,17 @@ export default class Flower {
     switch (flowerType) {
       case 'white':
         modelFlower = modelwhite
-        flowerFrag = require("../../../../assets/textures/t_petal3.png")
+        flowerFrag = require("../../../../assets/textures/t_white.png")
         flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
         break;
       case 'tulip':
         modelFlower = modelTulip
-        flowerFrag = require("../../../../assets/textures/t_petal3.png")
+        flowerFrag = require("../../../../assets/textures/t_tulip.png")
         flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
         break;
       case 'blue':
         modelFlower = modelblue
-        flowerFrag = require("../../../../assets/textures/t_petal2.png")
+        flowerFrag = require("../../../../assets/textures/t_blue.png")
         flowerVert = require("../../../../assets/textures/t_petal_s.jpg")
         break;
     }

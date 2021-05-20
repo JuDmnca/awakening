@@ -102,16 +102,16 @@ class Constellation {
         // Generation of this.cubes
         for(let i = 0; i < this.nbEtoiles; i++) {
             const cubeMaterial = new THREE.MeshStandardMaterial({
-                
+
                 color: new THREE.Color('#' + Math.floor(Math.random()*16777215).toString(16)),
                 opacity: 1,
                 transparent: 1
             })
 
             this.cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
-            
+
             this.cubes[i].position.set(this.getRandomArbitrary(-30, 30) , this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
-            
+
             this.scene.add(this.cubes[i])
         }
 
@@ -131,8 +131,8 @@ class Constellation {
                     name: 'Julie',
                     smell: 'Muscade'
                 }
-                store.commit('constellation/getDatas', datas)       
-                store.commit('constellation/toggleVisible')       
+                store.commit('constellation/getDatas', datas)
+                store.commit('constellation/toggleVisible')
             }
         })
 
@@ -220,9 +220,9 @@ class Constellation {
         }
         // Intersections
         // if(store) {
-        //     console.log(store.state.constellation.isVisible)  
+        //     console.log(store.state.constellation.isVisible)
         // }
-        
+
             this.intersectedObject = this.raycaster.render(this.scene)
             if(this.intersectedObject.length > 0 && this.isIntersected === false) {
                 this.lastIntersectedObject = this.intersectedObject[0]
@@ -254,8 +254,6 @@ class Constellation {
                 this.lastIntersectedObject = null
                 this.isIntersected = false
             }
-        
-
 
         // this.bloom.animate()
         this.renderer.render(this.scene, this.camera.camera)
