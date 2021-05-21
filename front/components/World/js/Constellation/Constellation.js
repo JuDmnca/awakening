@@ -97,12 +97,12 @@ class Constellation {
     const loader = new THREE.CubeTextureLoader()
     loader.premultiplyAlpha = true
     const texture = loader.load([
-      require('../../../../assets/textures/png/rocks/px.png'),
-      require('../../../../assets/textures/png/rocks/nx.png'),
-      require('../../../../assets/textures/png/rocks/py.png'),
-      require('../../../../assets/textures/png/rocks/ny.png'),
-      require('../../../../assets/textures/png/rocks/pz.png'),
-      require('../../../../assets/textures/png/rocks/nz.png')
+      require('../../../../assets/textures/png/constellation/px.png'),
+      require('../../../../assets/textures/png/constellation/nx.png'),
+      require('../../../../assets/textures/png/constellation/py.png'),
+      require('../../../../assets/textures/png/constellation/ny.png'),
+      require('../../../../assets/textures/png/constellation/pz.png'),
+      require('../../../../assets/textures/png/constellation/nz.png')
     ])
     texture.encoding = THREE.sRGBEncoding
     const skybox = new THREE.Mesh(
@@ -119,6 +119,7 @@ class Constellation {
     )
 
     skybox.material.uniforms.envMap.value = texture
+    skybox.layers.enable(1)
 
     Object.defineProperty(skybox.material, 'envMap', {
 
