@@ -171,7 +171,7 @@ export default class Desert {
     this.raycaster.init(this.camera, renderer)
 
     // Fog
-    const colorBG = new THREE.Color('#404040')
+    const colorBG = new THREE.Color('#040408')
     scene.fog = new THREE.Fog(colorBG, 10, 300)
     const loader = new THREE.CubeTextureLoader()
     loader.premultiplyAlpha = true
@@ -200,7 +200,7 @@ export default class Desert {
     )
 
     skybox.material.uniforms.envMap.value = texture
-
+    skybox.layers.enable(1)
     Object.defineProperty(skybox.material, 'envMap', {
       get () {
         return this.uniforms.envMap.value
