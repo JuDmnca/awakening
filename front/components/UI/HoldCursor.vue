@@ -1,7 +1,8 @@
 <template>
   <section class="cursor">
-    <svg class="circle" ref="circle" viewBox="0 0 200 200">
-      <path class="circle__path"
+    <svg ref="circle" class="circle" viewBox="0 0 200 200">
+      <path
+        class="circle__path"
         d="
           M 100, 100
           m -75, 0
@@ -10,18 +11,24 @@
           "
       />
     </svg>
-    <svg class="point" ref="point" width="8" height="8" viewBox="0 0 8 8">
-      <circle id="Ellipse_16" data-name="Ellipse 16" cx="4" cy="4" r="4" fill="#fff"/>
+    <svg ref="point" class="point" width="8" height="8" viewBox="0 0 8 8">
+      <circle
+        id="Ellipse_16"
+        data-name="Ellipse 16"
+        cx="4"
+        cy="4"
+        r="4"
+        fill="#fff"
+      />
     </svg>
-
   </section>
 </template>
 
 <script>
-import gsap from "gsap";
+import gsap from 'gsap'
 
 export default {
-  data() {
+  data () {
     return {
       circle: null,
       inner: null,
@@ -29,13 +36,13 @@ export default {
       active: false
     }
   },
-  mounted() {
+  mounted () {
     this.init()
     this.$nextTick(() => {
-      window.addEventListener("mouseover", this.followCursor)
-      window.addEventListener("mousemove", this.followCursor)
-      window.addEventListener("mousedown", this.holdCursor)
-      window.addEventListener("mouseup", this.unHoldCursor)
+      window.addEventListener('mouseover', this.followCursor)
+      window.addEventListener('mousemove', this.followCursor)
+      window.addEventListener('mousedown', this.holdCursor)
+      window.addEventListener('mouseup', this.unHoldCursor)
     })
     this.$nuxt.$on('activeCursor', () => {
       this.activeCursor()
@@ -45,18 +52,18 @@ export default {
     })
   },
   methods: {
-    init() {
+    init () {
       this.circle = this.$refs.circle
       this.inner = this.$refs.inner
       this.point = this.$refs.point
-      gsap.set(this.circle, { scale: 1. })
+      gsap.set(this.circle, { scale: 1.0 })
       gsap.set(this.circle, { fillOpacity: 0 })
     },
-    followCursor(e) {
+    followCursor (e) {
       gsap.to([this.circle, this.inner, this.point], {
         x: e.clientX - 50 / 2,
         y: e.clientY - 50 / 2,
-        duration: 0,
+        duration: 0
       })
     },
     holdCursor () {
@@ -64,12 +71,12 @@ export default {
       gsap.to(
         this.circle,
         {
-        scale: 0.4,
-        strokeOpacity: 0,
-        fillOpacity: 0.4,
-        duration: this.$store.state.durationHold,
-        ease: "power3.out",
-        onComplete: this.increaseCounter
+          scale: 0.4,
+          strokeOpacity: 0,
+          fillOpacity: 0.4,
+          duration: this.$store.state.durationHold,
+          ease: 'power3.out',
+          onComplete: this.increaseCounter
         }
       )
     },
@@ -79,11 +86,11 @@ export default {
       gsap.to(
         this.circle,
         {
-        scale: this.active? 0.6 : 1,
-        strokeOpacity: 1,
-        fillOpacity: 0,
-        duration: 1,
-        ease: "power3.out",
+          scale: this.active ? 0.6 : 1,
+          strokeOpacity: 1,
+          fillOpacity: 0,
+          duration: 1,
+          ease: 'power3.out'
         }
       )
     },
@@ -92,10 +99,10 @@ export default {
       gsap.to(
         this.circle,
         {
-        scale: 0.6,
-        // - 0.2 because we have the impression that the hold ends at the right time
-        duration: this.$store.state.durationHold - 1,
-        ease: "power.out"
+          scale: 0.6,
+          // - 0.2 because we have the impression that the hold ends at the right time
+          duration: this.$store.state.durationHold - 1,
+          ease: 'power.out'
         }
       )
     },
@@ -105,28 +112,28 @@ export default {
       gsap.to(
         this.circle,
         {
-        scale: 1,
-        duration: 1,
-        ease: "power3.out",
+          scale: 1,
+          duration: 1,
+          ease: 'power3.out'
         }
       )
     },
     increaseCounter () {
       if (this.hold) {
-        if (this.$store.state.desert.counter != 3) {
+        if (this.$store.state.desert.counter !== 3) {
           this.$store.commit('desert/increaseCounter')
         }
         if (this.$store.state.desert.counter === 3) {
           this.$nuxt.$emit('questionVisible', 2)
           // this.hideCursor()
-          window.removeEventListener("mousedown", this.showCursor)
+          window.removeEventListener('mousedown', this.showCursor)
           // window.removeEventListener("mouseup", this.hideCursor)
           // this.terminate()
         }
       }
     }
-  },
-};
+  }
+}
 </script>
 
 <style scoped>
@@ -166,4 +173,3 @@ path {
   pointer-events: none;
 }
 </style>
-

@@ -35,7 +35,7 @@ export default class Flower {
         break
       case 'tulip':
         modelFlower = modelTulip
-        flowerFrag = require('../../../../assets/textures/t_tulip.jpg')
+        flowerFrag = require('../../../../assets/textures/t_tulip.jpeg')
         flowerVert = require('../../../../assets/textures/t_petal_s.jpg')
         break
       case 'blue':

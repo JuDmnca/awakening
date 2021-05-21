@@ -95,7 +95,7 @@ export default class Plant {
   }
 
   update () {
-    if (store && store.state.desert.sRotation != null) {
+    if (store && store.state.desert.sRotation != null && store.state.desert.interaction) {
       const distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3())
       const distRotationMatrix = this.createRotationMatrix(distRotation)
 

@@ -8,7 +8,8 @@ const state = () => ({
   initialRotation: null,
   fRotation: null,
   sRotation: null,
-  isMuted: false
+  isMuted: false,
+  interaction: false
 })
 
 const actions = {
@@ -22,22 +23,25 @@ const mutations = {
     state.done = resp
   },
   updateInitialRotation (state) {
-    state.initialRotation = new THREE.Vector3( 0, 0, 0 )
+    state.initialRotation = new THREE.Vector3(0, 0, 0)
   },
   updateFRotation (state, resp) {
-    state.fRotation = new THREE.Vector3( resp.x, 0, -resp.z )
+    state.fRotation = new THREE.Vector3(resp.x, 0, -resp.z)
     if (resp.euler !== undefined) {
       state.fRotation = state.fRotation.applyEuler(resp.euler)
     }
   },
   updateSRotation (state, resp) {
-    state.sRotation = new THREE.Vector3( resp.x, 0, -resp.z )
+    state.sRotation = new THREE.Vector3(resp.x, 0, -resp.z)
     if (resp.euler !== undefined) {
       state.sRotation = state.sRotation.applyEuler(resp.euler)
     }
   },
-  toggleMute(state) {
+  toggleMute (state) {
     state.isMuted = !state.isMuted
+  },
+  toggleInteraction (state) {
+    state.interaction = !state.interaction
   }
 }
 

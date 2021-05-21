@@ -1,11 +1,9 @@
-import * as THREE from 'three'
-
 const state = () => ({
   isClicked: false,
   dataUsers: {
-      id: null,
-      name: '',
-      smell: ''
+    id: null,
+    name: '',
+    smell: ''
   }
 })
 
@@ -13,16 +11,16 @@ const actions = {
 }
 
 const mutations = {
-  toggleVisible(state) {
+  toggleVisible (state) {
     state.isClicked = !state.isClicked
   },
-  getDatas(state, resp) {
+  getDatas (state, resp) {
     state.dataUsers.name = resp.name
     state.dataUsers.smell = resp.smell
   },
-  switchUser(state, resp) {
+  switchUser (state, resp) {
     // TO DO : Requêtes à la bdd avec le current ID +1 ou -1
-    if(resp === 'Previous') {
+    if (resp === 'Previous') {
       state.dataUsers.name = 'Hatios'
       state.dataUsers.smell = 'Le kebab'
     } else if (resp === 'Next') {

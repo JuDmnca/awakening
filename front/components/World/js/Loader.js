@@ -69,7 +69,6 @@ export default class Loader {
         case 'tulip':
           gltf.scene.scale.set(1.6, 1.6, 1.6)
           gltf.scene.position.set(0, -0.03, 0)
-          gltf.scene.rotation.x = 0.3
           break
         case 'blue':
           break

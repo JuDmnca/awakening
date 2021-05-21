@@ -11,7 +11,6 @@ export default class Cube {
     this.geometry = new THREE.BoxGeometry(3, 3, 2.5)
     this.material = new THREE.MeshStandardMaterial({
       color: 'grey',
-      flatShading: true,
       opacity: 0,
       transparent: true,
       depthWrite: false

@@ -10,7 +10,8 @@ const state = () => ({
   },
   worldRotation: null,
   sceneIndex: 1,
-  durationHold: 1.5
+  durationHold: 1.5,
+  cameraZoomed: false
 })
 
 const actions = {
@@ -44,6 +45,9 @@ const mutations = {
   increaseSceneIndex (state) {
     state.sceneIndex++
   },
+  updateCameraZoom (state) {
+    state.cameraZoomed = !state.cameraZoomed
+  }
 }
 
 export default {
