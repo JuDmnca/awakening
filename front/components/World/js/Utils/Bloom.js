@@ -40,7 +40,7 @@ export default class Bloom {
     bloomPass.strength = params.bloomStrength
     bloomPass.radius = params.bloomRadius
 
-    this.initGUI(params, this.renderer, bloomPass)
+    // this.initGUI(params, this.renderer, bloomPass)
 
     bloomComposer = new effectComposer.EffectComposer(this.renderer)
     bloomComposer.renderToScreen = false

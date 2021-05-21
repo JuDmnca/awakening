@@ -23,8 +23,8 @@ class Particles {
 
   init () {
     /*
-        * Particles
-        */
+      * Particles
+      */
     // Geometry
     this.particlesGeometry = new THREE.BufferGeometry()
 
@@ -55,7 +55,6 @@ class Particles {
 
       // Noise
       directionNoised[i] = noise2D(xOff, yOff) * 2
-
       xOff += 0.001
       yOff += 0.001
     }

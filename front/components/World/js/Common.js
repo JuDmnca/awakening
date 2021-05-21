@@ -11,8 +11,7 @@ const desertCurve = [
   [37.092, 2.2471, -25.002],
   [22.111, 1.6593, -25.574],
   [15.148, 2.2951, -4.389],
-  [-4.7436, 1.6304, 6.2753],
-  [-18.112, 3.9526, 1.2379]
+  [-4.7436, 1.6304, 6.2753]
 ]
 
 const prairieCurve = [
@@ -24,6 +23,7 @@ const forestCurve = [
 const allCurves = [desertCurve, prairieCurve, forestCurve]
 
 const start = new THREE.Vector3(-41, 1, 1.4)
+const end = new THREE.Vector3(start.x - 1, start.y + 6, start.z - 7.4)
 
 let store
 let nuxt
@@ -182,7 +182,7 @@ class Common {
     }
 
     // Enable spores movement and inhale if end of path
-    if (this.progression >= 0.98 && this.sporesCanMove === false) {
+    if (this.progression >= 0.90 && this.sporesCanMove === false) {
       this.currentScene.enableSporesMovement()
       this.sporesCanMove = true
     }
@@ -264,18 +264,25 @@ class Common {
     if (nuxt && store && !this.events) {
       this.addTransitionEvent()
       this.events = true
+      this.camera.addEvents()
     }
 
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
 
-    this.currentScene.render(this.time.total)
-
     // Update camera rotation & look at
-    this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)
-    this.camera.camera.position.lerp(this.vectCam, 0.1)
+    if (store && !store.state.cameraIsZoomed) {
+      if (store && store.state.desert.interaction) {
+        this.camera.camera.position.lerp(end, 0.1)
+      } else {
+        this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)
+        this.camera.camera.position.lerp(this.vectCam, 0.1)
+      }
+    }
     this.camLook.lerp(this.camTarget, 0.05)
     this.camera.camera.lookAt(this.camLook)
+
+    this.currentScene.render(this.time.total)
 
     // TO DO : update code so camera moves like head following the mouse BUT needs to check camera rotation before
     // if (!this.currentScene.isFixedView()) {

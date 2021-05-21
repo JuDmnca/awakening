@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-
 import { gsap } from 'gsap'
 import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
@@ -29,11 +28,6 @@ export default class Desert {
   constructor (props) {
     this.props = props
     this.name = 'desert'
-
-    // Generals params
-    this.params = {
-      spotLightOnFlowersColor: '#BED9FD'
-    }
 
     this.hold = false
     this.land = new Land({ texture: sandTexture })
@@ -66,14 +60,10 @@ export default class Desert {
     // Particles
     this.spores = null
 
-    // Lights
-    this.spotLightOnFlowers = null
-
     // GUI
     // this.gui = new MainGui()
 
     this.sporesElevation = 0
-    this.cameraIsZoomed = false
 
     // Audio
     this.ambiantFile = require('../../../../assets/sounds/wind.ogg')
@@ -143,10 +133,7 @@ export default class Desert {
       this.sound.sound.play()
     }, 2000)
 
-    // Cube - Hover zone for flowers
-    this.myCube = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.7 } })
-
-    // Add Plants (Flower + Stem)
+    // FLOWERS
     let index = -1
     for (let nbPlants = 0; nbPlants <= 15; nbPlants++) {
       index++
@@ -160,7 +147,10 @@ export default class Desert {
         this.plantsGroup.add(plant.init())
       }, 1000)
     }
+    // Flowers hover zone
+    this.myCube = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.6 } })
 
+    // Grass
     this.grass = new Loader({ model: modelGrass })
     setTimeout(() => {
       this.plantsGroup.add(this.grass.initGrass())
@@ -170,23 +160,15 @@ export default class Desert {
     this.plantsGroup.scale.set(2.5, 2.5, 2.5)
     this.plantsGroup.name = 'Plants'
 
+    // Spores
+    this.spores = new Particles()
+    this.spores.particles.position.set(-41, 1, 1.4)
+
+    this.desertGroup.add(this.spores.particles)
     this.desertGroup.add(this.plantsGroup)
 
     // Raycaster
     this.raycaster.init(this.camera, renderer)
-
-    // Spores
-    this.spores = new Particles()
-    this.spores.particles.position.set(-41, 1, 1.4)
-    this.desertGroup.add(this.spores.particles)
-
-    // SpotLights on Flowers
-    this.spotLightOnFlowers = new THREE.PointLight(this.params.spotLightOnFlowersColor, 1, 10)
-    this.spotLightOnFlowers.position.y += 15
-    this.spotLightOnFlowers.position.x -= 3
-    this.spotLightOnFlowers.position.z -= 3
-    // this.spotLightOnFlowers.color = '#ffffff'
-    this.spores.particles.add(this.spotLightOnFlowers)
 
     // Fog
     const colorBG = new THREE.Color('#404040')
@@ -202,6 +184,8 @@ export default class Desert {
       require('../../../../assets/textures/png/rocks/nz.png')
     ])
     texture.encoding = THREE.sRGBEncoding
+
+    // Skybox
     const skybox = new THREE.Mesh(
       new THREE.BoxBufferGeometry(20000, 20000, 20000),
       new THREE.ShaderMaterial({
@@ -218,25 +202,12 @@ export default class Desert {
     skybox.material.uniforms.envMap.value = texture
 
     Object.defineProperty(skybox.material, 'envMap', {
-
       get () {
         return this.uniforms.envMap.value
       }
-
     })
 
     scene.add(skybox)
-
-    // GUI
-    // Lights
-    // const currentSceneFolder = this.gui.gui.addFolder('Current Scene')
-    // const lightsFolder = currentSceneFolder.addFolder('Lights')
-    // lightsFolder.addColor(new ColorGUIHelper(this.spotLightOnFlowers, 'color'), 'value').name('flowers color')
-    // lightsFolder.add(this.spotLightOnFlowers, 'intensity', 0, 2, 0.1).name('intensity flowers')
-    // // Fog and Background
-    // const fogFolder = currentSceneFolder.addFolder('Fog')
-    // fogFolder.addColor(new ColorGUIHelper(scene.fog, 'color'), 'value').name('fog color')
-    // fogFolder.addColor(new ColorGUIHelper(scene, 'background'), 'value').name('background color')
 
     // Listeners
     window.addEventListener('click', () => {
@@ -253,7 +224,9 @@ export default class Desert {
       this.hold = true
       this.sporesElevation += 1000
       this.inhale()
-      this.cameraOnHold()
+      if (store.state.desert.interaction) {
+        nuxt.$emit('zoomCamera', { position: { x: -41, y: 1, z: 1.4 } })
+      }
     })
 
     let lastMouseX = -1
@@ -273,57 +246,15 @@ export default class Desert {
 
     window.addEventListener('mouseup', () => {
       this.exhale()
-      if (this.cameraIsZoomed) {
+      if (store.state.cameraIsZoomed) {
         this.cameraOnUnhold(this.camera.camera.position)
       }
     })
   }
 
   handleClick () {
-    if (this.intersects.length > 0) {
-      // eslint-disable-next-line no-console
-      console.log(this.camera.camera)
-      // gsap.to(this, {progression: 1, duration: 1, ease: "power3.out"} )
-    }
-  }
-
-  cameraOnHold () {
-    this.cameraIsZoomed = true
-    gsap.to(
-      this.camera.camera.position,
-      {
-        x: this.camera.camera.position.x + 1,
-        y: this.camera.camera.position.y - 1,
-        z: this.camera.camera.position.z - 1,
-        duration: 2,
-        ease: 'power3.out',
-        onComplete: this.cameraOnUnhold(this.camera.camera.position)
-      }
-    )
-  }
-
-  cameraOnUnhold (camera) {
-    gsap.killTweensOf(camera)
-    gsap.to(
-      this.camera.camera.position,
-      {
-        x: this.camera.camera.position.x - 1,
-        y: this.camera.camera.position.y + 1,
-        z: this.camera.camera.position.z + 1,
-        duration: 1,
-        ease: 'power3.out',
-        onComplete: () => {
-          this.cameraIsZoomed = false
-        }
-      }
-    )
-  }
-
-  isFixedView () {
-    if (this.progression > 0.9) {
-      return true
-    } else {
-      return false
+    if (this.intersects.length > 0 && this.isCursorActive && !store.state.desert.interaction) {
+      store.commit('desert/toggleInteraction')
     }
   }
 
@@ -369,10 +300,10 @@ export default class Desert {
     if (this.plantsGroup.children[0]) {
       this.intersects = this.raycaster.render(this.plantsGroup)
     }
-    if (this.intersects.length > 0 && this.isCursorActive === false && nuxt) {
+    if (this.intersects.length > 0 && !this.isCursorActive && nuxt) {
       this.isCursorActive = true
       nuxt.$emit('activeCursor')
-    } else if (this.intersects.length === 0 && nuxt && this.isCursorActive === true) {
+    } else if (this.intersects.length === 0 && nuxt && this.isCursorActive) {
       this.isCursorActive = false
       nuxt.$emit('unactiveCursor')
     }
