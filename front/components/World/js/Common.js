@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { ReinhardToneMapping } from 'three'
 import Camera from './Camera'
-// import MainGui from './Utils/MainGui'
+import MainGui from './Utils/MainGui'
 import Bloom from './Utils/Bloom'
 
 import Desert from './Desert/Desert'
@@ -77,8 +77,8 @@ class Common {
       light: {
         angle: Math.PI / 2,
         color: '#ffffff',
-        intensity: 2.85,
-        distance: 400
+        intensity: 0.3,
+        distance: 1000
       }
     }
 
@@ -124,12 +124,13 @@ class Common {
 
     // Init light
     this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-    this.light.position.set(0, 400, 0)
-    this.light.castShadow = true
-    this.light.shadow.mapSize.width = 1024
-    this.light.shadow.mapSize.height = 1024
-    // Blur of the shadows
-    this.light.shadow.radius = 3
+    this.light.position.set(568, 550, 177)
+    this.gui = new MainGui()
+    const moonFolder = this.gui.gui.addFolder('Moon')
+    moonFolder.add(this.light.position, 'x', -1000, 1000, 1).name('x')
+    moonFolder.add(this.light.position, 'y', -1000, 1000, 1).name('y')
+    moonFolder.add(this.light.position, 'z', -1000, 1000, 1).name('z')
+    moonFolder.add(this.light, 'intensity', 0, 3, 0.1).name('intensity')
 
     this.scene.add(this.light)
 
@@ -252,8 +253,8 @@ class Common {
       camera: this.camera.camera,
       renderer: this.renderer,
       params: {
-        exposure: 1,
-        bloomStrength: 1.8,
+        exposure: 1.6,
+        bloomStrength: 3,
         bloomThreshold: 0,
         bloomRadius: 1
       }
