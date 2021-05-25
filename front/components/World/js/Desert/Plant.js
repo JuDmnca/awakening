@@ -107,7 +107,9 @@ export default class Plant {
       this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix
 
       // Update flower petals
-      this.flower.update()
+      if (this.flower) {
+        this.flower.update()
+      }
     }
   }
 
