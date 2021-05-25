@@ -68,16 +68,18 @@ export default {
       }
     ]
   ],
-
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ['three/examples/jsm/controls/OrbitControls', 'three/examples/jsm/loaders/GLTFLoader', 'three/examples/jsm/postprocessing/EffectComposer.js', 'three/examples/jsm/postprocessing/RenderPass.js', 'three/examples/jsm/postprocessing/UnrealBloomPass.js'],
+    transpile: ['three/examples/jsm/controls/OrbitControls', 'three/examples/jsm/loaders/GLTFLoader', 'three/examples/jsm/postprocessing/EffectComposer.js', 'three/examples/jsm/postprocessing/RenderPass.js', 'three/examples/jsm/postprocessing/UnrealBloomPass.js', 'three/examples/jsm/loaders/DRACOLoader.js'],
     extend (config, ctx) {
       if (config.module) {
         config.module.rules.push({ test: /\.(vert|frag)$/i, use: ['raw-loader'] })
         config.module.rules.push({ test: /\.(glb|gltf)$/, use: ['file-loader'] })
         config.module.rules.push({ test: /\.(fbx|obj)$/, use: ['file-loader'] })
         config.module.rules.push({ test: /\.(ogg|mp3|wav|mpe?g)$/i, use: ['file-loader'] })
+      }
+      config.node = {
+        fs: 'empty'
       }
     }
   }
