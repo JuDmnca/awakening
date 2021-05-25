@@ -4,7 +4,7 @@ import { gsap } from 'gsap'
 import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
 import Raycaster from '../Utils/Raycaster'
-import modelDesert from '../../../../assets/models/m_desert.glb'
+import modelDesert from '../../../../assets/models/m_desert_draco.gltf'
 import modelGrass from '../../../../assets/models/m_grass.gltf'
 import Loader from '../Loader'
 import Land from '../Land'
@@ -82,8 +82,9 @@ export default class Desert {
     this.isCursorActive = false
   }
 
-  init (scene, renderer) {
-    this.land.load(this.desertGroup, modelDesert, 1)
+  async init (scene, renderer) {
+    const desertModel = await this.land.load(this.desertGroup, modelDesert, 1)
+    this.desertGroup.add(desertModel)
 
     // Sound
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile })
@@ -106,45 +107,44 @@ export default class Desert {
     textureCrystals.mapping = THREE.CubeRefractionMapping
     textureCrystals.encoding = THREE.sRGBEncoding
     const crystalsMaterial = new THREE.MeshLambertMaterial({
-      color: 0x210021,
+      color: 0xFF00FF,
       envMap: textureCrystals,
       refractionRatio: 0.8,
       reflectivity: 1,
       combine: THREE.AddOperation,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.8,
       premultipliedAlpha: true,
       depthWrite: false
     })
     const innerCrystalsMaterial = new THREE.MeshBasicMaterial({
       color: 'white',
-      opacity: 0.1,
-      transparent: true
+      opacity: 1,
+      transparent: false
     })
 
-    // Have to setTimouté to wait the generation of crystals and the watcher of the sound
-    setTimeout(() => {
-      // Crytals materials
-      for (let i = 1; i <= 19; i++) {
-        this.desertGroup.children[2].children[i].material = crystalsMaterial
-        this.desertGroup.children[2].children[i].layers.enable(1)
-        this.desertGroup.children[2].children[i + 19].material = innerCrystalsMaterial
-        this.desertGroup.children[2].children[i + 19].layers.enable(1)
+    // Crytals materials
+    for (let i = 1; i <= 19; i++) {
+      this.desertGroup.children[0].children[i].material = crystalsMaterial
+      this.desertGroup.children[0].children[i].layers.enable(1)
+      if (i !== 19) {
+        this.desertGroup.children[0].children[i + 19].material = innerCrystalsMaterial
+        this.desertGroup.children[0].children[i + 19].layers.enable(1)
       }
+    }
 
-      // Watch on store if we have to mute sounds
-      store.watch(() => store.state.desert.isMuted, (isMuted) => {
-        if (isMuted) {
-          this.sound.sound.pause()
-        } else {
-          this.sound.sound.play()
-        }
-      })
-      this.sound.sound.play()
-    }, 2000)
+    // Watch on store if we have to mute sounds
+    store.watch(() => store.state.desert.isMuted, (isMuted) => {
+      if (isMuted) {
+        this.sound.sound.pause()
+      } else {
+        this.sound.sound.play()
+      }
+    })
+    this.sound.sound.play()
 
     // Cube - Hover zone for flowers
-    this.myCube = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.7 } })
+    this.myCube = new Cube({ scene, position: { x: 0.2, y: 0, z: 0.7 } })
 
     // Add Plants (Flower + Stem)
     let index = -1
@@ -169,7 +169,6 @@ export default class Desert {
     this.plantsGroup.position.set(-41, 0.5, 1.4)
     this.plantsGroup.scale.set(2.5, 2.5, 2.5)
     this.plantsGroup.name = 'Plants'
-
     this.desertGroup.add(this.plantsGroup)
 
     // Raycaster
@@ -190,7 +189,7 @@ export default class Desert {
 
     // Fog
     const colorBG = new THREE.Color('#040408')
-    scene.fog = new THREE.Fog(colorBG, 10, 300)
+    // scene.fog = new THREE.Fog(colorBG, 10, 300)
     const loader = new THREE.CubeTextureLoader()
     loader.premultiplyAlpha = true
     const texture = loader.load([
@@ -282,7 +281,7 @@ export default class Desert {
   handleClick () {
     if (this.intersects.length > 0) {
       // eslint-disable-next-line no-console
-      console.log(this.camera.camera)
+      // console.log(this.camera.camera)
       // gsap.to(this, {progression: 1, duration: 1, ease: "power3.out"} )
     }
   }
@@ -376,7 +375,9 @@ export default class Desert {
       this.isCursorActive = false
       nuxt.$emit('unactiveCursor')
     }
-    this.spores.particles.material.uniforms.uTime.value = elapsedTime
+    if (this.spores) {
+      this.spores.particles.material.uniforms.uTime.value = elapsedTime
+    }
     this.plants.forEach((plant) => {
       plant.update()
     })
