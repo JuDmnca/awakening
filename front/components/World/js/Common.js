@@ -77,7 +77,7 @@ class Common {
       light: {
         angle: Math.PI / 2,
         color: '#ffffff',
-        intensity: 0.3,
+        intensity: 1,
         distance: 1000
       }
     }
@@ -124,7 +124,7 @@ class Common {
 
     // Init light
     this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-    this.light.position.set(568, 550, 177)
+    this.light.position.set(162, 162, -406)
     this.gui = new MainGui()
     const moonFolder = this.gui.gui.addFolder('Moon')
     moonFolder.add(this.light.position, 'x', -1000, 1000, 1).name('x')
@@ -254,7 +254,7 @@ class Common {
       renderer: this.renderer,
       params: {
         exposure: 1,
-        bloomStrength: 0.5,
+        bloomStrength: 1.5,
         bloomThreshold: 0,
         bloomRadius: 1
       }
