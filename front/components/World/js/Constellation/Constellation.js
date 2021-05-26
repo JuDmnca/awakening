@@ -207,10 +207,10 @@ class Constellation {
       camera: this.camera.camera,
       renderer: this.renderer,
       params: {
-        exposure: 0.4,
-        bloomStrength: 1,
+        exposure: 1,
+        bloomStrength: 0.5,
         bloomThreshold: 0,
-        bloomRadius: 1
+        bloomRadius: 2
       }
     })
     // Params for constellation : BT : 0, BS: 1, BR : 0.4
