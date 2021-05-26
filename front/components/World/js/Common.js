@@ -253,8 +253,8 @@ class Common {
       camera: this.camera.camera,
       renderer: this.renderer,
       params: {
-        exposure: 1.6,
-        bloomStrength: 3,
+        exposure: 1,
+        bloomStrength: 0.5,
         bloomThreshold: 0,
         bloomRadius: 1
       }

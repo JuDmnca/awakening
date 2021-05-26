@@ -102,31 +102,45 @@ export default class Desert {
       require('../../../../assets/textures/png/rocks/pz.png'),
       require('../../../../assets/textures/png/rocks/nz.png')
     ]
+    // const textureLoader = new THREE.TextureLoader()
+    // const textureCrystalsTest = textureLoader.load(require('../../../../assets/textures/png/rocks/map/crystal.png'))
+    // console.log(textureCrystalsTest)
+    // textureCrystalsTest.wrapS = THREE.RepeatWrapping
+    // textureCrystalsTest.wrapT = THREE.RepeatWrapping
+    // textureCrystalsTest.repeat.set(9, 1)
 
+    const colorCrystals = new THREE.Color('#bd1780')
     const textureCrystals = new THREE.CubeTextureLoader().load(cubeMap)
     textureCrystals.mapping = THREE.CubeRefractionMapping
     textureCrystals.encoding = THREE.sRGBEncoding
-    const crystalsMaterial = new THREE.MeshLambertMaterial({
-      color: 0xFF00FF,
+    const crystalsMaterial = new THREE.MeshPhongMaterial({
+      color: colorCrystals,
       envMap: textureCrystals,
-      refractionRatio: 0.8,
+      // refractionRatio: 1,
       reflectivity: 1,
       combine: THREE.AddOperation,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.9,
       premultipliedAlpha: true,
-      depthWrite: false
+      depthWrite: false,
+      emissive: colorCrystals,
+      emissiveIntensity: 0.8
+      // map: textureCrystalsTest
     })
-    const innerCrystalsMaterial = new THREE.MeshBasicMaterial({
-      color: 'white',
+    const innerCrystalsMaterial = new THREE.MeshPhongMaterial({
+      color: colorCrystals,
       opacity: 1,
-      transparent: false
+      transparent: true,
+      emissive: colorCrystals,
+      emissiveIntensity: 1
     })
 
     // Crytals materials
     for (let i = 1; i <= 19; i++) {
       this.desertGroup.children[0].children[i].material = crystalsMaterial
       this.desertGroup.children[0].children[i].layers.enable(1)
+
+      // Avoid the land to be shiny
       if (i !== 19) {
         this.desertGroup.children[0].children[i + 19].material = innerCrystalsMaterial
         this.desertGroup.children[0].children[i + 19].layers.enable(1)
@@ -185,7 +199,7 @@ export default class Desert {
     this.spotLightOnFlowers.position.x -= 3
     this.spotLightOnFlowers.position.z -= 3
     // this.spotLightOnFlowers.color = '#ffffff'
-    this.spores.particles.add(this.spotLightOnFlowers)
+    // this.spores.particles.add(this.spotLightOnFlowers)
 
     // Fog
     const colorBG = new THREE.Color('#040408')
