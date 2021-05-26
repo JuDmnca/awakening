@@ -10,7 +10,7 @@ export default class Loader {
     this.loader = new GLTFLoader()
   }
 
-  init (scene) {
+  init () {
     return new Promise((resolve) => {
       const materialImported = this.material
       const position = this.props.position
@@ -28,7 +28,7 @@ export default class Loader {
         const material = new THREE.MeshBasicMaterial({
           map: texture
         })
-        gltf.scene.children[0].material = material
+        // gltf.scene.children[0].material = material
         gltf.scene.children[38].material = material
         resolve(gltf.scene)
       })
