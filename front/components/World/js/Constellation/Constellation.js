@@ -151,8 +151,10 @@ class Constellation {
       })
 
       this.cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
-
-      this.cubes[i].position.set(this.getRandomArbitrary(-30, 30), this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
+      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      const y = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      this.cubes[i].position.set(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
       this.cubes[i].layers.enable(1)
       this.scene.add(this.cubes[i])
     }
@@ -227,6 +229,10 @@ class Constellation {
 
   getRandomArbitrary (min, max) {
     return Math.random() * (max - min) + min
+  }
+
+  getRandomInt (max) {
+    return Math.floor(Math.random() * max)
   }
 
   setSize () {
