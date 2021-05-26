@@ -50,7 +50,7 @@ class Constellation {
       light: {
         angle: Math.PI / 2,
         color: '#ffffff',
-        intensity: 2.85,
+        intensity: 10,
         distance: 400
       }
     }
@@ -119,7 +119,7 @@ class Constellation {
     )
 
     skybox.material.uniforms.envMap.value = texture
-    skybox.layers.enable(1)
+    // skybox.layers.enable(1)
 
     Object.defineProperty(skybox.material, 'envMap', {
 
@@ -133,36 +133,7 @@ class Constellation {
     skyboxGroup.add(skybox)
     this.scene.add(skyboxGroup)
 
-    // Cube
-    const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
-    const cubeTransparentMaterial = new THREE.MeshStandardMaterial({
-      color: 'red',
-      opacity: 0,
-      transparent: 0
-    })
-
-    // Generation of this.cubes
-    for (let i = 0; i < this.nbEtoiles; i++) {
-      const cubeMaterial = new THREE.MeshStandardMaterial({
-
-        color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
-        opacity: 1,
-        transparent: 1
-      })
-
-      this.cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
-      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
-      const y = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
-      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
-      this.cubes[i].position.set(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
-      this.cubes[i].layers.enable(1)
-      this.scene.add(this.cubes[i])
-    }
-
-    // Generation of random cube speed
-    for (let i = 0; i < this.cubes.length; i++) {
-      this.randomCubesSpeed.push(Math.random())
-    }
+    this.generateCrystals()
 
     // Init camera
     this.initCamera()
@@ -208,9 +179,9 @@ class Constellation {
       renderer: this.renderer,
       params: {
         exposure: 1,
-        bloomStrength: 0.5,
+        bloomStrength: 3.5,
         bloomThreshold: 0,
-        bloomRadius: 2
+        bloomRadius: 1
       }
     })
     // Params for constellation : BT : 0, BS: 1, BR : 0.4
@@ -233,6 +204,69 @@ class Constellation {
 
   getRandomInt (max) {
     return Math.floor(Math.random() * max)
+  }
+
+  generateCrystals () {
+    // Cube
+    const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
+    const cubeTransparentMaterial = new THREE.MeshStandardMaterial({
+      color: 'red',
+      opacity: 0,
+      transparent: 0
+    })
+
+    // Refraction
+    const cubeMap = [
+      require('../../../../assets/textures/png/constellation/px.png'),
+      require('../../../../assets/textures/png/constellation/nx.png'),
+      require('../../../../assets/textures/png/constellation/py.png'),
+      require('../../../../assets/textures/png/constellation/ny.png'),
+      require('../../../../assets/textures/png/constellation/pz.png'),
+      require('../../../../assets/textures/png/constellation/nz.png')
+    ]
+
+    const textureCrystals = new THREE.CubeTextureLoader().load(cubeMap)
+    textureCrystals.mapping = THREE.CubeRefractionMapping
+    textureCrystals.encoding = THREE.sRGBEncoding
+    const crystalsMaterial = new THREE.MeshPhongMaterial({
+      envMap: textureCrystals,
+      // refractionRatio: 1,
+      reflectivity: 1,
+      // combine: THREE.AddOperation,
+      // transparent: true,
+      // opacity: 1,
+      // premultipliedAlpha: true,
+      depthWrite: false
+      // emissive: colorCrystals,
+      // emissiveIntensity: 0.8
+      // map: textureCrystalsTest
+    })
+
+    // Generation of this.cubes
+    for (let i = 0; i < this.nbEtoiles; i++) {
+      const cubeMaterial = new THREE.MeshPhongMaterial({
+
+        color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
+        // opacity: 1,
+        // transparent: 1,
+        envMap: textureCrystals,
+        refractionRatio: 0.98
+        // reflectivity: 0.9
+      })
+
+      this.cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
+      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      const y = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      this.cubes[i].position.set(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
+      this.cubes[i].layers.enable(1)
+      this.scene.add(this.cubes[i])
+    }
+
+    // Generation of random cube speed
+    for (let i = 0; i < this.cubes.length; i++) {
+      this.randomCubesSpeed.push(Math.random())
+    }
   }
 
   setSize () {
