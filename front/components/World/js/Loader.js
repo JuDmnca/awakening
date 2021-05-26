@@ -8,16 +8,20 @@ export default class Loader {
     this.props = props
     this.material = this.props.material
     this.loader = new GLTFLoader()
+    this.init()
   }
 
   init () {
+    const dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderConfig({ type: 'js' })
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
+    this.loader.setDRACOLoader(dracoLoader)
+  }
+
+  defaultInit () {
     return new Promise((resolve) => {
       const materialImported = this.material
       const position = this.props.position
-      const dracoLoader = new DRACOLoader()
-      dracoLoader.setDecoderConfig({ type: 'js' })
-      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
-      this.loader.setDRACOLoader(dracoLoader)
       this.loader.load(this.props.model, function (gltf) {
         gltf.scene.position.x = position.x
         gltf.scene.position.y = position.y
