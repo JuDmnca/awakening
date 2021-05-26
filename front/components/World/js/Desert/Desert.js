@@ -95,12 +95,12 @@ export default class Desert {
       * TO DO : Have to find an other way
     */
     const cubeMap = [
-      require('../../../../assets/textures/png/rocks/px.png'),
-      require('../../../../assets/textures/png/rocks/nx.png'),
-      require('../../../../assets/textures/png/rocks/py.png'),
-      require('../../../../assets/textures/png/rocks/ny.png'),
-      require('../../../../assets/textures/png/rocks/pz.png'),
-      require('../../../../assets/textures/png/rocks/nz.png')
+      require('../../../../assets/textures/png/constellation/px.png'),
+      require('../../../../assets/textures/png/constellation/nx.png'),
+      require('../../../../assets/textures/png/constellation/py.png'),
+      require('../../../../assets/textures/png/constellation/ny.png'),
+      require('../../../../assets/textures/png/constellation/pz.png'),
+      require('../../../../assets/textures/png/constellation/nz.png')
     ]
     // const textureLoader = new THREE.TextureLoader()
     // const textureCrystalsTest = textureLoader.load(require('../../../../assets/textures/png/rocks/map/crystal.png'))
@@ -116,15 +116,15 @@ export default class Desert {
     const crystalsMaterial = new THREE.MeshPhongMaterial({
       color: colorCrystals,
       envMap: textureCrystals,
-      // refractionRatio: 1,
-      reflectivity: 1,
+      refractionRatio: 0.98,
+      // reflectivity: 1,
       combine: THREE.AddOperation,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.95,
       premultipliedAlpha: true,
-      depthWrite: false,
-      emissive: colorCrystals,
-      emissiveIntensity: 0.8
+      depthWrite: false
+      // emissive: colorCrystals,
+      // emissiveIntensity: 0.7
       // map: textureCrystalsTest
     })
     const innerCrystalsMaterial = new THREE.MeshPhongMaterial({
