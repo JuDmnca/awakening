@@ -18,18 +18,20 @@ const mutations = {
     state.dataUsers.push(resp.datas)
   },
   switchUser (state, resp) {
-    // TO DO : Requêtes à la bdd avec le current ID +1 ou -1
-    if (resp === 'Previous') {
-      state.currentUser.name = 'Hatios'
-      state.currentUser.smell = 'Le kebab'
-    } else if (resp === 'Next') {
-      state.currentUser.name = 'Alexia'
-      state.currentUser.smell = 'La salade'
+    if (resp === 'Previous' && state.dataUsers[state.currentUser.id - 1]) {
+      state.currentUser.name = state.dataUsers[state.currentUser.id - 1].nom
+      state.currentUser.smell = state.dataUsers[state.currentUser.id - 1].odeur
+      state.currentUser.id = state.currentUser.id - 1
+    } else if (resp === 'Next' && state.dataUsers[state.currentUser.id + 1]) {
+      state.currentUser.name = state.dataUsers[state.currentUser.id + 1].nom
+      state.currentUser.smell = state.dataUsers[state.currentUser.id + 1].odeur
+      state.currentUser.id = state.currentUser.id + 1
     }
   },
   setCurrentUser (state, resp) {
-    state.currentUser.name = resp.nom
-    state.currentUser.smell = resp.odeur
+    state.currentUser.id = resp.id
+    state.currentUser.name = resp.datas.nom
+    state.currentUser.smell = resp.datas.odeur
   }
 }
 

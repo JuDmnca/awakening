@@ -141,7 +141,11 @@ class Constellation {
     window.addEventListener('click', () => {
       if (this.intersectedObject.length > 0) {
         nuxt.$emit('onCrystalClick')
-        store.commit('constellation/setCurrentUser', this.intersectedObject[0].object.datas)
+        const currentUser = {
+          id: this.intersectedObject[0].object.userId,
+          datas: this.intersectedObject[0].object.datas
+        }
+        store.commit('constellation/setCurrentUser', currentUser)
       }
     })
 
@@ -251,6 +255,7 @@ class Constellation {
       this.cubes[i].position.set(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
       this.cubes[i].layers.enable(1)
       this.cubes[i].datas = store.state.constellation.dataUsers[i]
+      this.cubes[i].userId = i
       this.scene.add(this.cubes[i])
     }
 
