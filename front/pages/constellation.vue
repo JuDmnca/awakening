@@ -13,23 +13,39 @@ export default {
   name: 'Constellation',
   data () {
     return {
-      isVisible: false
+      isVisible: false,
+      profiles: {
+        id: null,
+        datas: {}
+      }
     }
   },
   computed: {
   },
   mounted () {
-    // eslint-disable-next-line no-new
-    new Scene({
-      $canvas: this.$refs.canvas
-    })
-
+    this.getFirestore()
     // Watch the click of crystal to display a profile
     this.$nuxt.$on('onCrystalClick', () => {
       this.isVisible = !this.isVisible
     })
   },
   methods: {
+    async getFirestore () {
+      await this.$fire.firestore
+        .collection('profiles')
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.profiles.id = doc.id
+            this.profiles.datas = doc.data()
+            this.$store.commit('constellation/setDatas', this.profiles)
+          })
+          // eslint-disable-next-line no-new
+          new Scene({
+            $canvas: this.$refs.canvas
+          })
+        })
+    }
   }
 }
 </script>
