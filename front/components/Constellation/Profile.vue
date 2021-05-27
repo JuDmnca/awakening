@@ -41,6 +41,7 @@ export default {
 
 <style scoped>
 .common-constellation {
+  position: relative;
   z-index: 10;
   padding: 100px
 }

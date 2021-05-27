@@ -142,6 +142,7 @@ class Constellation {
     this.addWheelEvent()
     window.addEventListener('click', () => {
       if (this.intersectedObject.length > 0) {
+        nuxt.$emit('onCrystalClick')
         const datas = {
           name: 'Julie',
           smell: 'Muscade'
@@ -209,11 +210,6 @@ class Constellation {
   generateCrystals () {
     // Cube
     const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
-    const cubeTransparentMaterial = new THREE.MeshStandardMaterial({
-      color: 'red',
-      opacity: 0,
-      transparent: 0
-    })
 
     // Refraction
     const cubeMap = [
@@ -230,11 +226,12 @@ class Constellation {
     textureCrystals.encoding = THREE.sRGBEncoding
     const crystalsMaterial = new THREE.MeshPhongMaterial({
       envMap: textureCrystals,
+      side: THREE.DoubleSide,
       // refractionRatio: 1,
       reflectivity: 1,
       // combine: THREE.AddOperation,
-      // transparent: true,
-      // opacity: 1,
+      transparent: true,
+      opacity: 0.8,
       // premultipliedAlpha: true,
       depthWrite: false
       // emissive: colorCrystals,
@@ -314,8 +311,7 @@ class Constellation {
           y: this.cristalScale,
           z: this.cristalScale,
           duration: 1,
-          ease: 'power3.out',
-          onComplete: this.increaseCounter
+          ease: 'power3.out'
         }
       )
       this.isIntersected = true
@@ -328,8 +324,7 @@ class Constellation {
           y: 1 / this.cristalScale,
           z: 1 / this.cristalScale,
           duration: 1,
-          ease: 'power3.out',
-          onComplete: this.increaseCounter
+          ease: 'power3.out'
         }
       )
       this.lastIntersectedObject = null
