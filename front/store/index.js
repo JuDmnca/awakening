@@ -43,7 +43,7 @@ const mutations = {
   },
   increaseSceneIndex (state) {
     state.sceneIndex++
-  },
+  }
 }
 
 export default {
