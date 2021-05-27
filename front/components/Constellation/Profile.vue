@@ -22,10 +22,10 @@ export default {
   },
   computed: {
     name () {
-      return this.$store.state.constellation.dataUsers.name
+      return this.$store.state.constellation.currentUser.name
     },
     smell () {
-      return this.$store.state.constellation.dataUsers.smell
+      return this.$store.state.constellation.currentUser.smell
     }
   },
   mounted () {

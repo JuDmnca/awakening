@@ -63,7 +63,8 @@ export default {
           measurementId: 'G-PX3DCLFETZ'
         },
         services: {
-          database: true
+          database: true,
+          firestore: true
         }
       }
     ]

@@ -59,8 +59,6 @@ class Constellation {
 
     this.controls = null
 
-    this.nbEtoiles = 40
-
     this.raycaster = null
     this.intersectedObject = null
     this.lastIntersectedObject = null
@@ -143,12 +141,7 @@ class Constellation {
     window.addEventListener('click', () => {
       if (this.intersectedObject.length > 0) {
         nuxt.$emit('onCrystalClick')
-        const datas = {
-          name: 'Julie',
-          smell: 'Muscade'
-        }
-        store.commit('constellation/getDatas', datas)
-        store.commit('constellation/toggleVisible')
+        store.commit('constellation/setCurrentUser', this.intersectedObject[0].object.datas)
       }
     })
 
@@ -240,7 +233,7 @@ class Constellation {
     })
 
     // Generation of this.cubes
-    for (let i = 0; i < this.nbEtoiles; i++) {
+    for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
       const cubeMaterial = new THREE.MeshPhongMaterial({
 
         color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
@@ -257,6 +250,7 @@ class Constellation {
       const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
       this.cubes[i].position.set(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
       this.cubes[i].layers.enable(1)
+      this.cubes[i].datas = store.state.constellation.dataUsers[i]
       this.scene.add(this.cubes[i])
     }
 
@@ -295,10 +289,6 @@ class Constellation {
       this.cubes[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
       this.cubes[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
     }
-    // Intersections
-    // if(store) {
-    //     console.log(store.state.constellation.isVisible)
-    // }
 
     this.intersectedObject = this.raycaster.render(this.scene)
     if (this.intersectedObject.length > 0 && this.isIntersected === false) {
