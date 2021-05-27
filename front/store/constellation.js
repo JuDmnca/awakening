@@ -28,8 +28,8 @@ const mutations = {
     }
   },
   setCurrentUser (state, resp) {
-    state.currentUser.nom = resp.nom
-    state.currentUser.odeur = resp.odeur
+    state.currentUser.name = resp.nom
+    state.currentUser.smell = resp.odeur
   }
 }
 
