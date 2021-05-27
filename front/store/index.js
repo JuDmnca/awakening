@@ -10,7 +10,8 @@ const state = () => ({
   },
   worldRotation: null,
   sceneIndex: 1,
-  durationHold: 1.5
+  durationHold: 1.5,
+  userIsOkToSendDatas: false
 })
 
 const actions = {
