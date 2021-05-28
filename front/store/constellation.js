@@ -22,10 +22,12 @@ const mutations = {
     if (resp === 'Previous' && state.dataUsers[state.currentUser.id - 1]) {
       state.currentUser.name = state.dataUsers[state.currentUser.id - 1].nom
       state.currentUser.smell = state.dataUsers[state.currentUser.id - 1].odeur
+      state.currentUser.img = state.dataUsers[state.currentUser.id - 1].img
       state.currentUser.id = state.currentUser.id - 1
     } else if (resp === 'Next' && state.dataUsers[state.currentUser.id + 1]) {
       state.currentUser.name = state.dataUsers[state.currentUser.id + 1].nom
       state.currentUser.smell = state.dataUsers[state.currentUser.id + 1].odeur
+      state.currentUser.img = state.dataUsers[state.currentUser.id + 1].img
       state.currentUser.id = state.currentUser.id + 1
     }
   },
