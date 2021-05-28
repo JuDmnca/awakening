@@ -10,13 +10,15 @@
       Next
     </h3>
     <img ref="userImg" src="">
-    <form @submit.prevent="sendDatasUserToFirestore">
+
+    <!-- Just testing upload here -->
+    <!-- <form @submit.prevent="sendDatasUserToFirebase">
       <input id="input" ref="input" type="file">
       <button type="submit">
         Envoyer
       </button>
       <span v-if="errorMessage" style="color:red">{{ errorMessage }}</span>
-    </form>
+    </form> -->
     <!-- <UI-Icons-Cross :width="16" :height="16" :color="'#FFF'" class="cross" ref="cross" :toClose="true"/> -->
   </section>
 </template>
@@ -40,13 +42,11 @@ export default {
   updated () {
     this.$nextTick(function () {
       this.getProfilePicture()
-    // Code that will run only after the
-    // entire view has been re-rendered
     })
   },
   methods: {
-    // TO DO : Put this function on where we want to upload the img
-    async sendDatasUserToFirestore () {
+    // TO DO : Put this function on where we want to upload datas user
+    async sendDatasUserToFirebase () {
       let fileName = this.$refs.input.files[0].name
 
       // Quick verification of the type of the image
