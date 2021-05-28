@@ -1,14 +1,21 @@
 <template>
   <section style="color: white;" class="common-constellation">
     <h1>Hello Constellation</h1>
-    <h2>{{ name }}</h2>
-    <h2>{{ smell }}</h2>
+    <h2>{{ $store.state.constellation.currentUser.name }}</h2>
+    <h2>{{ $store.state.constellation.currentUser.smell }}</h2>
+    <img ref="userImg" src="">
     <h3 ref="previous">
       Previous
     </h3>
     <h3 ref="next">
       Next
     </h3>
+    <form @submit.prevent="sendDatasUserToFirestore">
+      <input id="input" ref="input" type="file">
+      <button type="submit">
+        Envoyer
+      </button>
+    </form>
     <!-- <UI-Icons-Cross :width="16" :height="16" :color="'#FFF'" class="cross" ref="cross" :toClose="true"/> -->
   </section>
 </template>
@@ -20,21 +27,61 @@ export default {
 
     }
   },
-  computed: {
-    name () {
-      return this.$store.state.constellation.currentUser.name
-    },
-    smell () {
-      return this.$store.state.constellation.currentUser.smell
-    }
-  },
   mounted () {
+    this.getProfilePicture()
     this.$refs.previous.addEventListener('click', () => {
       this.$store.commit('constellation/switchUser', 'Previous')
     })
     this.$refs.next.addEventListener('click', () => {
       this.$store.commit('constellation/switchUser', 'Next')
     })
+  },
+  updated () {
+    this.$nextTick(function () {
+      this.getProfilePicture()
+    // Code that will run only after the
+    // entire view has been re-rendered
+    })
+  },
+  methods: {
+    // TO DO : Put this function on where we want to upload the img
+    // async sendDatasUserToFirestore () {
+    //   const profilesRef = await this.$fire.firestore.collection('profiles')
+    //   let fileName = this.$refs.input.files[0].name.split('.jpg')
+    //   fileName = fileName[0] + parseInt(this.$store.state.constellation.dataUsers.length + 1) + fileName[1]
+    //   // fileName = fileName.join()
+    //   const ppStorageRef = await this.$fire.storage.ref().child('pp/' + fileName)
+    //   ppStorageRef.put(this.$refs.input.files[0]).then((snapshot) => {
+    //     console.log('Uploaded a blob or file!', fileName)
+    //   })
+    //   await profilesRef.doc().set({
+    //     nom: this.$store.state.user.name,
+    //     odeur: this.$store.state.user.smell,
+    //     img: 'pp/' + fileName
+    //   })
+    // },
+    async getProfilePicture () {
+      const storageRef = await this.$fire.storage.ref()
+      if (this.$store.state.constellation.currentUser.img) {
+        storageRef.child(this.$store.state.constellation.currentUser.img).getDownloadURL()
+          .then((url) => {
+            // This can be downloaded directly:
+            const xhr = new XMLHttpRequest()
+            xhr.responseType = 'blob'
+
+            xhr.open('GET', url)
+            xhr.send()
+
+            // Or inserted into an <img> element
+            const img = this.$refs.userImg
+            img.setAttribute('src', url)
+          })
+          .catch((error) => {
+            // Handle any errors
+            console.log(error)
+          })
+      }
+    }
   }
 }
 </script>

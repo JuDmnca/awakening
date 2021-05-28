@@ -5,7 +5,8 @@ const state = () => ({
   currentUser: {
     id: null,
     name: null,
-    smell: null
+    smell: null,
+    img: null
   },
   dataUsers: []
 })
@@ -32,6 +33,7 @@ const mutations = {
     state.currentUser.id = resp.id
     state.currentUser.name = resp.datas.nom
     state.currentUser.smell = resp.datas.odeur
+    state.currentUser.img = resp.datas.img
   }
 }
 
