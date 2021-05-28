@@ -64,7 +64,8 @@ export default {
         },
         services: {
           database: true,
-          firestore: true
+          firestore: true,
+          storage: true
         }
       }
     ]
