@@ -19,7 +19,14 @@
       </button>
       <span v-if="errorMessage" style="color:red">{{ errorMessage }}</span>
     </form> -->
-    <!-- <UI-Icons-Cross :width="16" :height="16" :color="'#FFF'" class="cross" ref="cross" :toClose="true"/> -->
+    <div @click.prevent="$nuxt.$emit('onCrystalClick')">
+      <UI-Icons-Cross
+        :width="16"
+        :height="16"
+        :color="'#FFF'"
+        class="cross"
+      />
+    </div>
   </section>
 </template>
 
