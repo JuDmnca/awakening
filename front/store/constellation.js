@@ -36,6 +36,15 @@ const mutations = {
     state.currentUser.name = resp.datas.nom
     state.currentUser.smell = resp.datas.odeur
     state.currentUser.img = resp.datas.img
+  },
+  getRandomUser (state) {
+    const randomId = Math.floor(Math.random() * state.dataUsers.length)
+    const randomProfile = state.dataUsers[randomId]
+    state.currentUser.name = randomProfile.nom
+    state.currentUser.smell = randomProfile.odeur
+    state.currentUser.img = randomProfile.img
+    state.currentUser.id = randomProfile.id
+    console.log(state.currentUser)
   }
 }
 

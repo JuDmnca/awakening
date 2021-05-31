@@ -9,6 +9,9 @@
     <h3 ref="next">
       Next
     </h3>
+    <button @click="getRandomProfile">
+      Random profile
+    </button>
     <!-- Just testing upload here -->
     <form @submit.prevent="sendDatasUserToFirebase">
       <input id="input" ref="input" type="file">
@@ -96,6 +99,9 @@ export default {
             console.log(error)
           })
       }
+    },
+    getRandomProfile () {
+      this.$store.commit('constellation/getRandomUser')
     }
   }
 }
