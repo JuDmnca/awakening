@@ -1,5 +1,5 @@
 <template>
-  <section style="color: white;" class="common-constellation">
+  <section style="color: white;" class="profile">
     <h1>Hello Constellation</h1>
     <h2>{{ $store.state.constellation.currentUser.name }}</h2>
     <h2>{{ $store.state.constellation.currentUser.smell }}</h2>
@@ -17,7 +17,7 @@
       </button>
       <span v-if="errorMessage" style="color:red">{{ errorMessage }}</span>
     </form>
-    <img ref="userImg" src="">
+    <img ref="userImg" class="profile_img" src="">
     <div @click.prevent="$nuxt.$emit('onCrystalClick')">
       <UI-Icons-Cross
         :width="16"
@@ -102,10 +102,15 @@ export default {
 </script>
 
 <style scoped>
-.common-constellation {
+.profile {
   position: relative;
   z-index: 10;
-  padding: 100px
+  padding: 100px;
+  height: 80vh;
+}
+
+.profile_img {
+  width: 25%;
 }
 
 .cross {
