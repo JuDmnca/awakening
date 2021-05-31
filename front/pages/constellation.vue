@@ -23,10 +23,6 @@ export default {
   computed: {
   },
   mounted () {
-    // TO DO : Uncomment to send datas user to Firestore
-    // if (this.$store.state.userIsOkToSendDatas) {
-    //   this.sendDatasUserToFirestore()
-    // }
     this.getFirestore()
     // Watch the click of crystal to display a profile
     this.$nuxt.$on('onCrystalClick', () => {
@@ -49,13 +45,6 @@ export default {
             $canvas: this.$refs.canvas
           })
         })
-    },
-    async sendDatasUserToFirestore () {
-      const profilesRef = await this.$fire.firestore.collection('profiles')
-      await profilesRef.doc().set({
-        nom: this.$store.state.user.name,
-        odeur: this.$store.state.user.smell
-      })
     }
   }
 }
