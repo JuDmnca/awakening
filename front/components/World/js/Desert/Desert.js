@@ -3,6 +3,7 @@
 import { gsap } from 'gsap'
 import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
+import { ReinhardToneMapping } from 'three'
 import Raycaster from '../Utils/Raycaster'
 import modelDesert from '../../../../assets/models/m_desert_draco.gltf'
 import modelGrass from '../../../../assets/models/m_grass.gltf'
@@ -15,6 +16,7 @@ import Sound from '../Utils/SoundLoader'
 import Particles from './Particles'
 import Plant from './Plant'
 import Cube from './Cube'
+
 const sandTexture = require('../../../../assets/textures/t_sand.png')
 
 let store, nuxt
@@ -83,6 +85,7 @@ export default class Desert {
   }
 
   async init (scene, renderer) {
+    renderer.toneMappingExposure = Math.pow(2, 4.0)
     const desertModel = await this.land.load(this.desertGroup, modelDesert, 1)
     this.desertGroup.add(desertModel)
 
