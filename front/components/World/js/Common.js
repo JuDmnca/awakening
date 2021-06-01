@@ -277,7 +277,9 @@ class Common {
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
     this.time.stationary += this.time.delta
-    if (this.time.stationary > 5 && !this.isStationary) {
+    // stationary = time to wait to show the indication
+    // progression < 0.5 : indicator just in the first part of the scene.
+    if (this.time.stationary > 5 && !this.isStationary && this.progression < 0.5) {
       this.isStationary = true
       nuxt.$emit('handleScrollAnimation')
     }
