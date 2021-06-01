@@ -24,7 +24,8 @@
     "heroku": "^7.54.0",
     "nuxt": "^2.15.6",
     "perlin-noise-3d": "^0.5.4",
-    "three": "^0.126.1"
+    "three": "^0.126.1",
+    "vue-lottie": "^0.2.1"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^3.4.3",

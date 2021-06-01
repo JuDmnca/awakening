@@ -66,8 +66,10 @@ class Common {
 
     this.time = {
       total: null,
-      delta: null
+      delta: null,
+      stationary: 0
     }
+    this.isStationary = false
 
     this.light = null
 
@@ -221,6 +223,11 @@ class Common {
       if (this.curves[this.curveNumber] !== undefined) {
         this.moveCamera(e)
       }
+      this.time.stationary = 0
+      if (this.isStationary) {
+        nuxt.$emit('handleScrollAnimation')
+      }
+      this.isStationary = false
     })
   }
 
@@ -269,6 +276,11 @@ class Common {
 
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
+    this.time.stationary += this.time.delta
+    if (this.time.stationary > 5 && !this.isStationary) {
+      this.isStationary = true
+      nuxt.$emit('handleScrollAnimation')
+    }
 
     this.currentScene.render(this.time.total)
 
