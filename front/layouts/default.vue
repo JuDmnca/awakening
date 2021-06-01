@@ -1,6 +1,5 @@
 <template>
   <div>
-    <UI-HoldCursor />
     <transition name="fadeOut">
       <IntroLoader v-if="loader" @done="hideLoader" />
     </transition>
