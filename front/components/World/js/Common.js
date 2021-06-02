@@ -67,9 +67,16 @@ class Common {
     this.time = {
       total: null,
       delta: null,
-      stationary: 0
+      stationary: 0,
+      cursorImmobile: 0,
+      noHold: 0
     }
     this.isStationary = false
+    this.isCursorImmobile = true
+    this.isHold = false
+
+    this.cursorDistance = 0
+    this.enableSporesElevationAt = 0.85
 
     this.light = null
 
@@ -185,7 +192,7 @@ class Common {
     }
 
     // Enable spores movement and inhale if end of path
-    if (this.progression >= 0.98 && this.sporesCanMove === false) {
+    if (this.progression >= this.enableSporesElevationAt && this.sporesCanMove === false) {
       this.currentScene.enableSporesMovement()
       this.sporesCanMove = true
     }
@@ -215,10 +222,25 @@ class Common {
   addWheelEvent () {
     window.addEventListener('mousemove', (e) => {
       this.mouseMovement(e)
+
+      // Disable animation if mousemove
+      this.time.cursorImmobile = 0
+      if (!this.isCursorImmobile) {
+        nuxt.$emit('handleHoverAnimation')
+      }
+      this.isCursorImmobile = true
+
+      // Compute distance of mousemove at the end of the path
+      if (this.progression > this.enableSporesElevationAt) {
+        this.cursorDistance += Math.abs(e.movementX)
+        this.cursorDistance += Math.abs(e.movementY)
+      }
     })
+
     window.addEventListener('resize', () => {
       this.resize()
     })
+
     window.addEventListener('wheel', (e) => {
       if (this.curves[this.curveNumber] !== undefined) {
         this.moveCamera(e)
@@ -228,6 +250,14 @@ class Common {
         nuxt.$emit('handleScrollAnimation')
       }
       this.isStationary = false
+    })
+
+    window.addEventListener('mousedown', () => {
+      this.time.noHold = 0
+      if (this.isHold) {
+        nuxt.$emit('handleHoldAnimation')
+      }
+      this.isHold = false
     })
   }
 
@@ -277,11 +307,20 @@ class Common {
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
     this.time.stationary += this.time.delta
+    this.time.cursorImmobile += this.time.delta
+    this.time.noHold += this.time.delta
+
     // stationary = time to wait to show the indication
     // progression < 0.5 : indicator just in the first part of the scene.
-    if (this.time.stationary > 5 && !this.isStationary && this.progression < 0.5) {
+    if (this.time.stationary > 10 && !this.isStationary && this.progression < 0.5) {
       this.isStationary = true
       nuxt.$emit('handleScrollAnimation')
+    } else if (this.time.cursorImmobile > 10 && this.cursorDistance < 25000 && this.progression > this.enableSporesElevationAt && this.isCursorImmobile) {
+      this.isCursorImmobile = false
+      nuxt.$emit('handleHoverAnimation')
+    } else if (this.time.noHold > 2 && this.cursorDistance > 25000 && this.progression > this.enableSporesElevationAt && !this.isHold) {
+      this.isHold = true
+      nuxt.$emit('handleHoldAnimation')
     }
 
     this.currentScene.render(this.time.total)
