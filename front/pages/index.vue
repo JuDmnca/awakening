@@ -3,7 +3,7 @@
     <UI-HoldCursor />
     <World />
     <transition name="fade">
-      <div v-if="loading" class="loading">
+      <div v-if="animation" class="animation">
         <lottie
           :width="100"
           :height="100"
@@ -18,8 +18,10 @@
 
 <script>
 import lottie from 'vue-lottie/src/lottie.vue'
-// Test Icon : TO DO : PUT real animation
-import * as animationData from '@/assets/lottie/scroll-test.json'
+// Test Icon : TO DO : PUT real animations
+import * as scrollData from '@/assets/lottie/scroll-test.json'
+import * as hoverData from '@/assets/lottie/hover-test.json'
+import * as holdData from '@/assets/lottie/hold-test.json'
 import World from '~/components/World/index'
 
 export default {
@@ -29,14 +31,22 @@ export default {
   },
   data () {
     return {
-      loading: false,
+      animation: false,
       anim: null, // for saving the reference to the animation
-      lottieOptions: { animationData: animationData.default }
+      lottieOptions: { animationData: scrollData.default }
     }
   },
   mounted () {
     this.$nuxt.$on('handleScrollAnimation', () => {
-      this.loading = !this.loading
+      this.animation = !this.animation
+    })
+    this.$nuxt.$on('handleHoverAnimation', () => {
+      this.lottieOptions = { animationData: hoverData.default }
+      this.animation = !this.animation
+    })
+    this.$nuxt.$on('handleHoldAnimation', () => {
+      this.lottieOptions = { animationData: holdData.default }
+      this.animation = !this.animation
     })
   },
   methods: {
