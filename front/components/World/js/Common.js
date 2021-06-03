@@ -318,7 +318,7 @@ class Common {
     } else if (this.time.cursorImmobile > 10 && this.cursorDistance < 25000 && this.progression > this.enableSporesElevationAt && this.isCursorImmobile) {
       this.isCursorImmobile = false
       nuxt.$emit('handleHoverAnimation')
-    } else if (this.time.noHold > 2 && this.cursorDistance > 25000 && this.progression > this.enableSporesElevationAt && !this.isHold) {
+    } else if (this.time.noHold > 10 && this.cursorDistance > 25000 && this.progression > this.enableSporesElevationAt && !this.isHold) {
       this.isHold = true
       nuxt.$emit('handleHoldAnimation')
     }
