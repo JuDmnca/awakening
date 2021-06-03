@@ -50,12 +50,7 @@ export default {
 </script>
 
 <style scoped>
-    .cross {
+    /* .cross {
         padding: 20px;
-    }
-
-    .cross:hover {
-        cursor: pointer;
-    }
-
+    } */
 </style>
