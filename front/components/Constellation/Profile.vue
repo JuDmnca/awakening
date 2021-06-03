@@ -157,13 +157,15 @@ export default {
 
 .profile__name {
   font-family: 'Butler';
-  margin: 49px 0 49px 0;
+  /* margin: 74px 0 74px 0; */
   position: relative;
   background: radial-gradient(circle, green 0%, rgba(252,70,107,0) 61%);
-  height: 100px;
+  height: 198px;
+  width: 100%;
   display: flex;
+  justify-content: center;
   align-items: center;
-  background-size: 110px 110px !important;
+  background-size: 20% !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
 }
