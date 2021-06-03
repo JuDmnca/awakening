@@ -2,7 +2,12 @@
   <section style="color: white;" class="profile flex">
     <div class="profile__left flex flex-col items-center">
       <img ref="userImg" class="profile__img" src="">
-      <h2 class="profile__name">
+      <h2
+        class="profile__name"
+        :style="{
+          background: 'radial-gradient(circle, ' + $store.state.constellation.currentUser.color +' -50%, rgba(252,70,107,0) 61%)',
+        }"
+      >
         <span>{{ $store.state.constellation.currentUser.name }} </span>
       </h2>
       <p class="profile__description small">
@@ -154,13 +159,13 @@ export default {
   font-family: 'Butler';
   margin: 49px 0 49px 0;
   position: relative;
-  background: radial-gradient(circle, rgba(0,42,255,1) 0%, rgba(252,70,107,0) 61%);
+  background: radial-gradient(circle, green 0%, rgba(252,70,107,0) 61%);
   height: 100px;
   display: flex;
   align-items: center;
-  background-size: 125px 125px;
-  background-repeat: no-repeat;
-  background-position: center;
+  background-size: 110px 110px !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
 }
 
 .profile__description {
