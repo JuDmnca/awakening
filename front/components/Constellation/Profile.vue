@@ -158,6 +158,9 @@ export default {
   height: 100px;
   display: flex;
   align-items: center;
+  background-size: 125px 125px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .profile__description {
