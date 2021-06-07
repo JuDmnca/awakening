@@ -6,7 +6,11 @@ export default class Land {
   }
 
   load (model) {
-    this.model = new Loader({ model, material: this.props.texture, position: { x: 0, y: 0, z: 0 } })
+    if (this.props.index === 0) {
+      this.model = new Loader({ model, material: this.props.texture, position: { x: 0, y: 0, z: 0 } })
+    } else {
+      this.model = new Loader({ model, material: this.props.texture, position: { x: 0, y: -20, z: 0 } })
+    }
     return this.model.defaultInit()
   }
 }

@@ -30,7 +30,7 @@ export default class Desert {
     this.name = 'desert'
 
     this.hold = false
-    this.land = new Land({ texture: sandTexture })
+    this.land = new Land({ texture: sandTexture, index: 0 })
 
     this.camera = this.props.camera
     this.raycaster = new Raycaster()
