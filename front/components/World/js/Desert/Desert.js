@@ -2,8 +2,9 @@
 import { gsap } from 'gsap'
 import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
+import { ReinhardToneMapping } from 'three'
 import Raycaster from '../Utils/Raycaster'
-import modelDesert from '../../../../assets/models/m_desert.glb'
+import modelDesert from '../../../../assets/models/m_desert_draco.gltf'
 import modelGrass from '../../../../assets/models/m_grass.gltf'
 import Loader from '../Loader'
 import Land from '../Land'
@@ -14,6 +15,7 @@ import Sound from '../Utils/SoundLoader'
 import Particles from './Particles'
 import Plant from './Plant'
 import Cube from './Cube'
+
 const sandTexture = require('../../../../assets/textures/t_sand.png')
 
 let store, nuxt
@@ -72,8 +74,10 @@ export default class Desert {
     this.isCursorActive = false
   }
 
-  init (scene, renderer) {
-    this.land.load(this.desertGroup, modelDesert, 1)
+  async init (scene, renderer) {
+    renderer.toneMappingExposure = Math.pow(2, 4.0)
+    const desertModel = await this.land.load(this.desertGroup, modelDesert, 1)
+    this.desertGroup.add(desertModel)
 
     // Sound
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile })
@@ -84,56 +88,72 @@ export default class Desert {
       * TO DO : Have to find an other way
     */
     const cubeMap = [
-      require('../../../../assets/textures/png/rocks/px.png'),
-      require('../../../../assets/textures/png/rocks/nx.png'),
-      require('../../../../assets/textures/png/rocks/py.png'),
-      require('../../../../assets/textures/png/rocks/ny.png'),
-      require('../../../../assets/textures/png/rocks/pz.png'),
-      require('../../../../assets/textures/png/rocks/nz.png')
+      require('../../../../assets/textures/png/constellation/px.png'),
+      require('../../../../assets/textures/png/constellation/nx.png'),
+      require('../../../../assets/textures/png/constellation/py.png'),
+      require('../../../../assets/textures/png/constellation/ny.png'),
+      require('../../../../assets/textures/png/constellation/pz.png'),
+      require('../../../../assets/textures/png/constellation/nz.png')
     ]
+    // const textureLoader = new THREE.TextureLoader()
+    // const textureCrystalsTest = textureLoader.load(require('../../../../assets/textures/png/rocks/map/crystal.png'))
+    // console.log(textureCrystalsTest)
+    // textureCrystalsTest.wrapS = THREE.RepeatWrapping
+    // textureCrystalsTest.wrapT = THREE.RepeatWrapping
+    // textureCrystalsTest.repeat.set(9, 1)
 
+    const colorCrystals = new THREE.Color('#bd1780')
     const textureCrystals = new THREE.CubeTextureLoader().load(cubeMap)
     textureCrystals.mapping = THREE.CubeRefractionMapping
     textureCrystals.encoding = THREE.sRGBEncoding
-    const crystalsMaterial = new THREE.MeshLambertMaterial({
-      color: 0x210021,
+    const crystalsMaterial = new THREE.MeshPhongMaterial({
+      color: colorCrystals,
       envMap: textureCrystals,
-      refractionRatio: 0.8,
-      reflectivity: 1,
+      refractionRatio: 0.98,
+      // reflectivity: 1,
       combine: THREE.AddOperation,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.95,
       premultipliedAlpha: true,
       depthWrite: false
+      // emissive: colorCrystals,
+      // emissiveIntensity: 0.7
+      // map: textureCrystalsTest
     })
-    const innerCrystalsMaterial = new THREE.MeshBasicMaterial({
-      color: 'white',
-      opacity: 0.1,
-      transparent: true
+    const innerCrystalsMaterial = new THREE.MeshPhongMaterial({
+      color: colorCrystals,
+      opacity: 1,
+      transparent: true,
+      emissive: colorCrystals,
+      emissiveIntensity: 1
     })
 
-    // Have to setTimouté to wait the generation of crystals and the watcher of the sound
-    setTimeout(() => {
-      // Crytals materials
-      for (let i = 1; i <= 19; i++) {
-        this.desertGroup.children[2].children[i].material = crystalsMaterial
-        this.desertGroup.children[2].children[i].layers.enable(1)
-        this.desertGroup.children[2].children[i + 19].material = innerCrystalsMaterial
-        this.desertGroup.children[2].children[i + 19].layers.enable(1)
+    // Crytals materials
+    for (let i = 1; i <= 19; i++) {
+      this.desertGroup.children[0].children[i].material = crystalsMaterial
+      this.desertGroup.children[0].children[i].layers.enable(1)
+
+      // Avoid the land to be shiny
+      if (i !== 19) {
+        this.desertGroup.children[0].children[i + 19].material = innerCrystalsMaterial
+        this.desertGroup.children[0].children[i + 19].layers.enable(1)
       }
+    }
 
-      // Watch on store if we have to mute sounds
-      store.watch(() => store.state.desert.isMuted, (isMuted) => {
-        if (isMuted) {
-          this.sound.sound.pause()
-        } else {
-          this.sound.sound.play()
-        }
-      })
-      this.sound.sound.play()
-    }, 2000)
+    // Watch on store if we have to mute sounds
+    store.watch(() => store.state.desert.isMuted, (isMuted) => {
+      if (isMuted) {
+        this.sound.sound.pause()
+      } else {
+        this.sound.sound.play()
+      }
+    })
+    this.sound.sound.play()
 
-    // FLOWERS
+    // Cube - Hover zone for flowers
+    this.myCube = new Cube({ scene, position: { x: 0.2, y: 0, z: 0.7 } })
+
+    // Add Plants (Flower + Stem)
     let index = -1
     for (let nbPlants = 0; nbPlants <= 15; nbPlants++) {
       index++
@@ -159,6 +179,13 @@ export default class Desert {
     this.plantsGroup.position.set(-41, 0.5, 1.4)
     this.plantsGroup.scale.set(2.5, 2.5, 2.5)
     this.plantsGroup.name = 'Plants'
+<<<<<<< HEAD
+=======
+    this.desertGroup.add(this.plantsGroup)
+
+    // Raycaster
+    this.raycaster.init(this.camera, renderer)
+>>>>>>> ff4b867547e20ee37e09da4fae23dd02f66454ab
 
     // Spores
     this.spores = new Particles()
@@ -167,12 +194,22 @@ export default class Desert {
     this.desertGroup.add(this.spores.particles)
     this.desertGroup.add(this.plantsGroup)
 
+<<<<<<< HEAD
     // Raycaster
     this.raycaster.init(this.camera, renderer)
+=======
+    // SpotLights on Flowers
+    this.spotLightOnFlowers = new THREE.PointLight(this.params.spotLightOnFlowersColor, 1, 10)
+    this.spotLightOnFlowers.position.y += 15
+    this.spotLightOnFlowers.position.x -= 3
+    this.spotLightOnFlowers.position.z -= 3
+    // this.spotLightOnFlowers.color = '#ffffff'
+    // this.spores.particles.add(this.spotLightOnFlowers)
+>>>>>>> ff4b867547e20ee37e09da4fae23dd02f66454ab
 
     // Fog
     const colorBG = new THREE.Color('#040408')
-    scene.fog = new THREE.Fog(colorBG, 10, 300)
+    // scene.fog = new THREE.Fog(colorBG, 10, 300)
     const loader = new THREE.CubeTextureLoader()
     loader.premultiplyAlpha = true
     const texture = loader.load([
@@ -253,8 +290,55 @@ export default class Desert {
   }
 
   handleClick () {
+<<<<<<< HEAD
     if (this.intersects.length > 0 && this.isCursorActive && !store.state.desert.interaction) {
       store.commit('desert/toggleInteraction')
+=======
+    if (this.intersects.length > 0) {
+      // eslint-disable-next-line no-console
+      // console.log(this.camera.camera)
+      // gsap.to(this, {progression: 1, duration: 1, ease: "power3.out"} )
+    }
+  }
+
+  cameraOnHold () {
+    this.cameraIsZoomed = true
+    gsap.to(
+      this.camera.camera.position,
+      {
+        x: this.camera.camera.position.x + 1,
+        y: this.camera.camera.position.y - 1,
+        z: this.camera.camera.position.z - 1,
+        duration: 2,
+        ease: 'power3.out',
+        onComplete: this.cameraOnUnhold(this.camera.camera.position)
+      }
+    )
+  }
+
+  cameraOnUnhold (camera) {
+    gsap.killTweensOf(camera)
+    gsap.to(
+      this.camera.camera.position,
+      {
+        x: this.camera.camera.position.x - 1,
+        y: this.camera.camera.position.y + 1,
+        z: this.camera.camera.position.z + 1,
+        duration: 1,
+        ease: 'power3.out',
+        onComplete: () => {
+          this.cameraIsZoomed = false
+        }
+      }
+    )
+  }
+
+  isFixedView () {
+    if (this.progression > 0.9) {
+      return true
+    } else {
+      return false
+>>>>>>> ff4b867547e20ee37e09da4fae23dd02f66454ab
     }
   }
 
@@ -307,7 +391,9 @@ export default class Desert {
       this.isCursorActive = false
       nuxt.$emit('unactiveCursor')
     }
-    this.spores.particles.material.uniforms.uTime.value = elapsedTime
+    if (this.spores) {
+      this.spores.particles.material.uniforms.uTime.value = elapsedTime
+    }
     this.plants.forEach((plant) => {
       plant.update()
     })

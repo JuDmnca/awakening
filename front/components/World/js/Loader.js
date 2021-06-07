@@ -1,4 +1,5 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import * as THREE from 'three'
 
 export default class Loader {
@@ -7,27 +8,34 @@ export default class Loader {
     this.props = props
     this.material = this.props.material
     this.loader = new GLTFLoader()
+    this.init()
   }
 
-  init (scene) {
-    const materialImported = this.material
-    const position = this.props.position
-    // const index = this.props.index
+  init () {
+    const dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderConfig({ type: 'js' })
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
+    this.loader.setDRACOLoader(dracoLoader)
+  }
 
-    this.loader.load(this.props.model, function (gltf) {
-      gltf.scene.position.x = position.x
-      gltf.scene.position.y = position.y
-      gltf.scene.position.z = position.z
-      gltf.scene.scale.set(3, 3, 3)
-
-      const texture = new THREE.TextureLoader().load(materialImported)
-      texture.flipY = false
-      const material = new THREE.MeshBasicMaterial({
-        map: texture
+  defaultInit () {
+    return new Promise((resolve) => {
+      const materialImported = this.material
+      const position = this.props.position
+      this.loader.load(this.props.model, function (gltf) {
+        gltf.scene.position.x = position.x
+        gltf.scene.position.y = position.y
+        gltf.scene.position.z = position.z
+        gltf.scene.scale.set(3, 3, 3)
+        const texture = new THREE.TextureLoader().load(materialImported)
+        texture.flipY = false
+        const material = new THREE.MeshBasicMaterial({
+          map: texture
+        })
+        // gltf.scene.children[0].material = material
+        gltf.scene.children[38].material = material
+        resolve(gltf.scene)
       })
-      gltf.scene.children[0].material = material
-
-      scene.add(gltf.scene)
     }, undefined, function (error) {
       // eslint-disable-next-line no-console
       console.error(error)

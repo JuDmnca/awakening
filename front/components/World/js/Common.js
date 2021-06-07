@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { ReinhardToneMapping } from 'three'
 import Camera from './Camera'
-// import MainGui from './Utils/MainGui'
-import Bloom from './Utils/Bloom'
+import MainGui from './Utils/MainGui'
+// import Bloom from './Utils/Bloom'
 
 import Desert from './Desert/Desert'
 
@@ -66,8 +66,17 @@ class Common {
 
     this.time = {
       total: null,
-      delta: null
+      delta: null,
+      stationary: 0,
+      cursorImmobile: 0,
+      noHold: 0
     }
+    this.isStationary = false
+    this.isCursorImmobile = true
+    this.isHold = false
+
+    this.cursorDistance = 0
+    this.enableSporesElevationAt = 0.85
 
     this.light = null
 
@@ -77,8 +86,8 @@ class Common {
       light: {
         angle: Math.PI / 2,
         color: '#ffffff',
-        intensity: 2.85,
-        distance: 400
+        intensity: 1,
+        distance: 1000
       }
     }
 
@@ -99,14 +108,14 @@ class Common {
     this.scene = new THREE.Scene()
 
     this.renderer = new THREE.WebGLRenderer({
-      canvas: $canvas,
-      antialias: true,
-      alpha: true
+      canvas: $canvas
+      // antialias: true,
+      // alpha: true
     })
     this.renderer.toneMapping = ReinhardToneMapping
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(this.size.windowW, this.size.windowH)
-    this.renderer.setClearColor(0x000000)
+    // this.renderer.setClearColor(0xFF0000)
 
     this.clock = new THREE.Clock()
     this.clock.start()
@@ -124,16 +133,17 @@ class Common {
 
     // Init light
     this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-    this.light.position.set(0, 400, 0)
-    this.light.castShadow = true
-    this.light.shadow.mapSize.width = 1024
-    this.light.shadow.mapSize.height = 1024
-    // Blur of the shadows
-    this.light.shadow.radius = 3
+    this.light.position.set(162, 162, -406)
+    this.gui = new MainGui()
+    const moonFolder = this.gui.gui.addFolder('Moon')
+    moonFolder.add(this.light.position, 'x', -1000, 1000, 1).name('x')
+    moonFolder.add(this.light.position, 'y', -1000, 1000, 1).name('y')
+    moonFolder.add(this.light.position, 'z', -1000, 1000, 1).name('z')
+    moonFolder.add(this.light, 'intensity', 0, 3, 0.1).name('intensity')
 
     this.scene.add(this.light)
 
-    this.initBloom()
+    // this.initBloom()
   }
 
   initCamera () {
@@ -182,7 +192,7 @@ class Common {
     }
 
     // Enable spores movement and inhale if end of path
-    if (this.progression >= 0.90 && this.sporesCanMove === false) {
+    if (this.progression >= this.enableSporesElevationAt && this.sporesCanMove === false) {
       this.currentScene.enableSporesMovement()
       this.sporesCanMove = true
     }
@@ -212,14 +222,42 @@ class Common {
   addWheelEvent () {
     window.addEventListener('mousemove', (e) => {
       this.mouseMovement(e)
+
+      // Disable animation if mousemove
+      this.time.cursorImmobile = 0
+      if (!this.isCursorImmobile) {
+        nuxt.$emit('handleHoverAnimation')
+      }
+      this.isCursorImmobile = true
+
+      // Compute distance of mousemove at the end of the path
+      if (this.progression > this.enableSporesElevationAt) {
+        this.cursorDistance += Math.abs(e.movementX)
+        this.cursorDistance += Math.abs(e.movementY)
+      }
     })
+
     window.addEventListener('resize', () => {
       this.resize()
     })
+
     window.addEventListener('wheel', (e) => {
       if (this.curves[this.curveNumber] !== undefined) {
         this.moveCamera(e)
       }
+      this.time.stationary = 0
+      if (this.isStationary) {
+        nuxt.$emit('handleScrollAnimation')
+      }
+      this.isStationary = false
+    })
+
+    window.addEventListener('mousedown', () => {
+      this.time.noHold = 0
+      if (this.isHold) {
+        nuxt.$emit('handleHoldAnimation')
+      }
+      this.isHold = false
     })
   }
 
@@ -246,19 +284,19 @@ class Common {
     this.scene.remove(selectedObject)
   }
 
-  initBloom () {
-    this.bloom = new Bloom({
-      scene: this.scene,
-      camera: this.camera.camera,
-      renderer: this.renderer,
-      params: {
-        exposure: 1,
-        bloomStrength: 1.8,
-        bloomThreshold: 0,
-        bloomRadius: 1
-      }
-    })
-  }
+  // initBloom () {
+  //   this.bloom = new Bloom({
+  //     scene: this.scene,
+  //     camera: this.camera.camera,
+  //     renderer: this.renderer,
+  //     params: {
+  //       exposure: 2, // Set to one when bloom renderer actived
+  //       bloomStrength: 1.5,
+  //       bloomThreshold: 0,
+  //       bloomRadius: 1
+  //     }
+  //   })
+  // }
 
   render () {
     if (nuxt && store && !this.events) {
@@ -269,6 +307,22 @@ class Common {
 
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
+    this.time.stationary += this.time.delta
+    this.time.cursorImmobile += this.time.delta
+    this.time.noHold += this.time.delta
+
+    // stationary = time to wait to show the indication
+    // progression < 0.5 : indicator just in the first part of the scene.
+    if (this.time.stationary > 10 && !this.isStationary && this.progression < 0.5) {
+      this.isStationary = true
+      nuxt.$emit('handleScrollAnimation')
+    } else if (this.time.cursorImmobile > 10 && this.cursorDistance < 25000 && this.progression > this.enableSporesElevationAt && this.isCursorImmobile) {
+      this.isCursorImmobile = false
+      nuxt.$emit('handleHoverAnimation')
+    } else if (this.time.noHold > 10 && this.cursorDistance > 25000 && this.progression > this.enableSporesElevationAt && !this.isHold) {
+      this.isHold = true
+      nuxt.$emit('handleHoldAnimation')
+    }
 
     // Update camera rotation & look at
     if (store && !store.state.cameraIsZoomed) {
@@ -293,7 +347,8 @@ class Common {
     //     // this.camera.camera.rotation.y += 0.2 * ( this.target.x - this.camera.camera.rotation.y )
     // }
 
-    this.bloom.render()
+    // this.bloom.render()
+    this.renderer.render(this.scene, this.camera.camera)
   }
 }
 

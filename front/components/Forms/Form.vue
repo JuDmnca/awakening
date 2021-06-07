@@ -9,47 +9,47 @@
         name="input"
         type="string"
         required
-      />
+      >
       <div v-else ref="input" class="colors">
-        <input type="radio" id="red" name="color" value="red" />
+        <input id="red" type="radio" name="color" value="red">
         <label for="red">
-          <span class="color"></span>
-          <span class="selected"></span>
+          <span class="color" />
+          <span class="selected" />
         </label>
-        <input type="radio" id="orange" name="color" value="orange" />
+        <input id="orange" type="radio" name="color" value="orange">
         <label for="orange">
-          <span class="color"></span>
-          <span class="selected"></span>
+          <span class="color" />
+          <span class="selected" />
         </label>
-        <input type="radio" id="yellow" name="color" value="yellow" />
+        <input id="yellow" type="radio" name="color" value="yellow">
         <label for="yellow">
-          <span class="color"></span>
-          <span class="selected"></span>
+          <span class="color" />
+          <span class="selected" />
         </label>
-        <input type="radio" id="green" name="color" value="green" />
+        <input id="green" type="radio" name="color" value="green">
         <label for="green">
-          <span class="color"></span>
-          <span class="selected"></span>
+          <span class="color" />
+          <span class="selected" />
         </label>
-        <input type="radio" id="darkgreen" name="color" value="darkgreen" />
+        <input id="darkgreen" type="radio" name="color" value="darkgreen">
         <label for="darkgreen">
-          <span class="color"></span>
-          <span class="selected"></span>
+          <span class="color" />
+          <span class="selected" />
         </label>
-        <input type="radio" id="blue" name="color" value="blue" />
+        <input id="blue" type="radio" name="color" value="blue">
         <label for="blue">
-          <span class="color"></span>
-          <span class="selected"></span>
+          <span class="color" />
+          <span class="selected" />
         </label>
-        <input type="radio" id="darkblue" name="color" value="darkblue" />
+        <input id="darkblue" type="radio" name="color" value="darkblue">
         <label for="darkblue">
-          <span class="color"></span>
-          <span class="selected"></span>
+          <span class="color" />
+          <span class="selected" />
         </label>
-        <input type="radio" id="purple" name="color" value="purple" />
+        <input id="purple" type="radio" name="color" value="purple">
         <label for="purple">
-          <span class="color"></span>
-          <span class="selected"></span>
+          <span class="color" />
+          <span class="selected" />
         </label>
       </div>
     </form>
@@ -60,91 +60,91 @@
 </template>
 
 <script>
-import gsap from "gsap";
+import gsap from 'gsap'
 export default {
-  name: "q-form",
+  name: 'QForm',
   props: {
     label: {
       type: String,
-      default: "",
-      required: true,
+      default: '',
+      required: true
     },
     placeholder: {
       type: String,
-      default: "Pierre",
-      required: false,
+      default: 'Pierre',
+      required: false
     },
     step: {
       type: Number,
       default: 0,
-      required: false,
+      required: false
     },
     confirmation: {
       type: String,
-      default: "",
-      required: false,
-    },
+      default: '',
+      required: false
+    }
   },
-  data() {
+  data () {
     return {
-      question: "",
-      input: "",
-    };
+      question: '',
+      input: ''
+    }
   },
-  mounted() {
-    this.input = this.$refs.input;
-    this.question = this.$refs.label;
-    this.button = this.$refs.button;
+  mounted () {
+    this.input = this.$refs.input
+    this.question = this.$refs.label
+    this.button = this.$refs.button
 
     gsap.to(this.question, {
       y: -60,
       scale: 0.7,
       duration: 1,
       delay: 2,
-      ease: "power3.out",
-      onComplete: this.showInput,
-    });
+      ease: 'power3.out',
+      onComplete: this.showInput
+    })
   },
   methods: {
-    showInput() {
+    showInput () {
       if (this.step === 1) {
-        const inputs = this.input.querySelectorAll(".color");
+        const inputs = this.input.querySelectorAll('.color')
         gsap.from(inputs, {
           y: +30,
           duration: 1,
-          ease: "power3.out",
-          stagger: 0.1,
-        });
+          ease: 'power3.out',
+          stagger: 0.1
+        })
         gsap.to(inputs, {
           opacity: 1,
           duration: 1,
-          ease: "power3.out",
-          stagger: 0.1,
-        });
-        gsap.to(this.button, { opacity: 1, duration: 1, ease: "power3.out" });
+          ease: 'power3.out',
+          stagger: 0.1
+        })
+        gsap.to(this.button, { opacity: 1, duration: 1, ease: 'power3.out' })
       } else {
-        gsap.from(this.input, { y: +30, duration: 1, ease: "power3.out" });
+        gsap.from(this.input, { y: +30, duration: 1, ease: 'power3.out' })
         gsap.to([this.input, this.button], {
           opacity: 1,
           duration: 1,
-          ease: "power3.out",
-        });
+          ease: 'power3.out'
+        })
       }
     },
-    sendValidation(e) {
-      e.preventDefault();
-      let data = this.$refs.input.value;
+    sendValidation (e) {
+      e.preventDefault()
+      let data = this.$refs.input.value
 
       if (this.step === 1) {
-        const colors = document.getElementsByName("color");
+        const colors = document.getElementsByName('color')
         for (let i = 0; i < colors.length; i++) {
-          if (colors[i].checked) data = colors[i].id;
+          if (colors[i].checked) { data = colors[i].id }
         }
       }
-      this.$emit("validation", data);
-    },
-  },
-};
+      this.$emit('validation', data)
+    }
+  }
+}
 </script>
 
 <style>

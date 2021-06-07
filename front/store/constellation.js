@@ -1,32 +1,54 @@
+// import * as THREE from 'three'
+
 const state = () => ({
   isClicked: false,
-  dataUsers: {
+  currentUser: {
     id: null,
-    name: '',
-    smell: ''
-  }
+    name: null,
+    smell: null,
+    img: null,
+    color: null
+  },
+  dataUsers: []
 })
 
 const actions = {
 }
 
 const mutations = {
-  toggleVisible (state) {
-    state.isClicked = !state.isClicked
-  },
-  getDatas (state, resp) {
-    state.dataUsers.name = resp.name
-    state.dataUsers.smell = resp.smell
+  setDatas (state, resp) {
+    state.dataUsers.push(resp.datas)
   },
   switchUser (state, resp) {
-    // TO DO : Requêtes à la bdd avec le current ID +1 ou -1
-    if (resp === 'Previous') {
-      state.dataUsers.name = 'Hatios'
-      state.dataUsers.smell = 'Le kebab'
-    } else if (resp === 'Next') {
-      state.dataUsers.name = 'Alexia'
-      state.dataUsers.smell = 'La salade'
+    if (resp === 'Previous' && state.dataUsers[state.currentUser.id - 1]) {
+      state.currentUser.name = state.dataUsers[state.currentUser.id - 1].nom
+      state.currentUser.smell = state.dataUsers[state.currentUser.id - 1].odeur
+      state.currentUser.img = state.dataUsers[state.currentUser.id - 1].img
+      state.currentUser.color = state.dataUsers[state.currentUser.id - 1].color
+      state.currentUser.id = state.currentUser.id - 1
+    } else if (resp === 'Next' && state.dataUsers[state.currentUser.id + 1]) {
+      state.currentUser.name = state.dataUsers[state.currentUser.id + 1].nom
+      state.currentUser.smell = state.dataUsers[state.currentUser.id + 1].odeur
+      state.currentUser.img = state.dataUsers[state.currentUser.id + 1].img
+      state.currentUser.color = state.dataUsers[state.currentUser.id + 1].color
+      state.currentUser.id = state.currentUser.id + 1
     }
+  },
+  setCurrentUser (state, resp) {
+    state.currentUser.id = resp.id
+    state.currentUser.name = resp.datas.nom
+    state.currentUser.smell = resp.datas.odeur
+    state.currentUser.img = resp.datas.img
+    state.currentUser.color = resp.datas.color
+  },
+  getRandomUser (state) {
+    const randomId = Math.floor(Math.random() * state.dataUsers.length)
+    const randomProfile = state.dataUsers[randomId]
+    state.currentUser.name = randomProfile.nom
+    state.currentUser.smell = randomProfile.odeur
+    state.currentUser.img = randomProfile.img
+    state.currentUser.color = randomProfile.color
+    state.currentUser.id = randomProfile.id
   }
 }
 
