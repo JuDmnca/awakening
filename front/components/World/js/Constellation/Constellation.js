@@ -50,7 +50,7 @@ class Constellation {
       light: {
         angle: Math.PI / 2,
         color: '#ffffff',
-        intensity: 2.85,
+        intensity: 10,
         distance: 400
       }
     }
@@ -58,8 +58,6 @@ class Constellation {
     this.gui = null
 
     this.controls = null
-
-    this.nbEtoiles = 40
 
     this.raycaster = null
     this.intersectedObject = null
@@ -119,7 +117,7 @@ class Constellation {
     )
 
     skybox.material.uniforms.envMap.value = texture
-    skybox.layers.enable(1)
+    // skybox.layers.enable(1)
 
     Object.defineProperty(skybox.material, 'envMap', {
 
@@ -133,34 +131,7 @@ class Constellation {
     skyboxGroup.add(skybox)
     this.scene.add(skyboxGroup)
 
-    // Cube
-    const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
-    const cubeTransparentMaterial = new THREE.MeshStandardMaterial({
-      color: 'red',
-      opacity: 0,
-      transparent: 0
-    })
-
-    // Generation of this.cubes
-    for (let i = 0; i < this.nbEtoiles; i++) {
-      const cubeMaterial = new THREE.MeshStandardMaterial({
-
-        color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
-        opacity: 1,
-        transparent: 1
-      })
-
-      this.cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
-
-      this.cubes[i].position.set(this.getRandomArbitrary(-30, 30), this.getRandomArbitrary(-15, 30), this.getRandomArbitrary(-30, 30))
-      this.cubes[i].layers.enable(1)
-      this.scene.add(this.cubes[i])
-    }
-
-    // Generation of random cube speed
-    for (let i = 0; i < this.cubes.length; i++) {
-      this.randomCubesSpeed.push(Math.random())
-    }
+    this.generateCrystals()
 
     // Init camera
     this.initCamera()
@@ -169,12 +140,12 @@ class Constellation {
     this.addWheelEvent()
     window.addEventListener('click', () => {
       if (this.intersectedObject.length > 0) {
-        const datas = {
-          name: 'Julie',
-          smell: 'Muscade'
+        nuxt.$emit('onCrystalClick')
+        const currentUser = {
+          id: this.intersectedObject[0].object.userId,
+          datas: this.intersectedObject[0].object.datas
         }
-        store.commit('constellation/getDatas', datas)
-        store.commit('constellation/toggleVisible')
+        store.commit('constellation/setCurrentUser', currentUser)
       }
     })
 
@@ -205,8 +176,8 @@ class Constellation {
       camera: this.camera.camera,
       renderer: this.renderer,
       params: {
-        exposure: 0.4,
-        bloomStrength: 1,
+        exposure: 1,
+        bloomStrength: 3.5,
         bloomThreshold: 0,
         bloomRadius: 1
       }
@@ -227,6 +198,71 @@ class Constellation {
 
   getRandomArbitrary (min, max) {
     return Math.random() * (max - min) + min
+  }
+
+  getRandomInt (max) {
+    return Math.floor(Math.random() * max)
+  }
+
+  generateCrystals () {
+    // Cube
+    const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
+
+    // Refraction
+    const cubeMap = [
+      require('../../../../assets/textures/png/constellation/px.png'),
+      require('../../../../assets/textures/png/constellation/nx.png'),
+      require('../../../../assets/textures/png/constellation/py.png'),
+      require('../../../../assets/textures/png/constellation/ny.png'),
+      require('../../../../assets/textures/png/constellation/pz.png'),
+      require('../../../../assets/textures/png/constellation/nz.png')
+    ]
+
+    const textureCrystals = new THREE.CubeTextureLoader().load(cubeMap)
+    textureCrystals.mapping = THREE.CubeRefractionMapping
+    textureCrystals.encoding = THREE.sRGBEncoding
+    const crystalsMaterial = new THREE.MeshPhongMaterial({
+      envMap: textureCrystals,
+      side: THREE.DoubleSide,
+      // refractionRatio: 1,
+      reflectivity: 1,
+      // combine: THREE.AddOperation,
+      transparent: true,
+      opacity: 0.8,
+      // premultipliedAlpha: true,
+      depthWrite: false
+      // emissive: colorCrystals,
+      // emissiveIntensity: 0.8
+      // map: textureCrystalsTest
+    })
+
+    // Generation of this.cubes
+    for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
+      const cubeMaterial = new THREE.MeshPhongMaterial({
+
+        color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
+        // opacity: 1,
+        // transparent: 1,
+        envMap: textureCrystals,
+        refractionRatio: 0.98
+        // reflectivity: 0.9
+      })
+
+      this.cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
+      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      const y = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      this.cubes[i].position.set(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
+      this.cubes[i].layers.enable(1)
+      this.cubes[i].datas = store.state.constellation.dataUsers[i]
+      this.cubes[i].userId = i
+      this.scene.add(this.cubes[i])
+    }
+
+    // Generation of random cube speed
+    for (let i = 0; i < this.cubes.length; i++) {
+      this.randomCubesSpeed.push(Math.random())
+    }
   }
 
   setSize () {
@@ -258,10 +294,6 @@ class Constellation {
       this.cubes[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
       this.cubes[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
     }
-    // Intersections
-    // if(store) {
-    //     console.log(store.state.constellation.isVisible)
-    // }
 
     this.intersectedObject = this.raycaster.render(this.scene)
     if (this.intersectedObject.length > 0 && this.isIntersected === false) {
@@ -274,8 +306,7 @@ class Constellation {
           y: this.cristalScale,
           z: this.cristalScale,
           duration: 1,
-          ease: 'power3.out',
-          onComplete: this.increaseCounter
+          ease: 'power3.out'
         }
       )
       this.isIntersected = true
@@ -288,8 +319,7 @@ class Constellation {
           y: 1 / this.cristalScale,
           z: 1 / this.cristalScale,
           duration: 1,
-          ease: 'power3.out',
-          onComplete: this.increaseCounter
+          ease: 'power3.out'
         }
       )
       this.lastIntersectedObject = null

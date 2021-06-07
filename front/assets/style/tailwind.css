@@ -1,14 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: 'Sofia Pro';
-  src: url('~/assets/fonts/SofiaProLight.eot');
-  src: url('~/assets/fonts/SofiaProLight.eot?#iefix') format('embedded-opentype'),
-      url('~/assets/fonts/SofiaProLight.woff2') format('woff2'),
-      url('~/assets/fonts/SofiaProLight.woff') format('woff'),
-      url('~/assets/fonts/SofiaProLight.ttf') format('truetype'),
-      url('~/assets/fonts/SofiaProLight.svg#SofiaProLight') format('svg');
+  src: url('~/assets/fonts/SofiaPro/SofiaProLight.eot');
+  src: url('~/assets/fonts/SofiaPro/SofiaProLight.eot?#iefix') format('embedded-opentype'),
+      url('~/assets/fonts/SofiaPro/SofiaProLight.woff2') format('woff2'),
+      url('~/assets/fonts/SofiaPro/SofiaProLight.woff') format('woff'),
+      url('~/assets/fonts/SofiaPro/SofiaProLight.ttf') format('truetype'),
+      url('~/assets/fonts/SofiaPro/SofiaProLight.svg#SofiaProLight') format('svg');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
+}
+
+@font-face {
+  font-family: 'Butler';
+  src: url('~/assets/fonts/Butler/Butler_Regular.otf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ButlerLight';
+  src: url('~/assets/fonts/Butler/Butler_Light.otf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
 }
 
 body {
