@@ -32,7 +32,6 @@ export default class Loader {
         const material = new THREE.MeshBasicMaterial({
           map: texture
         })
-        // gltf.scene.children[0].material = material
         gltf.scene.children[38].material = material
         resolve(gltf.scene)
       })
@@ -79,8 +78,6 @@ export default class Loader {
           gltf.scene.position.set(0, -0.03, 0)
           break
         case 'blue':
-          break
-        case 'lavender':
           break
       }
 

@@ -8,8 +8,6 @@ import modelDesert from '../../../../assets/models/m_desert_draco.gltf'
 import modelGrass from '../../../../assets/models/m_grass.gltf'
 import Loader from '../Loader'
 import Land from '../Land'
-import MainGui from '../Utils/MainGui'
-import ColorGUIHelper from '../Utils/ColorGUIHelper'
 import Rotation from '../Utils/Rotation'
 import Sound from '../Utils/SoundLoader'
 import Particles from './Particles'
@@ -47,7 +45,7 @@ export default class Desert {
 
     this.plantsGroup = new THREE.Group()
     this.grass = null
-    this.flowerTypes = ['white', 'tulip', 'blue', 'lavender']
+    this.flowerTypes = ['white', 'tulip', 'blue']
     this.plants = []
     this.plantsOffsets = {
       x: 10,
@@ -76,17 +74,13 @@ export default class Desert {
 
   async init (scene, renderer) {
     renderer.toneMappingExposure = Math.pow(2, 4.0)
-    const desertModel = await this.land.load(this.desertGroup, modelDesert, 1)
+    const desertModel = await this.land.load(modelDesert, 1)
     this.desertGroup.add(desertModel)
 
     // Sound
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile })
 
-    /*
-      * Material rocks
-      * Need to do this shit to wait the complete load
-      * TO DO : Have to find an other way
-    */
+    // Material rocks
     const cubeMap = [
       require('../../../../assets/textures/png/constellation/px.png'),
       require('../../../../assets/textures/png/constellation/nx.png'),
@@ -95,12 +89,6 @@ export default class Desert {
       require('../../../../assets/textures/png/constellation/pz.png'),
       require('../../../../assets/textures/png/constellation/nz.png')
     ]
-    // const textureLoader = new THREE.TextureLoader()
-    // const textureCrystalsTest = textureLoader.load(require('../../../../assets/textures/png/rocks/map/crystal.png'))
-    // console.log(textureCrystalsTest)
-    // textureCrystalsTest.wrapS = THREE.RepeatWrapping
-    // textureCrystalsTest.wrapT = THREE.RepeatWrapping
-    // textureCrystalsTest.repeat.set(9, 1)
 
     const colorCrystals = new THREE.Color('#bd1780')
     const textureCrystals = new THREE.CubeTextureLoader().load(cubeMap)
@@ -110,15 +98,11 @@ export default class Desert {
       color: colorCrystals,
       envMap: textureCrystals,
       refractionRatio: 0.98,
-      // reflectivity: 1,
       combine: THREE.AddOperation,
       transparent: true,
       opacity: 0.95,
       premultipliedAlpha: true,
       depthWrite: false
-      // emissive: colorCrystals,
-      // emissiveIntensity: 0.7
-      // map: textureCrystalsTest
     })
     const innerCrystalsMaterial = new THREE.MeshPhongMaterial({
       color: colorCrystals,
@@ -129,14 +113,14 @@ export default class Desert {
     })
 
     // Crytals materials
-    for (let i = 1; i <= 19; i++) {
-      this.desertGroup.children[0].children[i].material = crystalsMaterial
-      this.desertGroup.children[0].children[i].layers.enable(1)
-
-      // Avoid the land to be shiny
-      if (i !== 19) {
-        this.desertGroup.children[0].children[i + 19].material = innerCrystalsMaterial
-        this.desertGroup.children[0].children[i + 19].layers.enable(1)
+    for (let i = 1; i <= this.desertGroup.children[0].children.length - 1; i++) {
+      const child = this.desertGroup.children[0].children[i]
+      if (child.name.includes('inside')) {
+        child.material = innerCrystalsMaterial
+        child.layers.enable(1)
+      } else if (child.name.includes('outside')) {
+        child.material = crystalsMaterial
+        child.layers.enable(1)
       }
     }
 
@@ -149,9 +133,6 @@ export default class Desert {
       }
     })
     this.sound.sound.play()
-
-    // Cube - Hover zone for flowers
-    this.myCube = new Cube({ scene, position: { x: 0.2, y: 0, z: 0.7 } })
 
     // Add Plants (Flower + Stem)
     let index = -1
@@ -179,13 +160,10 @@ export default class Desert {
     this.plantsGroup.position.set(-41, 0.5, 1.4)
     this.plantsGroup.scale.set(2.5, 2.5, 2.5)
     this.plantsGroup.name = 'Plants'
-<<<<<<< HEAD
-=======
     this.desertGroup.add(this.plantsGroup)
 
     // Raycaster
     this.raycaster.init(this.camera, renderer)
->>>>>>> ff4b867547e20ee37e09da4fae23dd02f66454ab
 
     // Spores
     this.spores = new Particles()
@@ -194,25 +172,20 @@ export default class Desert {
     this.desertGroup.add(this.spores.particles)
     this.desertGroup.add(this.plantsGroup)
 
-<<<<<<< HEAD
     // Raycaster
     this.raycaster.init(this.camera, renderer)
-=======
     // SpotLights on Flowers
-    this.spotLightOnFlowers = new THREE.PointLight(this.params.spotLightOnFlowersColor, 1, 10)
+    this.spotLightOnFlowers = new THREE.PointLight(0xFFF, 1, 10)
     this.spotLightOnFlowers.position.y += 15
     this.spotLightOnFlowers.position.x -= 3
     this.spotLightOnFlowers.position.z -= 3
-    // this.spotLightOnFlowers.color = '#ffffff'
-    // this.spores.particles.add(this.spotLightOnFlowers)
->>>>>>> ff4b867547e20ee37e09da4fae23dd02f66454ab
 
     // Fog
     const colorBG = new THREE.Color('#040408')
     // scene.fog = new THREE.Fog(colorBG, 10, 300)
     const loader = new THREE.CubeTextureLoader()
     loader.premultiplyAlpha = true
-    const texture = loader.load([
+    const SkyboxTexture = loader.load([
       require('../../../../assets/textures/png/rocks/px.png'),
       require('../../../../assets/textures/png/rocks/nx.png'),
       require('../../../../assets/textures/png/rocks/py.png'),
@@ -220,7 +193,7 @@ export default class Desert {
       require('../../../../assets/textures/png/rocks/pz.png'),
       require('../../../../assets/textures/png/rocks/nz.png')
     ])
-    texture.encoding = THREE.sRGBEncoding
+    SkyboxTexture.encoding = THREE.sRGBEncoding
 
     // Skybox
     const skybox = new THREE.Mesh(
@@ -229,15 +202,15 @@ export default class Desert {
         uniforms: THREE.UniformsUtils.clone(THREE.ShaderLib.cube.uniforms),
         vertexShader: THREE.ShaderLib.cube.vertexShader,
         fragmentShader: THREE.ShaderLib.cube.fragmentShader,
-        depthTest: false,
+        // depthTest: false,
         depthWrite: false,
-        side: THREE.BackSide,
-        toneMapped: false
+        side: THREE.BackSide
+        // toneMapped: false
       })
     )
 
-    skybox.material.uniforms.envMap.value = texture
-    skybox.layers.enable(1)
+    skybox.material.uniforms.envMap.value = SkyboxTexture
+    // skybox.layers.enable(1)
     Object.defineProperty(skybox.material, 'envMap', {
       get () {
         return this.uniforms.envMap.value
@@ -284,53 +257,19 @@ export default class Desert {
     window.addEventListener('mouseup', () => {
       this.exhale()
       if (store.state.cameraIsZoomed) {
-        this.cameraOnUnhold(this.camera.camera.position)
+        this.cameraOnUnhold()
       }
     })
   }
 
   handleClick () {
-<<<<<<< HEAD
-    if (this.intersects.length > 0 && this.isCursorActive && !store.state.desert.interaction) {
-      store.commit('desert/toggleInteraction')
-=======
     if (this.intersects.length > 0) {
-      // eslint-disable-next-line no-console
-      // console.log(this.camera.camera)
-      // gsap.to(this, {progression: 1, duration: 1, ease: "power3.out"} )
+      store.commit('desert/toggleInteraction', true)
     }
   }
 
-  cameraOnHold () {
-    this.cameraIsZoomed = true
-    gsap.to(
-      this.camera.camera.position,
-      {
-        x: this.camera.camera.position.x + 1,
-        y: this.camera.camera.position.y - 1,
-        z: this.camera.camera.position.z - 1,
-        duration: 2,
-        ease: 'power3.out',
-        onComplete: this.cameraOnUnhold(this.camera.camera.position)
-      }
-    )
-  }
-
-  cameraOnUnhold (camera) {
-    gsap.killTweensOf(camera)
-    gsap.to(
-      this.camera.camera.position,
-      {
-        x: this.camera.camera.position.x - 1,
-        y: this.camera.camera.position.y + 1,
-        z: this.camera.camera.position.z + 1,
-        duration: 1,
-        ease: 'power3.out',
-        onComplete: () => {
-          this.cameraIsZoomed = false
-        }
-      }
-    )
+  cameraOnUnhold () {
+    nuxt.$emit('unzoomCamera')
   }
 
   isFixedView () {
@@ -338,7 +277,6 @@ export default class Desert {
       return true
     } else {
       return false
->>>>>>> ff4b867547e20ee37e09da4fae23dd02f66454ab
     }
   }
 

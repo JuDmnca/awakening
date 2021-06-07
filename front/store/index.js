@@ -45,12 +45,9 @@ const mutations = {
   },
   increaseSceneIndex (state) {
     state.sceneIndex++
-<<<<<<< HEAD
   },
   updateCameraZoom (state) {
     state.cameraZoomed = !state.cameraZoomed
-=======
->>>>>>> ff4b867547e20ee37e09da4fae23dd02f66454ab
   }
 }
 
