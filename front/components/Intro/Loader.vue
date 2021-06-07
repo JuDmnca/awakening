@@ -34,55 +34,55 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        loaded: false,
-        showLogo: false,
-        showName: false,
-        showMic: false,
-        showColor: false
-      }
-    },
-    mounted() {
-      // TO DO : Get real data from the 3D Loader
-      setTimeout(() => {
-        this.loaded = true
-      }, 500)
+export default {
+  data () {
+    return {
+      loaded: false,
+      showLogo: false,
+      showName: false,
+      showMic: false,
+      showColor: false
+    }
+  },
+  mounted () {
+    // TO DO : Get real data from the 3D Loader
+    setTimeout(() => {
+      this.loaded = true
+    }, 500)
 
-      setTimeout(() => {
-        this.showLogo = true
-      }, 1500)
-      setTimeout(() => {
-        this.showLogo = false
-      }, 3500)
-      setTimeout(() => {
-        this.showName = true
-      }, 4500)
-    },
-    methods: {
-      nextQuestion() {
-        if (this.showName) {
-          this.showName = false
-          setTimeout(() => {
-            this.showMic = true
-          }, 1000)
-        } else {
-          this.showMic = false
-          setTimeout(() => {
-            this.showColor = true
-          }, 1000)
-        }
-      },
-      startExperience() {
-        this.showColor = false
+    setTimeout(() => {
+      this.showLogo = true
+    }, 1500)
+    setTimeout(() => {
+      this.showLogo = false
+    }, 3500)
+    setTimeout(() => {
+      this.showName = true
+    }, 4500)
+  },
+  methods: {
+    nextQuestion () {
+      if (this.showName) {
+        this.showName = false
         setTimeout(() => {
-          this.$emit('done')
-          this.$nuxt.$emit('startExperience')
+          this.showMic = true
+        }, 1000)
+      } else {
+        this.showMic = false
+        setTimeout(() => {
+          this.showColor = true
         }, 1000)
       }
     },
+    startExperience () {
+      this.showColor = false
+      setTimeout(() => {
+        this.$emit('done')
+        this.$nuxt.$emit('startExperience')
+      }, 1000)
+    }
   }
+}
 </script>
 
 <style>
@@ -117,4 +117,3 @@
   width: 40px;
 }
 </style>
-

@@ -29,7 +29,34 @@ const mutations = {
     state.user.mic = resp
   },
   setUserColor (state, resp) {
-    state.user.color = resp
+    let hexacode = ''
+    switch (resp) {
+      case 'red':
+        hexacode = '0xdc0c47'
+        break
+      case 'orange':
+        hexacode = '0xe8721f'
+        break
+      case 'yellow':
+        hexacode = '0xedc52c'
+        break
+      case 'green':
+        hexacode = '0x7bbd22'
+        break
+      case 'darkgreen':
+        hexacode = '0x0e7b33'
+        break
+      case 'blue':
+        hexacode = '0x1281ab'
+        break
+      case 'darkblue':
+        hexacode = '0x1f6cad'
+        break
+      case 'purple':
+        hexacode = '0x7b4ea3'
+        break
+    }
+    state.user.color = hexacode
   },
   setUserSmell (state, resp) {
     state.user.smell = resp
