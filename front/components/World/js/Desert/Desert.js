@@ -73,14 +73,14 @@ export default class Desert {
   }
 
   async init (scene, renderer) {
-    renderer.toneMappingExposure = Math.pow(2, 4.0)
+    renderer.toneMappingExposure = Math.pow(1.5, 4.0)
     const desertModel = await this.land.load(modelDesert, 1)
     this.desertGroup.add(desertModel)
 
     // Sound
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile })
 
-    // Material rocks
+    // Crystals material
     const cubeMap = [
       require('../../../../assets/textures/png/constellation/px.png'),
       require('../../../../assets/textures/png/constellation/nx.png'),
@@ -90,30 +90,30 @@ export default class Desert {
       require('../../../../assets/textures/png/constellation/nz.png')
     ]
 
-    const colorCrystals = new THREE.Color('#bd1780')
+    const colorCrystals = new THREE.Color('#1d6bbf')
     const textureCrystals = new THREE.CubeTextureLoader().load(cubeMap)
     textureCrystals.mapping = THREE.CubeRefractionMapping
     textureCrystals.encoding = THREE.sRGBEncoding
     const crystalsMaterial = new THREE.MeshPhongMaterial({
       color: colorCrystals,
       envMap: textureCrystals,
-      refractionRatio: 0.98,
+      refractionRatio: 0.5,
       combine: THREE.AddOperation,
       transparent: true,
-      opacity: 0.95,
+      opacity: 0.8,
       premultipliedAlpha: true,
       depthWrite: false
     })
     const innerCrystalsMaterial = new THREE.MeshPhongMaterial({
       color: colorCrystals,
-      opacity: 1,
+      opacity: 0.5,
       transparent: true,
       emissive: colorCrystals,
       emissiveIntensity: 1
     })
 
     // Crytals materials
-    for (let i = 1; i <= this.desertGroup.children[0].children.length - 1; i++) {
+    for (let i = 0; i <= this.desertGroup.children[0].children.length - 1; i++) {
       const child = this.desertGroup.children[0].children[i]
       if (child.name.includes('inside')) {
         child.material = innerCrystalsMaterial
@@ -257,19 +257,15 @@ export default class Desert {
     window.addEventListener('mouseup', () => {
       this.exhale()
       if (store.state.cameraIsZoomed) {
-        this.cameraOnUnhold()
+        nuxt.$emit('unzoomCamera')
       }
     })
   }
 
   handleClick () {
-    if (this.intersects.length > 0) {
+    if (this.intersects.length > 0 && !store.state.desert.interaction) {
       store.commit('desert/toggleInteraction', true)
     }
-  }
-
-  cameraOnUnhold () {
-    nuxt.$emit('unzoomCamera')
   }
 
   isFixedView () {

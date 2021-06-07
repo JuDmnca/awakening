@@ -38,15 +38,15 @@ export default {
   },
   mounted () {
     this.$nuxt.$on('handleScrollAnimation', () => {
-      this.animation = !this.animation
+      // this.animation = !this.animation
     })
     this.$nuxt.$on('handleHoverAnimation', () => {
       this.lottieOptions = { animationData: hoverData.default }
-      this.animation = !this.animation
+      // this.animation = !this.animation
     })
     this.$nuxt.$on('handleHoldAnimation', () => {
       this.lottieOptions = { animationData: holdData.default }
-      this.animation = !this.animation
+      // this.animation = !this.animation
     })
   },
   methods: {
