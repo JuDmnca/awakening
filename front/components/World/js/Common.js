@@ -261,14 +261,13 @@ class Common {
 
   addTransitionEvent () {
     nuxt.$on('startSceneTransition', () => {
+      this.removeGroup(this.currentScene)
       switch (store.state.sceneIndex) {
         case 1:
-          this.removeGroup(this.currentScene)
           this.currentScene = new Forest({ camera: this.camera })
           this.currentScene.init(this.scene, this.renderer)
           break
         case 2:
-          this.removeGroup(this.currentScene)
           // this.currentScene = new Forest({camera: this.camera})
           // this.currentScene.init(this.scene, this.renderer)
           break
