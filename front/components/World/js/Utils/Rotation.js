@@ -10,20 +10,13 @@ class RotationControl {
   constructor () {
     this.ratio = 10
 
-    let timer
-    // TO DO : launch when nuxt has emitted 'startExperience'
+    this.loop()
+  }
+
+  launchEvents () {
     if (process.client) {
       window.addEventListener('mousemove', (event) => {
-        clearTimeout(timer)
-        if (nuxt) {
-          // nuxt.$emit('startmove')
-        }
         this.onMouseMove(event)
-        timer = setTimeout(() => {
-          if (nuxt) {
-            // nuxt.$emit('endmove')
-          }
-        }, 500)
       })
     }
   }
@@ -49,6 +42,18 @@ class RotationControl {
       } else {
         store.commit('desert/updateFRotation', { x, z, euler })
       }
+    }
+  }
+
+  loop () {
+    if (nuxt) {
+      nuxt.$on('startExperience', () => {
+        this.launchEvents()
+      })
+    } else {
+      setTimeout(() => {
+        this.loop()
+      }, 1000)
     }
   }
 }
