@@ -5,6 +5,7 @@ import MainGui from './Utils/MainGui'
 // import Bloom from './Utils/Bloom'
 
 import Desert from './Desert/Desert'
+import Forest from './Forest/Forest'
 
 const desertCurve = [
   [41.891, 0.85967, -41.585],
@@ -14,13 +15,10 @@ const desertCurve = [
   [-4.7436, 1.6304, 6.2753]
 ]
 
-const prairieCurve = [
-]
-
 const forestCurve = [
 ]
 
-const allCurves = [desertCurve, prairieCurve, forestCurve]
+const allCurves = [desertCurve, forestCurve]
 
 const start = new THREE.Vector3(-41, 1, 1.4)
 const end = new THREE.Vector3(start.x - 1, start.y + 6, start.z - 7.4)
@@ -266,8 +264,8 @@ class Common {
       switch (store.state.sceneIndex) {
         case 1:
           this.removeGroup(this.currentScene)
-          // this.currentScene = new Prairie({camera: this.camera})
-          // this.currentScene.init(this.scene, this.renderer)
+          this.currentScene = new Forest({ camera: this.camera })
+          this.currentScene.init(this.scene, this.renderer)
           break
         case 2:
           this.removeGroup(this.currentScene)

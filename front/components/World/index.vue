@@ -2,7 +2,14 @@
   <transition name="fade">
     <section class="scene rel">
       <canvas id="canvas" ref="canvas" />
-      <FormsQuestion v-if="isVisibleQ" :label="label" :step="step" :placeholder="placeholder" :intro="false" />
+      <FormsQuestion
+        v-if="isVisibleQ"
+        :label="label"
+        :step="step"
+        :placeholder="placeholder"
+        :confirmation="confirmation"
+        :intro="false"
+      />
       <EffectsVignettage v-if="isVisibleV" @onscreen="updateScene" />
       <!-- Just to test icons -->
       <!-- <UI-IconsSound width="40" height="40" iconColor="#fff"/> -->
@@ -21,6 +28,7 @@ export default {
       visibleV: true,
       label: '',
       placeholder: '',
+      confirmation: '',
       step: 0
     }
   },
@@ -42,6 +50,7 @@ export default {
       if (step === 2) {
         this.label = 'Quelle odeur vous a déjà procuré une telle sensation ?'
         this.placeholder = 'La vanille'
+        this.confirmation = 'Confirmer'
       } else if (step === 3) {
         this.label = 'Goût'
       } else {

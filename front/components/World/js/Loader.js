@@ -20,19 +20,27 @@ export default class Loader {
 
   defaultInit () {
     return new Promise((resolve) => {
-      const materialImported = this.material
       const position = this.props.position
+      const materialImported = this.material
+
       this.loader.load(this.props.model, function (gltf) {
         gltf.scene.position.x = position.x
         gltf.scene.position.y = position.y
         gltf.scene.position.z = position.z
         gltf.scene.scale.set(3, 3, 3)
-        const texture = new THREE.TextureLoader().load(materialImported)
-        texture.flipY = false
-        const material = new THREE.MeshBasicMaterial({
-          map: texture
-        })
-        gltf.scene.children[38].material = material
+
+        let material = null
+        if (materialImported) {
+          const texture = new THREE.TextureLoader().load(materialImported)
+          texture.flipY = false
+          material = new THREE.MeshBasicMaterial({
+            map: texture
+          })
+        }
+
+        if (gltf.scene.children[38]) {
+          gltf.scene.children[38].material = material
+        }
         resolve(gltf.scene)
       })
     }, undefined, function (error) {
