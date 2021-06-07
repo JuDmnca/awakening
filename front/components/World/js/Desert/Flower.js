@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import Loader from '../Loader'
-import modelTulip from '../../../../assets/models/m_tulip.gltf'
-import modelwhite from '../../../../assets/models/m_white_flower.glb'
+import modelTulip from '../../../../assets/models/m_tulip_draco.gltf'
+import modelwhite from '../../../../assets/models/m_white_flower_draco.gltf'
 import modelblue from '../../../../assets/models/m_blue_flower.gltf'
 
 import petalVert from '../../../../assets/shaders/flower/flower.vert'
