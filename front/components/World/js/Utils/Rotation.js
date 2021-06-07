@@ -40,8 +40,8 @@ class RotationControl {
   rotateElement (x, z, type) {
     if (store) {
       let euler
-      if (store.state.worldRotation) {
-        euler = store.state.worldRotation.clone()
+      if (store.state.desert.worldRotation) {
+        euler = store.state.desert.worldRotation.clone()
         euler.x = 0
       }
       if (type === 'stem') {

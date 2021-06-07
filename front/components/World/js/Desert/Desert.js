@@ -136,7 +136,7 @@ export default class Desert {
 
     // Add Plants (Flower + Stem)
     let index = -1
-    for (let nbPlants = 0; nbPlants <= 15; nbPlants++) {
+    for (let nbPlants = 0; nbPlants <= 20; nbPlants++) {
       index++
       if (index >= 3) {
         index = 0
@@ -308,7 +308,7 @@ export default class Desert {
       this.spores.particles.material.uniforms.uZSpeed,
       {
         value: this.sporesElevation / 1000,
-        duration: 1,
+        duration: 3,
         ease: 'power3.out'
       }
     )
