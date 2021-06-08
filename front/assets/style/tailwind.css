@@ -120,17 +120,3 @@ input:focus, button:focus {
   opacity: 0;
 }
 
-.fadeLoader-enter-active, .fadeLoader-leave-active {
-  transition: opacity 3s;
-}
-.fadeLoader-enter, .fadeLoader-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-
-.fadeLoaderOut-enter-active, .fadeLoaderOut-leave-active {
-  transition: opacity 3s;
-}
-.fadeLoaderOut-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-

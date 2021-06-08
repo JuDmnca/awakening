@@ -5,42 +5,42 @@
     </label>
     <div ref="button" class="buttons">
       <button type="submit" @click="storeInfo(true)">
-          J'accepte
+        J'accepte
       </button>
       <button type="submit" @click="storeInfo(false)">
-          Non merci
+        Non merci
       </button>
     </div>
   </section>
 </template>
 
 <script>
-  import gsap from 'gsap'
+import gsap from 'gsap'
 
-  export default {
-    mounted() {
-      this.label = this.$refs.label
-      this.button = this.$refs.button
+export default {
+  mounted () {
+    this.label = this.$refs.label
+    this.button = this.$refs.button
 
-      gsap.to(this.label, {
-        y: -60,
-        scale: 0.7,
-        duration: 1,
-        delay: 2,
-        ease: "power3.out",
-        onComplete: this.showButtons
-      })
+    gsap.to(this.label, {
+      y: -60,
+      scale: 0.7,
+      duration: 1,
+      delay: 2,
+      ease: 'power3.out',
+      onComplete: this.showButtons
+    })
+  },
+  methods: {
+    showButtons () {
+      gsap.to(this.button, { opacity: 1, duration: 1, ease: 'power3.out' })
     },
-    methods: {
-      showButtons() {
-        gsap.to(this.button, {opacity: 1, duration: 1, ease: "power3.out"})
-      },
-      storeInfo(value) {
-        this.$store.commit('setUserMic', value)
-        this.$emit('done')
-      }
+    storeInfo (value) {
+      this.$store.commit('setUserMic', value)
+      this.$emit('done')
     }
   }
+}
 </script>
 
 <style>
@@ -70,7 +70,7 @@ button:first-of-type {
   margin-right: 50px;
 }
 
-button:last-of-type {
+.buttons button:last-of-type {
   color: #888888;
   margin-right: 0;
 }
@@ -81,4 +81,3 @@ button:last-of-type {
   font-size: 12px;
 }
 </style>
-
