@@ -2,6 +2,12 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import * as THREE from 'three'
 
+let store
+if (process.browser) {
+  window.onNuxtReady(({ $store }) => {
+    store = $store
+  })
+}
 export default class Loader {
   constructor (props) {
     this.loader = null
@@ -23,26 +29,31 @@ export default class Loader {
       const position = this.props.position
       const materialImported = this.material
 
-      this.loader.load(this.props.model, function (gltf) {
-        gltf.scene.position.x = position.x
-        gltf.scene.position.y = position.y
-        gltf.scene.position.z = position.z
-        gltf.scene.scale.set(3, 3, 3)
+      this.loader.load(
+        this.props.model,
+        function (gltf) {
+          gltf.scene.position.x = position.x
+          gltf.scene.position.y = position.y
+          gltf.scene.position.z = position.z
+          gltf.scene.scale.set(3, 3, 3)
 
-        let material = null
-        if (materialImported) {
-          const texture = new THREE.TextureLoader().load(materialImported)
-          texture.flipY = false
-          material = new THREE.MeshBasicMaterial({
-            map: texture
-          })
-        }
+          let material = null
+          if (materialImported) {
+            const texture = new THREE.TextureLoader().load(materialImported)
+            texture.flipY = false
+            material = new THREE.MeshBasicMaterial({
+              map: texture
+            })
+          }
 
-        if (gltf.scene.children[38]) {
-          gltf.scene.children[38].material = material
-        }
-        resolve(gltf.scene)
-      })
+          if (gltf.scene.children[38]) {
+            gltf.scene.children[38].material = material
+          }
+          resolve(gltf.scene)
+        },
+        function (xhr) {
+          store.commit('setLoading', xhr.loaded / xhr.total * 100)
+        })
     }, undefined, function (error) {
       // eslint-disable-next-line no-console
       console.error(error)

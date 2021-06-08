@@ -1,8 +1,8 @@
 <template>
   <section class="loader__container">
-    <transition name="fade">
-      <div v-if="!loaded" class="loader">
-        <div class="progress" />
+    <transition name="fadeLoader">
+      <div v-if="!completed" class="loader">
+        <div class="progress" :style="progress" />
       </div>
     </transition>
     <transition name="fade">
@@ -37,28 +37,39 @@
 export default {
   data () {
     return {
-      loaded: false,
       showLogo: false,
       showName: false,
       showMic: false,
       showColor: false
     }
   },
+  computed: {
+    progress () {
+      return {
+        width: `${this.$store.state.loading}%`
+      }
+    },
+    completed () {
+      if (this.$store.state.loading === 100) {
+        this.$nuxt.$emit('loaded')
+        return true
+      } else {
+        return false
+      }
+    }
+  },
   mounted () {
-    // TO DO : Get real data from the 3D Loader
-    setTimeout(() => {
-      this.loaded = true
-    }, 500)
-
-    setTimeout(() => {
-      this.showLogo = true
-    }, 1500)
-    setTimeout(() => {
-      this.showLogo = false
-    }, 3500)
-    setTimeout(() => {
-      this.showName = true
-    }, 4500)
+    this.$nuxt.$on('loaded', () => {
+      setTimeout(() => {
+        this.showLogo = true
+      }, 3000)
+      setTimeout(() => {
+        this.showLogo = false
+      }, 6500)
+      setTimeout(() => {
+        this.showName = true
+      }, 7500)
+    })
   },
   methods: {
     nextQuestion () {
@@ -107,7 +118,7 @@ export default {
 
 .progress {
   border-radius: 8px;
-  width: 20px;
+  width: 0px;
   height: 5px;
   background-color: #fff;
   transition: 0.32s ease-out width;
