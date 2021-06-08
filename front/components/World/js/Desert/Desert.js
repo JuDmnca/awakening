@@ -63,6 +63,20 @@ export default class Desert {
 
     // CURSOR
     this.isCursorActive = false
+
+    // TIMES
+    this.time = {
+      stationary: 0,
+      cursorImmobile: 0,
+      noHold: 0
+    }
+    this.isStationary = false
+    this.isCursorImmobile = true
+    this.isHold = false
+
+    this.cursorDistance = 0
+    this.enableSporesElevationAt = 0.85
+    this.progression = 0
   }
 
   async init (scene, renderer) {
@@ -87,9 +101,44 @@ export default class Desert {
     // SKYBOX
     this.addSkybox(scene)
 
+    // MOUSE
+    this.lastMouseX = -1
+    this.lastMouseY = -1
+
     // Add desert scene to main scene
     this.desertGroup.name = this.name
     scene.add(this.desertGroup)
+  }
+
+  onWheelMovement (e) {
+    this.time.stationary = 0
+    if (this.isStationary) {
+      nuxt.$emit('handleScrollAnimation')
+    }
+    this.isStationary = false
+  }
+
+  onHold () {
+    this.time.noHold = 0
+    if (this.isHold) {
+      nuxt.$emit('handleHoldAnimation')
+    }
+    this.isHold = false
+  }
+
+  onCursorMovement (e) {
+    // Disable animation if mousemove
+    this.time.cursorImmobile = 0
+    if (!this.isCursorImmobile) {
+      nuxt.$emit('handleHoverAnimation')
+    }
+    this.isCursorImmobile = true
+
+    // Compute distance of mousemove at the end of the path
+    if (this.progression > this.enableSporesElevationAt) {
+      this.cursorDistance += Math.abs(e.movementX)
+      this.cursorDistance += Math.abs(e.movementY)
+    }
   }
 
   addSound () {
@@ -236,37 +285,32 @@ export default class Desert {
     }
   }
 
-  enableSporesMovement () {
-    window.addEventListener('mousedown', () => {
-      this.hold = true
-      this.sporesElevation += 1000
-      this.inhale()
-      if (store.state.desert.interaction) {
-        nuxt.$emit('zoomCamera', { position: { x: -41, y: 1, z: 1.4 } })
-      }
-    })
+  sporesOnHold () {
+    this.hold = true
+    this.sporesElevation += 1000
+    this.inhale()
+    if (store.state.desert.interaction) {
+      nuxt.$emit('zoomCamera', { position: { x: -41, y: 1, z: 1.4 } })
+    }
+  }
 
-    let lastMouseX = -1
-    let lastMouseY = -1
-    window.addEventListener('mousemove', (e) => {
-      // Spores elevating when mousemove
-      e.preventDefault()
-      const mouseX = e.pageX
-      const mouseY = e.pageY
-      if (lastMouseX > -1) {
-        this.sporesElevation += Math.max(Math.abs(mouseX - lastMouseX), Math.abs(mouseY - lastMouseY))
-      }
-      lastMouseX = mouseX
-      lastMouseY = mouseY
-      this.inhale({ mousemove: true })
-    })
+  sporesOnMouseMove (e) {
+    e.preventDefault()
+    const mouseX = e.pageX
+    const mouseY = e.pageY
+    if (this.lastMouseX > -1) {
+      this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY))
+    }
+    this.lastMouseX = mouseX
+    this.lastMouseY = mouseY
+    this.inhale({ mousemove: true })
+  }
 
-    window.addEventListener('mouseup', () => {
-      this.exhale()
-      if (store.state.cameraIsZoomed) {
-        nuxt.$emit('unzoomCamera')
-      }
-    })
+  sporesOnMouseUp () {
+    this.exhale()
+    if (store.state.cameraIsZoomed) {
+      nuxt.$emit('unzoomCamera')
+    }
   }
 
   handleClick () {
@@ -313,13 +357,33 @@ export default class Desert {
     )
   }
 
-  render (elapsedTime) {
+  render (elapsedTime, timeDelta, progression) {
     if (nuxt && store && !this.events) {
       this.addEvents()
     }
     if (this.plantsGroup.children[0]) {
       this.intersects = this.raycaster.render(this.plantsGroup)
     }
+    // Indications
+    this.time.stationary += timeDelta
+    this.time.cursorImmobile += timeDelta
+    this.time.noHold += timeDelta
+    this.progression = progression
+
+    // stationary = time to wait to show the indication
+    // progression < 0.5 : indicator just in the first part of the scene.
+    // console.log('stationary : ', this.time.stationary, ' isStationary : ', this.isStationary, ' progression : ', this.progression)
+    if (this.time.stationary > 10 && !this.isStationary && this.progression < 0.5) {
+      this.isStationary = true
+      nuxt.$emit('handleScrollAnimation')
+    } else if (this.time.cursorImmobile > 10 && this.cursorDistance < 25000 && this.progression > this.enableSporesElevationAt && this.isCursorImmobile) {
+      this.isCursorImmobile = false
+      nuxt.$emit('handleHoverAnimation')
+    } else if (this.time.noHold > 10 && this.cursorDistance > 25000 && this.progression > this.enableSporesElevationAt && !this.isHold) {
+      this.isHold = true
+      nuxt.$emit('handleHoldAnimation')
+    }
+
     if (this.intersects.length > 0 && !this.isCursorActive && nuxt) {
       this.isCursorActive = true
       nuxt.$emit('activeCursor')
