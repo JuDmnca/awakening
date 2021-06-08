@@ -1,8 +1,9 @@
 <template>
   <section class="loader__container">
-    <transition name="fadeLoader">
-      <div v-if="!completed" class="loader">
+    <transition name="fade">
+      <div v-if="!loaded" class="loader">
         <div class="progress" :style="progress" />
+        <span style="display: none">{{ completed }}</span>
       </div>
     </transition>
     <transition name="fade">
@@ -37,6 +38,7 @@
 export default {
   data () {
     return {
+      loaded: false,
       showLogo: false,
       showName: false,
       showMic: false,
@@ -60,6 +62,9 @@ export default {
   },
   mounted () {
     this.$nuxt.$on('loaded', () => {
+      setTimeout(() => {
+        this.loaded = true
+      }, 1000)
       setTimeout(() => {
         this.showLogo = true
       }, 3000)
@@ -112,14 +117,14 @@ export default {
 .loader {
   border-radius: 10px;
   width: 200px;
-  height: 5px;
+  height: 3px;
   background-color: rgba(255, 255, 255, 0.5);
 }
 
 .progress {
   border-radius: 8px;
   width: 0px;
-  height: 5px;
+  height: 3px;
   background-color: #fff;
   transition: 0.32s ease-out width;
 }
