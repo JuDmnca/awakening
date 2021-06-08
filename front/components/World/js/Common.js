@@ -116,7 +116,7 @@ class Common {
     this.vectCam = new THREE.Vector3(this.p1.x, this.p1.y, this.p1.z)
     this.initCamera()
 
-    this.addWheelEvent()
+    this.addEventListeners()
 
     // Load first group (desert)
     this.currentScene = new Desert({ camera: this.camera })
@@ -208,16 +208,18 @@ class Common {
     this.renderer.setSize(this.size.windowW, this.size.windowH)
   }
 
-  addWheelEvent () {
+  addEventListeners () {
     window.addEventListener('mousemove', (e) => {
       this.mouseMovement(e)
 
+      // DESERT
       if (this.sporesCanMove) {
         this.currentScene.sporesOnMouseMove(e)
       }
-
-      // Disable animation if mousemove
-      this.currentScene.onCursorMovement(e)
+      // Disable animation if mousemove on desert scene
+      if (this.currentScene.name === 'desert') {
+        this.currentScene.onCursorMovement(e)
+      }
     })
 
     window.addEventListener('resize', () => {
@@ -228,17 +230,26 @@ class Common {
       if (this.curves[this.curveNumber] !== undefined) {
         this.moveCamera(e)
       }
-      this.currentScene.onWheelMovement(e)
+
+      // DESERT
+      if (this.currentScene.name === 'desert') {
+        this.currentScene.onWheelMovement(e)
+      }
     })
 
     window.addEventListener('mousedown', () => {
-      this.currentScene.onHold()
+      // DESERT
+      if (this.currentScene.name === 'desert') {
+        this.currentScene.onHold()
+      }
+
       if (this.sporesCanMove) {
         this.currentScene.sporesOnHold()
       }
     })
 
     window.addEventListener('mouseup', () => {
+      // DESERT
       if (this.sporesCanMove) {
         this.currentScene.sporesOnMouseUp()
       }
@@ -250,6 +261,7 @@ class Common {
       this.removeGroup(this.currentScene)
       switch (store.state.sceneIndex) {
         case 1:
+          this.sporesCanMove = false
           this.currentScene = new Forest({ camera: this.camera })
           this.currentScene.init(this.scene, this.renderer)
           break
