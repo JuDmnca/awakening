@@ -67,6 +67,8 @@ class Common {
       delta: null
     }
 
+    this.enableSporesElevationAt = 0.85
+
     this.light = null
 
     // General Params
@@ -131,7 +133,6 @@ class Common {
     moonFolder.add(this.light, 'intensity', 0, 3, 0.1).name('intensity')
 
     this.scene.add(this.light)
-
     // this.initBloom()
   }
 
@@ -181,8 +182,7 @@ class Common {
     }
 
     // Enable spores movement and inhale if end of path
-    if (this.progression >= this.enableSporesElevationAt && this.sporesCanMove === false) {
-      this.currentScene.enableSporesMovement()
+    if (this.currentScene.name === 'desert' && this.progression >= this.enableSporesElevationAt && this.sporesCanMove === false) {
       this.sporesCanMove = true
     }
   }
@@ -212,6 +212,10 @@ class Common {
     window.addEventListener('mousemove', (e) => {
       this.mouseMovement(e)
 
+      if (this.sporesCanMove) {
+        this.currentScene.sporesOnMouseMove(e)
+      }
+
       // Disable animation if mousemove
       this.currentScene.onCursorMovement(e)
     })
@@ -229,6 +233,15 @@ class Common {
 
     window.addEventListener('mousedown', () => {
       this.currentScene.onHold()
+      if (this.sporesCanMove) {
+        this.currentScene.sporesOnHold()
+      }
+    })
+
+    window.addEventListener('mouseup', () => {
+      if (this.sporesCanMove) {
+        this.currentScene.sporesOnMouseUp()
+      }
     })
   }
 
