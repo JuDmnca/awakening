@@ -78,6 +78,7 @@ export default {
         case 1:
           this.$store.commit('setUserColor', data)
           this.$emit('done')
+          this.$nuxt.$emit('ColorSetted')
           break
         case 2:
           this.$store.commit('setUserSmell', data)

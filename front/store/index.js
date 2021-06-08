@@ -32,28 +32,28 @@ const mutations = {
     let hexacode = ''
     switch (resp) {
       case 'red':
-        hexacode = '0xdc0c47'
+        hexacode = '#dc0c47'
         break
       case 'orange':
-        hexacode = '0xe8721f'
+        hexacode = '#e8721f'
         break
       case 'yellow':
-        hexacode = '0xedc52c'
+        hexacode = '#edc52c'
         break
       case 'green':
-        hexacode = '0x7bbd22'
+        hexacode = '#7bbd22'
         break
       case 'darkgreen':
-        hexacode = '0x0e7b33'
+        hexacode = '#0e7b33'
         break
       case 'blue':
-        hexacode = '0x1281ab'
+        hexacode = '#1281ab'
         break
       case 'darkblue':
-        hexacode = '0x1f6cad'
+        hexacode = '#1f6cad'
         break
       case 'purple':
-        hexacode = '0x7b4ea3'
+        hexacode = '#7b4ea3'
         break
     }
     state.user.color = hexacode

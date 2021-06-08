@@ -33,96 +33,67 @@ export default class Desert {
     this.land = new Land({ texture: sandTexture, index: 0 })
 
     this.camera = this.props.camera
+
     this.raycaster = new Raycaster()
     this.intersects = []
     this.intersected = null
 
-    this.progression = null
-
     this.desertGroup = new THREE.Group()
 
-    this.myCube = null
-
+    // FLOWERS
     this.plantsGroup = new THREE.Group()
     this.grass = null
     this.flowerTypes = ['white', 'tulip', 'blue']
     this.plants = []
+    this.flowersHoverZone = null
     this.plantsOffsets = {
       x: 10,
       y: 0.1,
       z: 2
     }
+    this.spores = null
+    this.sporesElevation = 0
 
-    // Noise
+    // NOISE
     // eslint-disable-next-line new-cap
     this.noise = new perlinNoise3d()
 
-    // Particles
-    this.spores = null
-
-    // GUI
-    // this.gui = new MainGui()
-
-    this.sporesElevation = 0
-
-    // Audio
+    // SOUND
     this.ambiantFile = require('../../../../assets/sounds/wind.ogg')
 
-    // Cursor
+    // CURSOR
     this.isCursorActive = false
   }
 
   async init (scene, renderer) {
     renderer.toneMappingExposure = Math.pow(1.5, 4.0)
+
+    // LOAD MODEL
     const desertModel = await this.land.load(modelDesert, 1)
     this.desertGroup.add(desertModel)
 
-    // Sound
+    // SOUND
+    this.addSound()
+
+    // FLOWERS
+    this.addFlowers()
+
+    // RAYCASTER
+    this.raycaster.init(this.camera, renderer)
+
+    // FOG
+    // this.addFog(scene)
+
+    // SKYBOX
+    this.addSkybox(scene)
+
+    // Add desert scene to main scene
+    this.desertGroup.name = this.name
+    scene.add(this.desertGroup)
+  }
+
+  addSound () {
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile })
-
-    // Crystals material
-    const cubeMap = [
-      require('../../../../assets/textures/png/constellation/px.png'),
-      require('../../../../assets/textures/png/constellation/nx.png'),
-      require('../../../../assets/textures/png/constellation/py.png'),
-      require('../../../../assets/textures/png/constellation/ny.png'),
-      require('../../../../assets/textures/png/constellation/pz.png'),
-      require('../../../../assets/textures/png/constellation/nz.png')
-    ]
-
-    const colorCrystals = new THREE.Color('#1d6bbf')
-    const textureCrystals = new THREE.CubeTextureLoader().load(cubeMap)
-    textureCrystals.mapping = THREE.CubeRefractionMapping
-    textureCrystals.encoding = THREE.sRGBEncoding
-    const crystalsMaterial = new THREE.MeshPhongMaterial({
-      color: colorCrystals,
-      envMap: textureCrystals,
-      refractionRatio: 0.5,
-      combine: THREE.AddOperation,
-      transparent: true,
-      opacity: 0.8,
-      premultipliedAlpha: true,
-      depthWrite: false
-    })
-    const innerCrystalsMaterial = new THREE.MeshPhongMaterial({
-      color: colorCrystals,
-      opacity: 0.5,
-      transparent: true,
-      emissive: colorCrystals,
-      emissiveIntensity: 1
-    })
-
-    // Crytals materials
-    for (let i = 0; i <= this.desertGroup.children[0].children.length - 1; i++) {
-      const child = this.desertGroup.children[0].children[i]
-      if (child.name.includes('inside')) {
-        child.material = innerCrystalsMaterial
-        child.layers.enable(1)
-      } else if (child.name.includes('outside')) {
-        child.material = crystalsMaterial
-        child.layers.enable(1)
-      }
-    }
 
     // Watch on store if we have to mute sounds
     store.watch(() => store.state.desert.isMuted, (isMuted) => {
@@ -133,8 +104,9 @@ export default class Desert {
       }
     })
     this.sound.sound.play()
+  }
 
-    // Add Plants (Flower + Stem)
+  addFlowers () {
     let index = -1
     for (let nbPlants = 0; nbPlants <= 20; nbPlants++) {
       index++
@@ -148,8 +120,7 @@ export default class Desert {
         this.plantsGroup.add(plant.init())
       }, 1000)
     }
-    // Flowers hover zone
-    this.myCube = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.6 } })
+    this.flowersHoverZone = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.6 } })
 
     // Grass
     this.grass = new Loader({ model: modelGrass })
@@ -162,27 +133,20 @@ export default class Desert {
     this.plantsGroup.name = 'Plants'
     this.desertGroup.add(this.plantsGroup)
 
-    // Raycaster
-    this.raycaster.init(this.camera, renderer)
-
     // Spores
     this.spores = new Particles()
     this.spores.particles.position.set(-41, 1, 1.4)
 
     this.desertGroup.add(this.spores.particles)
     this.desertGroup.add(this.plantsGroup)
+  }
 
-    // Raycaster
-    this.raycaster.init(this.camera, renderer)
-    // SpotLights on Flowers
-    this.spotLightOnFlowers = new THREE.PointLight(0xFFF, 1, 10)
-    this.spotLightOnFlowers.position.y += 15
-    this.spotLightOnFlowers.position.x -= 3
-    this.spotLightOnFlowers.position.z -= 3
-
-    // Fog
+  addFog (scene) {
     const colorBG = new THREE.Color('#040408')
-    // scene.fog = new THREE.Fog(colorBG, 10, 300)
+    scene.fog = new THREE.Fog(colorBG, 10, 300)
+  }
+
+  addSkybox (scene) {
     const loader = new THREE.CubeTextureLoader()
     loader.premultiplyAlpha = true
     const SkyboxTexture = loader.load([
@@ -195,7 +159,6 @@ export default class Desert {
     ])
     SkyboxTexture.encoding = THREE.sRGBEncoding
 
-    // Skybox
     const skybox = new THREE.Mesh(
       new THREE.BoxBufferGeometry(20000, 20000, 20000),
       new THREE.ShaderMaterial({
@@ -218,15 +181,59 @@ export default class Desert {
     })
 
     scene.add(skybox)
+  }
 
-    // Listeners
+  addEvents () {
     window.addEventListener('click', () => {
       this.handleClick()
     })
+    nuxt.$on('ColorSetted', () => {
+      this.colorCrystals()
+    })
+  }
 
-    // Add desert scene to main scene
-    this.desertGroup.name = 'desert'
-    scene.add(this.desertGroup)
+  colorCrystals () {
+    const cubeMap = [
+      require('../../../../assets/textures/png/constellation/px.png'),
+      require('../../../../assets/textures/png/constellation/nx.png'),
+      require('../../../../assets/textures/png/constellation/py.png'),
+      require('../../../../assets/textures/png/constellation/ny.png'),
+      require('../../../../assets/textures/png/constellation/pz.png'),
+      require('../../../../assets/textures/png/constellation/nz.png')
+    ]
+
+    const colorCrystals = new THREE.Color(store.state.user.color)
+    const textureCrystals = new THREE.CubeTextureLoader().load(cubeMap)
+    textureCrystals.mapping = THREE.CubeRefractionMapping
+    textureCrystals.encoding = THREE.sRGBEncoding
+    const crystalsMaterial = new THREE.MeshPhongMaterial({
+      color: colorCrystals,
+      envMap: textureCrystals,
+      refractionRatio: 0.5,
+      combine: THREE.AddOperation,
+      transparent: true,
+      opacity: 0.8,
+      premultipliedAlpha: true,
+      depthWrite: false
+    })
+    const innerCrystalsMaterial = new THREE.MeshPhongMaterial({
+      color: colorCrystals,
+      opacity: 0.5,
+      transparent: true,
+      emissive: colorCrystals,
+      emissiveIntensity: 1
+    })
+
+    for (let i = 0; i <= this.desertGroup.children[0].children.length - 1; i++) {
+      const child = this.desertGroup.children[0].children[i]
+      if (child.name.includes('inside')) {
+        child.material = innerCrystalsMaterial
+        child.layers.enable(1)
+      } else if (child.name.includes('outside')) {
+        child.material = crystalsMaterial
+        child.layers.enable(1)
+      }
+    }
   }
 
   enableSporesMovement () {
@@ -265,14 +272,6 @@ export default class Desert {
   handleClick () {
     if (this.intersects.length > 0 && !store.state.desert.interaction) {
       store.commit('desert/toggleInteraction', true)
-    }
-  }
-
-  isFixedView () {
-    if (this.progression > 0.9) {
-      return true
-    } else {
-      return false
     }
   }
 
@@ -315,6 +314,9 @@ export default class Desert {
   }
 
   render (elapsedTime) {
+    if (nuxt && store && !this.events) {
+      this.addEvents()
+    }
     if (this.plantsGroup.children[0]) {
       this.intersects = this.raycaster.render(this.plantsGroup)
     }
