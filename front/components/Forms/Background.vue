@@ -1,10 +1,137 @@
 <template>
-  <div class="background">
-    <span class="circle1"></span>
-    <span class="circle2"></span>
-    <span class="underlay"></span>
-  </div>
+  <canvas class="background" :style="colorSetted? bg : ''" />
 </template>
+
+<script>
+import * as PIXI from 'pixi.js'
+import { KawaseBlurFilter } from '@pixi/filter-kawase-blur'
+import SimplexNoise from 'simplex-noise'
+import debounce from 'debounce'
+
+export default {
+  data () {
+    return {
+      circles: [],
+      simplex: new SimplexNoise()
+    }
+  },
+  computed: {
+    colorPalette () {
+      return this.$store.state.colorPalette
+    },
+    colorSetted () {
+      if (this.$store.state.colorPalette) {
+        return true
+      } else {
+        return false
+      }
+    },
+    bg () {
+      return {
+        background: `#${this.$store.state.colorPalette[0]}`
+      }
+    }
+  },
+  mounted () {
+    const app = new PIXI.Application({
+      view: document.querySelector('.background'),
+      resizeTo: window,
+      backgroundAlpha: 0
+    })
+    app.stage.filters = [new KawaseBlurFilter(30, 10, true)]
+
+    for (let i = 0; i < 10; i++) {
+      const bounds = this.setBounds()
+      const circle = {
+        bounds,
+        x: this.random(bounds.x.min, bounds.x.max),
+        y: this.random(bounds.y.min, bounds.y.max),
+        scale: this.random(1, 2),
+        fill: '0x' + this.colorPalette[i % 3],
+        radius: this.random(window.innerHeight / 5, window.innerHeight / 2),
+        xOff: this.random(0, 1000),
+        yOff: this.random(0, 1000),
+        inc: this.random(0.0009, 0.0012),
+        graphics: new PIXI.Graphics(),
+        alpha: 0.825
+      }
+      app.stage.addChild(circle.graphics)
+      this.circles.push(circle)
+    }
+
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      app.ticker.add(() => {
+        // update and render each orb, each frame. app.ticker attempts to run at 60fps
+        this.circles.forEach((circle) => {
+          this.update(circle)
+          this.render(circle)
+        })
+      })
+    } else {
+      // perform one update and render per orb, do not animate
+      this.circles.forEach((circle) => {
+        this.update(circle)
+        this.render(circle)
+      })
+    }
+    window.addEventListener(
+      'resize',
+      debounce(() => {
+        this.circles.forEach((circle) => {
+          circle.bounds = this.setBounds()
+        })
+      }, 250)
+    )
+  },
+  methods: {
+    random (min, max) {
+      return Math.random() * (max - min) + min
+    },
+    map (n, start1, end1, start2, end2) {
+      return ((n - start1) / (end1 - start1)) * (end2 - start2) + start2
+    },
+    setBounds () {
+      const maxDist = window.innerWidth
+      const originX = window.innerWidth / 1.25
+      const originY = window.innerWidth < 1000 ? window.innerHeight : window.innerHeight / 1.375
+
+      return {
+        x: {
+          min: originX - maxDist,
+          max: originX + maxDist
+        },
+        y: {
+          min: originY - maxDist,
+          max: originY + maxDist
+        }
+      }
+    },
+    update (circle) {
+      const xNoise = this.simplex.noise2D(circle.xOff, circle.xOff)
+      const yNoise = this.simplex.noise2D(circle.yOff, circle.yOff)
+      const scaleNoise = this.simplex.noise2D(circle.xOff, circle.yOff)
+
+      circle.x = this.map(xNoise, -1, 1, circle.bounds.x.min, circle.bounds.x.max)
+      circle.y = this.map(yNoise, -1, 1, circle.bounds.y.min, circle.bounds.y.max)
+      circle.scale = this.map(scaleNoise, -1, 1, 0.5, 1)
+
+      circle.xOff += circle.inc
+      circle.yOff += circle.inc
+    },
+    render (circle) {
+      circle.graphics.x = circle.x
+      circle.graphics.y = circle.y
+      circle.graphics.scale.set(circle.scale)
+
+      circle.graphics.clear()
+
+      circle.graphics.beginFill(circle.fill)
+      circle.graphics.drawCircle(0, 0, circle.radius)
+      circle.graphics.endFill()
+    }
+  }
+}
+</script>
 
 <style>
 .background {
@@ -13,55 +140,6 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: #BED9FD;
-  filter: blur(100px);
   z-index: 4;
-}
-.circle1, .circle2 {
-  position: absolute;
-  display: block;
-  background: radial-gradient(circle, rgba(252,181,176,1) 0%, rgba(255,190,246,1) 70%, rgba(194,181,251,1) 100%);
-  border-radius: 500px;
-}
-.circle1 {
-  width: 90vh;
-  height: 90vh;
-  animation: 20s ease-in-out circle1 infinite alternate;
-}
-@keyframes circle1 {
-  0% { transform: translate(30vw, 50vh); }
-  25% { transform: translate(78vw, 5vh); }
-  50% { transform: translate(20vw, 20vh); }
-  75% { transform: translate(50vw, 0vh); }
-  100%   { transform: translate(0vw, 70vh); }
-}
-.circle2 {
-  width: 50vh;
-  height: 50vh;
-  animation: 12s ease-in-out circle2 infinite alternate;
-}
-@keyframes circle2 {
-  0% { transform: translate(0vw, 10vh); }
-  25% { transform: translate(48vw, 42vh); }
-  50% { transform: translate(25vw, 70vh); }
-  75% { transform: translate(0vw, 0vh); }
-  100%{ transform: translate(60vw, 20vh); }
-}
-.underlay {
-  width: 150vh;
-  height: 150vh;
-  position: absolute;
-  display: block;
-  z-index: -1;
-  border-radius: 1000px;
-  background: rgba(194,181,251,1);
-  animation: 20s ease-in-out underlay infinite alternate;
-}
-@keyframes underlay {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(-50%, -50%); }
-  50% { transform: translate(10%, 0%); }
-  75% { transform: translate(25%, 20%); }
-  100% { transform: translate(-25%, 5%); }
 }
 </style>
