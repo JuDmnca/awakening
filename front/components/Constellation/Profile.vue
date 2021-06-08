@@ -1,7 +1,7 @@
 <template>
   <section style="color: white;" class="profile flex">
     <div class="profile__left flex flex-col items-center">
-      <img ref="userImg" class="profile__img" src="">
+      <!-- <img ref="userImg" class="profile__img" src=""> -->
       <h2
         class="profile__name"
         :style="{
