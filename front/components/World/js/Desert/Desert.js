@@ -101,6 +101,10 @@ export default class Desert {
     // SKYBOX
     this.addSkybox(scene)
 
+    // MOUSE
+    this.lastMouseX = -1
+    this.lastMouseY = -1
+
     // Add desert scene to main scene
     this.desertGroup.name = this.name
     scene.add(this.desertGroup)
@@ -281,37 +285,32 @@ export default class Desert {
     }
   }
 
-  enableSporesMovement () {
-    window.addEventListener('mousedown', () => {
-      this.hold = true
-      this.sporesElevation += 1000
-      this.inhale()
-      if (store.state.desert.interaction) {
-        nuxt.$emit('zoomCamera', { position: { x: -41, y: 1, z: 1.4 } })
-      }
-    })
+  sporesOnHold () {
+    this.hold = true
+    this.sporesElevation += 1000
+    this.inhale()
+    if (store.state.desert.interaction) {
+      nuxt.$emit('zoomCamera', { position: { x: -41, y: 1, z: 1.4 } })
+    }
+  }
 
-    let lastMouseX = -1
-    let lastMouseY = -1
-    window.addEventListener('mousemove', (e) => {
-      // Spores elevating when mousemove
-      e.preventDefault()
-      const mouseX = e.pageX
-      const mouseY = e.pageY
-      if (lastMouseX > -1) {
-        this.sporesElevation += Math.max(Math.abs(mouseX - lastMouseX), Math.abs(mouseY - lastMouseY))
-      }
-      lastMouseX = mouseX
-      lastMouseY = mouseY
-      this.inhale({ mousemove: true })
-    })
+  sporesOnMouseMove (e) {
+    e.preventDefault()
+    const mouseX = e.pageX
+    const mouseY = e.pageY
+    if (this.lastMouseX > -1) {
+      this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY))
+    }
+    this.lastMouseX = mouseX
+    this.lastMouseY = mouseY
+    this.inhale({ mousemove: true })
+  }
 
-    window.addEventListener('mouseup', () => {
-      this.exhale()
-      if (store.state.cameraIsZoomed) {
-        nuxt.$emit('unzoomCamera')
-      }
-    })
+  sporesOnMouseUp () {
+    this.exhale()
+    if (store.state.cameraIsZoomed) {
+      nuxt.$emit('unzoomCamera')
+    }
   }
 
   handleClick () {
