@@ -105,7 +105,9 @@ export default class Loader {
           resolve(flower)
         },
         function (xhr) {
-          store.commit('setLoading', xhr.loaded / xhr.total * 100)
+          if (xhr.loaded === xhr.total) {
+            store.commit('setLoading', 100)
+          }
         })
     }, undefined, function (error) {
       // eslint-disable-next-line no-console
