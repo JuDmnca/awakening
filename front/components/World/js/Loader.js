@@ -29,7 +29,6 @@ export default class Loader {
       const position = this.props.position
       const materialImported = this.material
 
-      console.time('start desert load')
       this.loader.load(
         this.props.model,
         function (gltf) {
@@ -60,14 +59,13 @@ export default class Loader {
     })
   }
 
-  initFlowerObject (type, last) {
-    return new Promise((resolve) => {
+  initFlowerObject (type) {
+    const promise = new Promise((resolve) => {
       const materialImported = this.material
       let rotation = 0
 
       const flower = new THREE.Object3D()
 
-      console.time('start flower load')
       this.loader.load(
         this.props.model,
         function (gltf) {
@@ -105,16 +103,15 @@ export default class Loader {
           flower.name = type
           flower.add(gltf.scene)
           resolve(flower)
-        },
-        function (xhr) {
-          if (xhr.loaded === xhr.total) {
-            store.commit('setLoading', 100)
-          }
         })
     }, undefined, function (error) {
       // eslint-disable-next-line no-console
       console.error(error)
     })
+    promise.then(function () {
+      store.commit('setLoading', 100)
+    })
+    return promise
   }
 
   initGrass () {
