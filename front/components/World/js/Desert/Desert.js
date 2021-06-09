@@ -64,6 +64,19 @@ export default class Desert {
     // CURSOR
     this.isCursorActive = false
 
+    // CRYSTALS
+    this.cubeMap = [
+      require('../../../../assets/textures/png/constellation/px.png'),
+      require('../../../../assets/textures/png/constellation/nx.png'),
+      require('../../../../assets/textures/png/constellation/py.png'),
+      require('../../../../assets/textures/png/constellation/ny.png'),
+      require('../../../../assets/textures/png/constellation/pz.png'),
+      require('../../../../assets/textures/png/constellation/nz.png')
+    ]
+    this.textureCrystals = new THREE.CubeTextureLoader().load(this.cubeMap)
+    this.textureCrystals.mapping = THREE.CubeRefractionMapping
+    this.textureCrystals.encoding = THREE.sRGBEncoding
+
     // TIMES
     this.time = {
       stationary: 0,
@@ -86,11 +99,11 @@ export default class Desert {
     const desertModel = await this.land.load(modelDesert, 1)
     this.desertGroup.add(desertModel)
 
-    // SOUND
-    this.addSound()
-
     // FLOWERS
     this.addFlowers()
+
+    // SOUND
+    this.addSound()
 
     // RAYCASTER
     this.raycaster.init(this.camera, renderer)
@@ -155,7 +168,7 @@ export default class Desert {
     this.sound.sound.play()
   }
 
-  addFlowers () {
+  async addFlowers () {
     let index = -1
     for (let nbPlants = 0; nbPlants <= 20; nbPlants++) {
       index++
@@ -165,9 +178,9 @@ export default class Desert {
       const plant = new Plant({ orientation: nbPlants, flowerType: this.flowerTypes[index] })
       this.plants.push(plant)
 
-      setTimeout(() => {
-        this.plantsGroup.add(plant.init())
-      }, 1000)
+      const loadedPlant = await plant.init()
+
+      this.plantsGroup.add(loadedPlant)
     }
     this.flowersHoverZone = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.6 } })
 
@@ -242,22 +255,10 @@ export default class Desert {
   }
 
   colorCrystals () {
-    const cubeMap = [
-      require('../../../../assets/textures/png/constellation/px.png'),
-      require('../../../../assets/textures/png/constellation/nx.png'),
-      require('../../../../assets/textures/png/constellation/py.png'),
-      require('../../../../assets/textures/png/constellation/ny.png'),
-      require('../../../../assets/textures/png/constellation/pz.png'),
-      require('../../../../assets/textures/png/constellation/nz.png')
-    ]
-
     const colorCrystals = new THREE.Color(store.state.user.color)
-    const textureCrystals = new THREE.CubeTextureLoader().load(cubeMap)
-    textureCrystals.mapping = THREE.CubeRefractionMapping
-    textureCrystals.encoding = THREE.sRGBEncoding
     const crystalsMaterial = new THREE.MeshPhongMaterial({
       color: colorCrystals,
-      envMap: textureCrystals,
+      envMap: this.textureCrystals,
       refractionRatio: 0.5,
       combine: THREE.AddOperation,
       transparent: true,

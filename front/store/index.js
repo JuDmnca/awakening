@@ -22,7 +22,7 @@ const actions = {
 
 const mutations = {
   setLoading (state, resp) {
-    state.loading = resp
+    state.loading += resp
   },
   setUserId (state, resp) {
     state.user.id = resp
