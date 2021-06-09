@@ -29,6 +29,7 @@ export default class Loader {
       const position = this.props.position
       const materialImported = this.material
 
+      console.time('start desert load')
       this.loader.load(
         this.props.model,
         function (gltf) {
@@ -66,6 +67,7 @@ export default class Loader {
 
       const flower = new THREE.Object3D()
 
+      console.time('start flower load')
       this.loader.load(
         this.props.model,
         function (gltf) {
