@@ -21,6 +21,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    { src: '~/plugins/pixi', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -73,6 +74,7 @@ export default {
   ],
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    vendor: ['pixi.js'],
     transpile: ['three/examples/jsm/controls/OrbitControls', 'three/examples/jsm/loaders/GLTFLoader', 'three/examples/jsm/postprocessing/EffectComposer.js', 'three/examples/jsm/postprocessing/RenderPass.js', 'three/examples/jsm/postprocessing/UnrealBloomPass.js', 'three/examples/jsm/loaders/DRACOLoader.js'],
     extend (config, ctx) {
       if (config.module) {
