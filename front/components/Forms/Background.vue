@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import * as PIXI from 'pixi.js'
 import { KawaseBlurFilter } from '@pixi/filter-kawase-blur'
 import SimplexNoise from 'simplex-noise'
 import debounce from 'debounce'
@@ -12,7 +11,8 @@ export default {
   data () {
     return {
       circles: [],
-      simplex: new SimplexNoise()
+      simplex: new SimplexNoise(),
+      PIXI: null
     }
   },
   computed: {
@@ -35,7 +35,8 @@ export default {
   mounted () {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.client) {
-      const app = new PIXI.Application({
+      this.PIXI = require('pixi.js')
+      const app = new this.PIXI.Application({
         view: document.querySelector('.background'),
         resizeTo: window,
         backgroundAlpha: 0
@@ -54,7 +55,7 @@ export default {
           xOff: this.random(0, 1000),
           yOff: this.random(0, 1000),
           inc: this.random(0.0009, 0.0012),
-          graphics: new PIXI.Graphics(),
+          graphics: new this.PIXI.Graphics(),
           alpha: 0.825
         }
         app.stage.addChild(circle.graphics)
