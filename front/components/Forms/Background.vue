@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { KawaseBlurFilter } from '@pixi/filter-kawase-blur'
+// import { KawaseBlurFilter } from '@pixi/filter-kawase-blur'
 import SimplexNoise from 'simplex-noise'
 // import debounce from 'debounce'
 
@@ -42,26 +42,26 @@ export default {
             view: document.querySelector('.background'),
             backgroundAlpha: 0
           })
-          app.stage.filters = [new KawaseBlurFilter(30, 10, true)]
+          // app.stage.filters = [new KawaseBlurFilter(30, 10, true)]
 
-          // for (let i = 0; i < 10; i++) {
-          //   const bounds = this.setBounds()
-          //   const circle = {
-          //     bounds,
-          //     x: this.random(bounds.x.min, bounds.x.max),
-          //     y: this.random(bounds.y.min, bounds.y.max),
-          //     scale: this.random(1, 2),
-          //     fill: '0x' + this.colorPalette[i % 3],
-          //     radius: this.random(window.innerHeight / 5, window.innerHeight / 2),
-          //     xOff: this.random(0, 1000),
-          //     yOff: this.random(0, 1000),
-          //     inc: this.random(0.0009, 0.0012),
-          //     graphics: new this.PIXI.Graphics(),
-          //     alpha: 0.825
-          //   }
-          //   app.stage.addChild(circle.graphics)
-          //   this.circles.push(circle)
-          // }
+          for (let i = 0; i < 10; i++) {
+            const bounds = this.setBounds()
+            const circle = {
+              bounds,
+              x: this.random(bounds.x.min, bounds.x.max),
+              y: this.random(bounds.y.min, bounds.y.max),
+              scale: this.random(1, 2),
+              fill: '0x' + this.colorPalette[i % 3],
+              radius: this.random(window.innerHeight / 5, window.innerHeight / 2),
+              xOff: this.random(0, 1000),
+              yOff: this.random(0, 1000),
+              inc: this.random(0.0009, 0.0012),
+              graphics: new this.PIXI.Graphics(),
+              alpha: 0.825
+            }
+            app.stage.addChild(circle.graphics)
+            this.circles.push(circle)
+          }
 
           // if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           //   app.ticker.add(() => {
