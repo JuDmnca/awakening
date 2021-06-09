@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { KawaseBlurFilter } from '@pixi/filter-kawase-blur'
+// import { KawaseBlurFilter } from '@pixi/filter-kawase-blur'
 import SimplexNoise from 'simplex-noise'
 // import debounce from 'debounce'
 
@@ -36,11 +36,16 @@ export default {
     // eslint-disable-next-line nuxt/no-env-in-hooks
     if (process.browser) {
       this.PIXI = require('pixi.js')
-      const app = new this.PIXI.Application({
-        view: document.querySelector('.background'),
-        backgroundAlpha: 0
-      })
-      app.stage.filters = [new KawaseBlurFilter(30, 10, true)]
+      setTimeout(() => {
+        if (this.PIXI !== null) {
+          const app = new this.PIXI.Application({
+            view: document.querySelector('.background'),
+            backgroundAlpha: 0
+          })
+          console.log(app)
+        }
+      }, 3000)
+      // app.stage.filters = [new KawaseBlurFilter(30, 10, true)]
 
       // for (let i = 0; i < 10; i++) {
       //   const bounds = this.setBounds()
