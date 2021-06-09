@@ -38,7 +38,6 @@ export default {
       this.PIXI = require('pixi.js')
       const app = new this.PIXI.Application({
         view: document.querySelector('.background'),
-        resizeTo: window,
         backgroundAlpha: 0
       })
       app.stage.filters = [new KawaseBlurFilter(30, 10, true)]
