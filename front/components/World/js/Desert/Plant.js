@@ -80,10 +80,11 @@ export default class Plant {
     this.plantMesh.add(this.plant)
   }
 
-  init () {
+  async init () {
     // Add flower
     this.flower = new Flower()
-    this.plant.add(this.flower.init(this.flowerType))
+    const flower = await this.flower.init(this.flowerType)
+    this.plant.add(flower)
 
     // Set flower at the top of the stem
     this.plant.children[2].position.set(this.budPosition.x, this.budPosition.y, this.budPosition.z)

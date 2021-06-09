@@ -1,7 +1,7 @@
 <template>
   <div>
     <transition name="fadeOut">
-      <IntroLoader v-if="loader" @done="hideLoader" />
+      <IntroLoader v-if="loader && main" @done="hideLoader" />
     </transition>
     <UI-About />
     <Nuxt />
@@ -13,6 +13,15 @@ export default {
   data () {
     return {
       loader: true
+    }
+  },
+  computed: {
+    main () {
+      if (this.$nuxt.$route.path === '/') {
+        return true
+      } else {
+        return false
+      }
     }
   },
   methods: {

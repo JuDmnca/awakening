@@ -48,11 +48,11 @@ export default {
   computed: {
     progress () {
       return {
-        width: `${this.$store.state.loading}%`
+        width: `${this.$store.state.loading / 20}%`
       }
     },
     completed () {
-      if (this.$store.state.loading === 100) {
+      if (this.$store.state.loading === 2000) {
         this.$nuxt.$emit('loaded')
         return true
       } else {

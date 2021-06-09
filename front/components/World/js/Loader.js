@@ -52,7 +52,6 @@ export default class Loader {
           resolve(gltf.scene)
         },
         function (xhr) {
-          store.commit('setLoading', xhr.loaded / xhr.total * 100)
         })
     }, undefined, function (error) {
       // eslint-disable-next-line no-console
@@ -60,54 +59,58 @@ export default class Loader {
     })
   }
 
-  initFlowerObject (type) {
-    const materialImported = this.material
-    let rotation = 0
+  initFlowerObject (type, last) {
+    return new Promise((resolve) => {
+      const materialImported = this.material
+      let rotation = 0
 
-    const flower = new THREE.Object3D()
+      const flower = new THREE.Object3D()
 
-    this.loader.load(this.props.model, function (gltf) {
-      rotation = rotation + (Math.floor(Math.random() * 360))
+      this.loader.load(
+        this.props.model,
+        function (gltf) {
+          rotation = rotation + (Math.floor(Math.random() * 360))
 
-      if (type !== 'blue') {
-        for (let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 1); nbChildren++) {
-          gltf.scene.children[nbChildren].material = materialImported
-        }
-      } else {
-        for (let nbChildren = 0; nbChildren <= (gltf.scene.children[0].children.length - 1); nbChildren++) {
-          gltf.scene.children[0].children[nbChildren].material = materialImported
-        }
-      }
+          if (type !== 'blue') {
+            for (let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 1); nbChildren++) {
+              gltf.scene.children[nbChildren].material = materialImported
+            }
+          } else {
+            for (let nbChildren = 0; nbChildren <= (gltf.scene.children[0].children.length - 1); nbChildren++) {
+              gltf.scene.children[0].children[nbChildren].material = materialImported
+            }
+          }
 
-      gltf.scene.rotation.y = rotation
+          gltf.scene.rotation.y = rotation
 
-      // Center 3D object
-      const box = new THREE.Box3().setFromObject(gltf.scene)
-      box.getCenter(gltf.scene.position)
+          // Center 3D object
+          const box = new THREE.Box3().setFromObject(gltf.scene)
+          box.getCenter(gltf.scene.position)
 
-      gltf.scene.position.multiplyScalar(-1)
+          gltf.scene.position.multiplyScalar(-1)
 
-      // Position flower object on the top of the stem
-      switch (type) {
-        case 'white':
-          gltf.scene.position.set(0, -0.02, 0)
-          break
-        case 'tulip':
-          gltf.scene.scale.set(1.6, 1.6, 1.6)
-          gltf.scene.position.set(0, -0.03, 0)
-          break
-        case 'blue':
-          break
-      }
+          // Position flower object on the top of the stem
+          switch (type) {
+            case 'white':
+              gltf.scene.position.set(0, -0.02, 0)
+              break
+            case 'tulip':
+              gltf.scene.scale.set(1.6, 1.6, 1.6)
+              gltf.scene.position.set(0, -0.03, 0)
+              break
+          }
 
-      flower.name = type
-      flower.add(gltf.scene)
+          flower.name = type
+          flower.add(gltf.scene)
+          resolve(flower)
+        },
+        function (xhr) {
+          store.commit('setLoading', xhr.loaded / xhr.total * 100)
+        })
     }, undefined, function (error) {
       // eslint-disable-next-line no-console
       console.error(error)
     })
-
-    return flower
   }
 
   initGrass () {

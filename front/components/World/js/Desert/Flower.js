@@ -22,7 +22,7 @@ export default class Flower {
     this.count = 0
   }
 
-  init (flowerType) {
+  async init (flowerType) {
     let modelFlower = null
     let flowerFrag = null
     let flowerVert = null
@@ -62,7 +62,7 @@ export default class Flower {
     })
 
     this.flowerObject = new Loader({ model: modelFlower, material: flowerShaderMaterial })
-    this.flowerObject = this.flowerObject.initFlowerObject(flowerType)
+    this.flowerObject = await this.flowerObject.initFlowerObject(flowerType)
 
     return this.flowerObject
   }
