@@ -33,55 +33,58 @@ export default {
     }
   },
   mounted () {
-    const app = new PIXI.Application({
-      view: document.querySelector('.background'),
-      resizeTo: window,
-      backgroundAlpha: 0
-    })
-    app.stage.filters = [new KawaseBlurFilter(30, 10, true)]
+    // eslint-disable-next-line nuxt/no-env-in-hooks
+    if (process.client) {
+      const app = new PIXI.Application({
+        view: document.querySelector('.background'),
+        resizeTo: window,
+        backgroundAlpha: 0
+      })
+      app.stage.filters = [new KawaseBlurFilter(30, 10, true)]
 
-    for (let i = 0; i < 10; i++) {
-      const bounds = this.setBounds()
-      const circle = {
-        bounds,
-        x: this.random(bounds.x.min, bounds.x.max),
-        y: this.random(bounds.y.min, bounds.y.max),
-        scale: this.random(1, 2),
-        fill: '0x' + this.colorPalette[i % 3],
-        radius: this.random(window.innerHeight / 5, window.innerHeight / 2),
-        xOff: this.random(0, 1000),
-        yOff: this.random(0, 1000),
-        inc: this.random(0.0009, 0.0012),
-        graphics: new PIXI.Graphics(),
-        alpha: 0.825
+      for (let i = 0; i < 10; i++) {
+        const bounds = this.setBounds()
+        const circle = {
+          bounds,
+          x: this.random(bounds.x.min, bounds.x.max),
+          y: this.random(bounds.y.min, bounds.y.max),
+          scale: this.random(1, 2),
+          fill: '0x' + this.colorPalette[i % 3],
+          radius: this.random(window.innerHeight / 5, window.innerHeight / 2),
+          xOff: this.random(0, 1000),
+          yOff: this.random(0, 1000),
+          inc: this.random(0.0009, 0.0012),
+          graphics: new PIXI.Graphics(),
+          alpha: 0.825
+        }
+        app.stage.addChild(circle.graphics)
+        this.circles.push(circle)
       }
-      app.stage.addChild(circle.graphics)
-      this.circles.push(circle)
-    }
 
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      app.ticker.add(() => {
-        // update and render each orb, each frame. app.ticker attempts to run at 60fps
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        app.ticker.add(() => {
+          // update and render each orb, each frame. app.ticker attempts to run at 60fps
+          this.circles.forEach((circle) => {
+            this.update(circle)
+            this.render(circle)
+          })
+        })
+      } else {
+        // perform one update and render per orb, do not animate
         this.circles.forEach((circle) => {
           this.update(circle)
           this.render(circle)
         })
-      })
-    } else {
-      // perform one update and render per orb, do not animate
-      this.circles.forEach((circle) => {
-        this.update(circle)
-        this.render(circle)
-      })
+      }
+      window.addEventListener(
+        'resize',
+        debounce(() => {
+          this.circles.forEach((circle) => {
+            circle.bounds = this.setBounds()
+          })
+        }, 250)
+      )
     }
-    window.addEventListener(
-      'resize',
-      debounce(() => {
-        this.circles.forEach((circle) => {
-          circle.bounds = this.setBounds()
-        })
-      }, 250)
-    )
   },
   methods: {
     random (min, max) {
