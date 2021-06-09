@@ -34,7 +34,7 @@ export default {
   },
   mounted () {
     // eslint-disable-next-line nuxt/no-env-in-hooks
-    if (process.client) {
+    if (process.browser) {
       this.PIXI = require('pixi.js')
       const app = new this.PIXI.Application({
         view: document.querySelector('.background'),
