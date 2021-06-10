@@ -16,6 +16,11 @@ const desertCurve = [
 ]
 
 const forestCurve = [
+  [41.891, 0.85967, -41.585],
+  [37.092, 2.2471, -25.002],
+  [22.111, 1.6593, -25.574],
+  [15.148, 2.2951, -4.389],
+  [-4.7436, 1.6304, 6.2753]
 ]
 
 const allCurves = [desertCurve, forestCurve]
