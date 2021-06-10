@@ -1,7 +1,7 @@
 <template>
   <div>
     <transition name="fadeOut">
-      <IntroLoader v-if="loader && main" @done="hideLoader" />
+      <!-- <IntroLoader v-if="loader && main" @done="hideLoader" /> -->
     </transition>
     <UI-About />
     <Nuxt />

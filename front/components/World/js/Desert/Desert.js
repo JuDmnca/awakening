@@ -10,6 +10,8 @@ import Loader from '../Loader'
 import Land from '../Land'
 import Rotation from '../Utils/Rotation'
 import Sound from '../Utils/SoundLoader'
+import crystalSoundURL from '../../../../assets/sounds/crystalSound.wav'
+import AudioPosition from '../Utils/AudioPosition'
 import Particles from './Particles'
 import Plant from './Plant'
 import Cube from './Cube'
@@ -119,6 +121,9 @@ export default class Desert {
     // MOUSE
     this.lastMouseX = -1
     this.lastMouseY = -1
+
+    // Sound Spacialization
+    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera })
 
     // Add desert scene to main scene
     this.desertGroup.name = this.name
@@ -284,6 +289,7 @@ export default class Desert {
     for (let i = 0; i <= this.desertGroup.children[0].children.length - 1; i++) {
       const child = this.desertGroup.children[0].children[i]
       if (child.name.includes('inside')) {
+        child.add(this.crystalSound.sound)
         child.material = innerCrystalsMaterial
         child.layers.enable(1)
       } else if (child.name.includes('outside')) {
@@ -430,4 +436,3 @@ export default class Desert {
     })
   }
 }
-
