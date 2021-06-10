@@ -1,6 +1,9 @@
+#define PI 3.14159265359;
+
 uniform float uSize;
 uniform float uTime;
 uniform float uZSpeed;
+uniform float uYSpeed;
 
 attribute float aScale;
 attribute vec3 acceleration;
@@ -13,15 +16,23 @@ varying vec3 vColor;
 float randForNoise(float n){return fract(sin(n) * 43758.5453123);}
 
 float noise1D(float p){
-	float fl = floor(p);
+  float fl = floor(p);
     float fc = fract(p);
-	return mix(randForNoise(fl), randForNoise(fl + 1.0), fc);
+  return mix(randForNoise(fl), randForNoise(fl + 1.0), fc);
 }
 
 
 float rand(vec2 co){
   return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}   
+}
+
+mat3 rotateX(float angle) {
+  return mat3(
+    cos(angle), -sin(angle), 0,
+    sin(angle), cos(angle), 0,
+    0, 0, 1
+  );
+}
 
 void main() {
     /*
@@ -34,12 +45,12 @@ void main() {
     // float angle = rand(vec2(gl_VertexID, gl_VertexID)) + 0.5;
     // float speed = rand(vec2(gl_VertexID * 2, gl_VertexID * 2));
     // modelPosition.x = cos(angle) * uTime * speed;
-    float deplacement = distanceToCenter * uTime * 0.5;
+    float deplacement = distanceToCenter * uTime * 0.001;
     modelPosition.x += noise1D(deplacement * 0.1);
     modelPosition.z += randomSpeed * uTime * noise;
     // modelPosition.y = pow(randomSpeed * uTime * noise * 10.0, 2.0) * uZSpeed + 10.0;
     modelPosition.y += randomSpeed * uTime + uZSpeed;
-
+    // modelPosition = rotateX(PI) * modelPosition;
     vec4 viewPosition = viewMatrix * modelPosition;
     vec4 projectedPosition = projectionMatrix * viewPosition;
     gl_Position = projectedPosition;
