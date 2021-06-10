@@ -51,10 +51,10 @@ export default {
       const maxHeight = 40
       const speedAttenuation = 1000
       const heightPixelMute = 2
-      const widthBar = 1
+      const widthBar = 2
       const nbBars = 8
       const rect = {
-        x: 15,
+        x: 14,
         y: 25
       }
       const rectangles = []
