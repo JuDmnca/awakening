@@ -9,6 +9,7 @@
         name="input"
         type="string"
         required
+        onfocus="this.placeholder = ''"
       >
       <div v-else ref="input" class="colors">
         <input id="red" type="radio" name="color" value="red">
@@ -99,9 +100,9 @@ export default {
     gsap.to(this.question, {
       y: -60,
       scale: 0.7,
-      duration: 1,
+      duration: 2,
       delay: 2,
-      ease: 'power3.out',
+      ease: 'power3.inOut',
       onComplete: this.showInput
     })
   },
@@ -112,22 +113,22 @@ export default {
         gsap.from(inputs, {
           y: +30,
           duration: 1,
-          ease: 'power3.out',
+          ease: 'power3.inOut',
           stagger: 0.1
         })
         gsap.to(inputs, {
           opacity: 1,
           duration: 1,
-          ease: 'power3.out',
+          ease: 'power3.inOut',
           stagger: 0.1
         })
-        gsap.to(this.button, { opacity: 1, duration: 1, ease: 'power3.out' })
+        gsap.to(this.button, { opacity: 1, duration: 1, ease: 'power3.inOut' })
       } else {
-        gsap.from(this.input, { y: +30, duration: 1, ease: 'power3.out' })
+        gsap.from(this.input, { y: +30, duration: 1, ease: 'power3.inOut' })
         gsap.to([this.input, this.button], {
           opacity: 1,
           duration: 1,
-          ease: 'power3.out'
+          ease: 'power3.inOut'
         })
       }
     },
@@ -176,6 +177,7 @@ input {
   color: white;
   padding-bottom: 10px;
   border-bottom: 1px #fff solid;
+  z-index: 10;
 }
 
 input::placeholder {
@@ -225,7 +227,7 @@ input[type="radio"]#red + label .color {
 }
 
 input[type="radio"]#red + label .selected {
-  background-color: white;
+  background: radial-gradient(white 0%, black 80%);
   opacity: 0;
 }
 
@@ -234,7 +236,7 @@ input[type="radio"]#orange + label .color {
 }
 
 input[type="radio"]#orange + label .selected {
-  background-color: white;
+  background: radial-gradient(white 0%, black 80%);
   opacity: 0;
 }
 
@@ -243,7 +245,7 @@ input[type="radio"]#yellow + label .color {
 }
 
 input[type="radio"]#yellow + label .selected {
-  background-color: white;
+  background: radial-gradient(white 0%, black 80%);
   opacity: 0;
 }
 
@@ -252,7 +254,7 @@ input[type="radio"]#green + label .color {
 }
 
 input[type="radio"]#green + label .selected {
-  background-color: white;
+  background: radial-gradient(white 0%, black 80%);
   opacity: 0;
 }
 
@@ -261,7 +263,7 @@ input[type="radio"]#darkgreen + label .color {
 }
 
 input[type="radio"]#darkgreen + label .selected {
-  background-color: white;
+  background: radial-gradient(white 0%, black 80%);
   opacity: 0;
 }
 
@@ -270,7 +272,7 @@ input[type="radio"]#blue + label .color {
 }
 
 input[type="radio"]#blue + label .selected {
-  background-color: white;
+  background: radial-gradient(white 0%, black 80%);
   opacity: 0;
 }
 
@@ -279,7 +281,7 @@ input[type="radio"]#darkblue + label .color {
 }
 
 input[type="radio"]#darkblue + label .selected {
-  background-color: white;
+  background: radial-gradient(white 0%, black 80%);
   opacity: 0;
 }
 
@@ -288,7 +290,7 @@ input[type="radio"]#purple + label .color {
 }
 
 input[type="radio"]#purple + label .selected {
-  background-color: white;
+  background: radial-gradient(white 0%, black 80%);
   opacity: 0;
 }
 
@@ -297,7 +299,7 @@ input[type="radio"] + label:hover {
 }
 
 input[type="radio"]:checked + label .selected {
-  opacity: 0.2 !important;
+  opacity: 0.3 !important;
 }
 
 .button {

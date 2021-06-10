@@ -44,6 +44,7 @@ class Common {
     this.camTarget = start.clone()
 
     this.events = false
+    this.pauseRender = false
 
     this.canMove = null
     this.addscroll = false
@@ -258,6 +259,7 @@ class Common {
 
   addTransitionEvent () {
     nuxt.$on('startSceneTransition', () => {
+      this.pauseRender = true
       this.removeGroup(this.currentScene)
       switch (store.state.sceneIndex) {
         case 1:
@@ -271,6 +273,9 @@ class Common {
           break
       }
       store.commit('increaseSceneIndex')
+    })
+    nuxt.$on('endSceneTransition', () => {
+      this.pauseRender = false
     })
   }
 
@@ -327,7 +332,9 @@ class Common {
     // }
 
     // this.bloom.render()
-    this.renderer.render(this.scene, this.camera.camera)
+    if (!this.pauseRender) {
+      this.renderer.render(this.scene, this.camera.camera)
+    }
   }
 }
 
