@@ -90,6 +90,8 @@ export default class Desert {
     this.cursorDistance = 0
     this.enableSporesElevationAt = 0.85
     this.progression = 0
+
+    this.inhaleIsCompleted = false
   }
 
   async init (scene, renderer) {
@@ -198,6 +200,11 @@ export default class Desert {
     // Spores
     this.spores = new Particles()
     this.spores.particles.position.set(-41, 1, 1.4)
+    /*
+      Axis Helper for spores
+    */
+    const axesHelper = new THREE.AxesHelper(5)
+    this.spores.particles.add(axesHelper)
 
     this.desertGroup.add(this.spores.particles)
     this.desertGroup.add(this.plantsGroup)
@@ -308,7 +315,11 @@ export default class Desert {
   }
 
   sporesOnMouseUp () {
-    this.exhale()
+    if (this.inhaleIsCompleted === false) {
+      this.exhale()
+    } else {
+      this.inhaleIsCompleted = false
+    }
     if (store.state.cameraIsZoomed) {
       nuxt.$emit('unzoomCamera')
     }
@@ -322,6 +333,8 @@ export default class Desert {
 
   inhale (mousemove = false) {
     gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
+    gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
+    // console.log(this.sporesElevation)
     // Movement on mousemove
     if (mousemove) {
       gsap.to(
@@ -334,12 +347,28 @@ export default class Desert {
       )
     } else {
       // Movement on hold
+      gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
+      gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
+      gsap.to(
+        this.spores.particles.material.uniforms.uYSpeed,
+        {
+          value: this.spores.particles.material.uniforms.uYSpeed.value + 1,
+          duration: store.state.durationHold,
+          ease: 'power4.inOut',
+          onComplete: () => {
+            this.inhaleIsCompleted = true
+          }
+        }
+      )
       gsap.to(
         this.spores.particles.material.uniforms.uZSpeed,
         {
-          value: this.sporesElevation / 1000,
+          value: this.spores.particles.material.uniforms.uZSpeed.value + 1,
           duration: store.state.durationHold,
-          ease: 'power4.inOut'
+          ease: 'power4.inOut',
+          onComplete: () => {
+            this.inhaleIsCompleted = true
+          }
         }
       )
     }
@@ -347,6 +376,7 @@ export default class Desert {
 
   exhale () {
     gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
+    gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
     this.sporesElevation -= 1000
     gsap.to(
       this.spores.particles.material.uniforms.uZSpeed,
@@ -400,3 +430,4 @@ export default class Desert {
     })
   }
 }
+
