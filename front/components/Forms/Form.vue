@@ -6,6 +6,7 @@
         v-if="step != 1"
         ref="input"
         :placeholder="placeholder"
+        onfocus="this.placeholder = ''"
         name="input"
         type="string"
         required
