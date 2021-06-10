@@ -39,7 +39,7 @@ class Particles {
       const i3 = i * 3
       // Position
       positions[i3 + 0] = (Math.random() - 0.5) * 10 * Math.random() - 2
-      positions[i3 + 1] = (Math.random() - 0.5) * 75 * Math.random() - 35
+      positions[i3 + 1] = (Math.random() - 0.5) * 75 * Math.random() - 40
       positions[i3 + 2] = (Math.random() - 0.5) * 10 * Math.random()
 
       // Scale
@@ -86,6 +86,7 @@ class Particles {
       uniforms: {
         uTime: { value: 0 },
         uSize: { value: 25.0 * window.devicePixelRatio },
+        uYSpeed: { value: 1.0 },
         uZSpeed: { value: 1.0 }
       }
     })
@@ -94,6 +95,10 @@ class Particles {
 
     // Particles mesh
     this.particles = new THREE.Points(this.particlesGeometry, this.particlesMaterial)
+    // this.particles.rotateX(-Math.PI / 8)
+    // this.particles.position.x += 5
+    // this.particles.position.z -= 60
+    // this.particles.position.y += 10
   }
 
   render (elapsedTime) {
@@ -102,3 +107,4 @@ class Particles {
 }
 
 export default Particles
+
