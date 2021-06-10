@@ -67,13 +67,13 @@ export default {
       }, 1000)
       setTimeout(() => {
         this.showLogo = true
-      }, 3000)
+      }, 3500)
       setTimeout(() => {
         this.showLogo = false
-      }, 6500)
+      }, 7000)
       setTimeout(() => {
         this.showName = true
-      }, 7500)
+      }, 8000)
     })
   },
   methods: {
@@ -126,7 +126,7 @@ export default {
   width: 0px;
   height: 3px;
   background-color: #fff;
-  transition: 0.32s ease-out width;
+  transition: 0.32s ease-in-out width;
 }
 
 .logo {
