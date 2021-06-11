@@ -27,6 +27,7 @@ export default class Plant {
     this.length = this.getRandomFloat(0.2, 0.5)
 
     this.flowerType = this.props.flowerType
+    this.flowerModel = this.props.model
     this.flower = null
     this.toInitial = false
 
@@ -83,7 +84,7 @@ export default class Plant {
   async init () {
     // Add flower
     this.flower = new Flower()
-    const flower = await this.flower.init(this.flowerType)
+    const flower = await this.flower.init(this.flowerType, this.flowerModel)
     this.plant.add(flower)
 
     // Set flower at the top of the stem

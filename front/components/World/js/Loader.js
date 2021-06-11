@@ -25,7 +25,7 @@ export default class Loader {
   }
 
   defaultInit () {
-    return new Promise((resolve) => {
+    const promise = new Promise((resolve) => {
       const position = this.props.position
       const materialImported = this.material
 
@@ -56,11 +56,14 @@ export default class Loader {
       // eslint-disable-next-line no-console
       console.error(error)
     })
+    promise.then(function () {
+      store.commit('setLoading', 100)
+    })
+    return promise
   }
 
   initFlowerObject (type) {
     const promise = new Promise((resolve) => {
-      const materialImported = this.material
       let rotation = 0
 
       const flower = new THREE.Object3D()
@@ -69,16 +72,6 @@ export default class Loader {
         this.props.model,
         function (gltf) {
           rotation = rotation + (Math.floor(Math.random() * 360))
-
-          if (type !== 'blue') {
-            for (let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 1); nbChildren++) {
-              gltf.scene.children[nbChildren].material = materialImported
-            }
-          } else {
-            for (let nbChildren = 0; nbChildren <= (gltf.scene.children[0].children.length - 1); nbChildren++) {
-              gltf.scene.children[0].children[nbChildren].material = materialImported
-            }
-          }
 
           gltf.scene.rotation.y = rotation
 
@@ -114,7 +107,7 @@ export default class Loader {
   }
 
   initGrass () {
-    return new Promise((resolve) => {
+    const promise = new Promise((resolve) => {
       this.loader.load(
         this.props.model,
         function (gltf) {
@@ -124,5 +117,9 @@ export default class Loader {
     // eslint-disable-next-line no-console
       console.error(error)
     })
+    promise.then(function () {
+      store.commit('setLoading', 100)
+    })
+    return promise
   }
 }

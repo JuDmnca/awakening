@@ -1,8 +1,4 @@
 import * as THREE from 'three'
-import Loader from '../Loader'
-import modelTulip from '../../../../assets/models/m_tulip_draco.gltf'
-import modelwhite from '../../../../assets/models/m_white_flower_draco.gltf'
-import modelblue from '../../../../assets/models/m_blue_flower_draco.gltf'
 
 import petalVert from '../../../../assets/shaders/flower/flower.vert'
 import petalFrag from '../../../../assets/shaders/flower/flower.frag'
@@ -22,24 +18,20 @@ export default class Flower {
     this.count = 0
   }
 
-  async init (flowerType) {
-    let modelFlower = null
+  init (flowerType, flowerModel) {
     let flowerFrag = null
     let flowerVert = null
 
     switch (flowerType) {
       case 'white':
-        modelFlower = modelwhite
         flowerFrag = require('../../../../assets/textures/t_white.png')
         flowerVert = require('../../../../assets/textures/t_petal_s.jpg')
         break
       case 'tulip':
-        modelFlower = modelTulip
         flowerFrag = require('../../../../assets/textures/t_tulip.jpeg')
         flowerVert = require('../../../../assets/textures/t_petal_s.jpg')
         break
       case 'blue':
-        modelFlower = modelblue
         flowerFrag = require('../../../../assets/textures/t_blue.png')
         flowerVert = require('../../../../assets/textures/t_petal_s.jpg')
         break
@@ -61,8 +53,16 @@ export default class Flower {
       side: THREE.DoubleSide
     })
 
-    this.flowerObject = new Loader({ model: modelFlower, material: flowerShaderMaterial })
-    this.flowerObject = await this.flowerObject.initFlowerObject(flowerType)
+    this.flowerObject = flowerModel
+    if (flowerType !== 'blue') {
+      for (let nbChildren = 0; nbChildren <= (this.flowerObject.children[0].children.length - 1); nbChildren++) {
+        this.flowerObject.children[0].children[nbChildren].material = flowerShaderMaterial
+      }
+    } else {
+      for (let nbChildren = 0; nbChildren <= (this.flowerObject.children[0].children.length - 1); nbChildren++) {
+        this.flowerObject.children[0].children[nbChildren].material = flowerShaderMaterial
+      }
+    }
 
     return this.flowerObject
   }

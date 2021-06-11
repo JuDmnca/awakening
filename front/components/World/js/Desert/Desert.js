@@ -10,6 +10,13 @@ import Rotation from '../Utils/Rotation'
 import Sound from '../Utils/SoundLoader'
 import crystalSoundURL from '../../../../assets/sounds/crystalSound.mp3'
 import AudioPosition from '../Utils/AudioPosition'
+
+import modelTulip from '../../../../assets/models/m_tulip_draco.gltf'
+import modelWhite from '../../../../assets/models/m_white_flower_draco.gltf'
+import modelBlue from '../../../../assets/models/m_blue_flower_draco.gltf'
+
+import Loader from '../Loader'
+
 import Particles from './Particles'
 import Plant from './Plant'
 import Grass from './Grass'
@@ -46,6 +53,7 @@ export default class Desert {
     this.plantsGroup = new THREE.Group()
     this.grass = null
     this.flowerTypes = ['white', 'tulip', 'blue']
+    this.flowerModels = [modelWhite, modelTulip, modelBlue]
     this.plants = []
     this.flowersHoverZone = null
     this.plantsOffsets = {
@@ -171,12 +179,23 @@ export default class Desert {
 
   async addFlowers () {
     let index = -1
-    for (let nbPlants = 0; nbPlants <= 20; nbPlants++) {
+
+    for (let j = 0; j <= (this.flowerModels.length - 1); j++) {
+      const loader = new Loader({ model: this.flowerModels[j] })
+      this.flowerModels[j] = await loader.initFlowerObject(this.flowerTypes[j])
+    }
+
+    for (let nbPlants = 0; nbPlants <= 40; nbPlants++) {
       index++
       if (index >= 3) {
         index = 0
       }
-      const plant = new Plant({ orientation: nbPlants, flowerType: this.flowerTypes[index] })
+      const plant = new Plant(
+        {
+          orientation: nbPlants,
+          flowerType: this.flowerTypes[index],
+          model: this.flowerModels[index].clone()
+        })
       this.plants.push(plant)
 
       const loadedPlant = await plant.init()
