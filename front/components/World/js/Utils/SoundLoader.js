@@ -1,5 +1,12 @@
 import * as THREE from 'three'
 
+let nuxt
+if (process.browser) {
+  window.onNuxtReady(({ $nuxt }) => {
+    nuxt = $nuxt
+  })
+}
+
 export default class SoundLoader {
   constructor (props) {
     this.props = props
@@ -19,7 +26,10 @@ export default class SoundLoader {
     this.audioLoader.load(this.audioFile.default, (buffer) => {
       this.sound.setBuffer(buffer)
       this.sound.setRefDistance(20)
-      // sound.play();
+      this.sound.play()
+      nuxt.$on('toggleMute', (e) => {
+        this.sound.isPlaying ? this.sound.pause() : this.sound.play()
+      })
     })
   }
 }

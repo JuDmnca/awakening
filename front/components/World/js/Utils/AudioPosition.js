@@ -1,5 +1,12 @@
 import * as THREE from 'three'
 
+let nuxt
+if (process.browser) {
+  window.onNuxtReady(({ $nuxt }) => {
+    nuxt = $nuxt
+  })
+}
+
 export default class AudioPosition {
   constructor (props) {
     this.sound = null
@@ -21,6 +28,9 @@ export default class AudioPosition {
       this.sound.setLoop(true)
       this.sound.setVolume(5)
       this.sound.play()
+      nuxt.$on('toggleMute', () => {
+        this.sound.isPlaying ? this.sound.pause() : this.sound.play()
+      })
     })
     mesh.add(this.sound)
   }
