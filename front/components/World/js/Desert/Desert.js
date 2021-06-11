@@ -8,7 +8,7 @@ import modelDesert from '../../../../assets/models/m_desert.glb'
 import Land from '../Land'
 import Rotation from '../Utils/Rotation'
 import Sound from '../Utils/SoundLoader'
-import crystalSoundURL from '../../../../assets/sounds/crystalSound.wav'
+import crystalSoundURL from '../../../../assets/sounds/crystalSound.mp3'
 import AudioPosition from '../Utils/AudioPosition'
 import Particles from './Particles'
 import Plant from './Plant'
@@ -122,8 +122,12 @@ export default class Desert {
     this.lastMouseX = -1
     this.lastMouseY = -1
 
-    // Sound Spacialization
-    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera })
+    // Add cube for sound spacialization
+    this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
+
+    // Init sound spacialization
+    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube })
+    this.soundCube.cube.add(this.crystalSound.sound)
 
     // Add desert scene to main scene
     this.desertGroup.name = this.name
@@ -163,16 +167,6 @@ export default class Desert {
 
   addSound () {
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile })
-
-    // Watch on store if we have to mute sounds
-    store.watch(() => store.state.desert.isMuted, (isMuted) => {
-      if (isMuted) {
-        this.sound.sound.pause()
-      } else {
-        this.sound.sound.play()
-      }
-    })
-    this.sound.sound.play()
   }
 
   async addFlowers () {
@@ -226,6 +220,10 @@ export default class Desert {
   addFog (scene) {
     const colorBG = new THREE.Color('#040408')
     scene.fog = new THREE.Fog(colorBG, 10, 300)
+  }
+
+  addSoundToCrystal (crystal) {
+    crystal.add(this.crystalSound.sound)
   }
 
   addSkybox (scene) {
@@ -297,7 +295,6 @@ export default class Desert {
     for (let i = 0; i <= this.desertGroup.children[0].children.length - 1; i++) {
       const child = this.desertGroup.children[0].children[i]
       if (child.name.includes('inside')) {
-        child.add(this.crystalSound.sound)
         child.material = innerCrystalsMaterial
         child.layers.enable(1)
       } else if (child.name.includes('outside')) {
