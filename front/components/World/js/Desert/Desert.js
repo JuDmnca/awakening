@@ -4,9 +4,7 @@ import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
 import { ReinhardToneMapping } from 'three'
 import Raycaster from '../Utils/Raycaster'
-import modelDesert from '../../../../assets/models/m_desert_draco.gltf'
-import modelGrass from '../../../../assets/models/m_grass_draco.gltf'
-import Loader from '../Loader'
+import modelDesert from '../../../../assets/models/m_desert.glb'
 import Land from '../Land'
 import Rotation from '../Utils/Rotation'
 import Sound from '../Utils/SoundLoader'
@@ -14,6 +12,7 @@ import crystalSoundURL from '../../../../assets/sounds/crystalSound.wav'
 import AudioPosition from '../Utils/AudioPosition'
 import Particles from './Particles'
 import Plant from './Plant'
+import Grass from './Grass'
 import Cube from './Cube'
 
 const sandTexture = require('../../../../assets/textures/t_sand.png')
@@ -41,6 +40,7 @@ export default class Desert {
     this.intersected = null
 
     this.desertGroup = new THREE.Group()
+    this.desertModel = null
 
     // FLOWERS
     this.plantsGroup = new THREE.Group()
@@ -100,8 +100,8 @@ export default class Desert {
     renderer.toneMappingExposure = Math.pow(1.5, 4.0)
 
     // LOAD MODEL
-    const desertModel = await this.land.load(modelDesert, 1)
-    this.desertGroup.add(desertModel)
+    this.desertModel = await this.land.load(modelDesert, 1)
+    this.desertGroup.add(this.desertModel)
 
     // FLOWERS
     this.addFlowers()
@@ -191,11 +191,7 @@ export default class Desert {
     }
     this.flowersHoverZone = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.6 } })
 
-    // Grass
-    this.grass = new Loader({ model: modelGrass })
-    setTimeout(() => {
-      this.plantsGroup.add(this.grass.initGrass())
-    }, 1000)
+    this.addGrass()
 
     this.plantsGroup.position.set(-41, 0.5, 1.4)
     this.plantsGroup.scale.set(2.5, 2.5, 2.5)
@@ -213,6 +209,18 @@ export default class Desert {
 
     this.desertGroup.add(this.spores.particles)
     this.desertGroup.add(this.plantsGroup)
+  }
+
+  async addGrass () {
+    const material = new THREE.MeshNormalMaterial()
+    this.grass = await new Grass(
+      {
+        container: this.desertGroup,
+        surface: this.desertGroup.children[0].children[1],
+        count: 200,
+        scaleFactor: 0.5,
+        material
+      })
   }
 
   addFog (scene) {

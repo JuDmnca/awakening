@@ -35,7 +35,6 @@ export default class Loader {
           gltf.scene.position.x = position.x
           gltf.scene.position.y = position.y
           gltf.scene.position.z = position.z
-          gltf.scene.scale.set(3, 3, 3)
 
           let material = null
           if (materialImported) {
@@ -46,13 +45,13 @@ export default class Loader {
             })
           }
 
-          if (gltf.scene.children[38]) {
-            gltf.scene.children[38].material = material
+          if (gltf.scene.children[0].name === 'Desert') {
+            gltf.scene.children[0].children[0].material = material
+            gltf.scene.children[0].children[1].material = material
           }
           resolve(gltf.scene)
-        },
-        function (xhr) {
-        })
+        }
+      )
     }, undefined, function (error) {
       // eslint-disable-next-line no-console
       console.error(error)
@@ -115,16 +114,15 @@ export default class Loader {
   }
 
   initGrass () {
-    const grass = new THREE.Object3D()
-    this.loader.load(this.props.model, function (gltf) {
-      gltf.scene.scale.set(1.6, 1.6, 1.6)
-      gltf.scene.position.set(2.5, -1.5, 2)
-      grass.add(gltf.scene)
-      grass.name = 'grass'
+    return new Promise((resolve) => {
+      this.loader.load(
+        this.props.model,
+        function (gltf) {
+          resolve(gltf.scene.children[0])
+        })
     }, undefined, function (error) {
-      // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console
       console.error(error)
     })
-    return grass
   }
 }

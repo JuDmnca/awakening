@@ -10,7 +10,6 @@
         name="input"
         type="string"
         required
-        onfocus="this.placeholder = ''"
       >
       <div v-else ref="input" class="colors">
         <input id="red" type="radio" name="color" value="red">
@@ -33,18 +32,8 @@
           <span class="color" />
           <span class="selected" />
         </label>
-        <input id="darkgreen" type="radio" name="color" value="darkgreen">
-        <label for="darkgreen">
-          <span class="color" />
-          <span class="selected" />
-        </label>
         <input id="blue" type="radio" name="color" value="blue">
         <label for="blue">
-          <span class="color" />
-          <span class="selected" />
-        </label>
-        <input id="darkblue" type="radio" name="color" value="darkblue">
-        <label for="darkblue">
           <span class="color" />
           <span class="selected" />
         </label>
@@ -227,72 +216,36 @@ input[type="radio"]#red + label .color {
   background-color: #dc0c47;
 }
 
-input[type="radio"]#red + label .selected {
+input[type="radio"]#red + label .selected,
+input[type="radio"]#orange + label .selected,
+input[type="radio"]#yellow + label .selected,
+input[type="radio"]#green + label .selected,
+input[type="radio"]#blue + label .selected,
+input[type="radio"]#purple + label .selected
+{
   background: radial-gradient(white 0%, black 80%);
   opacity: 0;
+  z-index: -1;
 }
 
 input[type="radio"]#orange + label .color {
   background-color: #e8721f;
 }
 
-input[type="radio"]#orange + label .selected {
-  background: radial-gradient(white 0%, black 80%);
-  opacity: 0;
-}
-
 input[type="radio"]#yellow + label .color {
   background-color: #edc52c;
-}
-
-input[type="radio"]#yellow + label .selected {
-  background: radial-gradient(white 0%, black 80%);
-  opacity: 0;
 }
 
 input[type="radio"]#green + label .color {
   background-color: #7bbd22;
 }
 
-input[type="radio"]#green + label .selected {
-  background: radial-gradient(white 0%, black 80%);
-  opacity: 0;
-}
-
-input[type="radio"]#darkgreen + label .color {
-  background-color: #0e7b33;
-}
-
-input[type="radio"]#darkgreen + label .selected {
-  background: radial-gradient(white 0%, black 80%);
-  opacity: 0;
-}
-
 input[type="radio"]#blue + label .color {
   background-color: #1281ab;
 }
 
-input[type="radio"]#blue + label .selected {
-  background: radial-gradient(white 0%, black 80%);
-  opacity: 0;
-}
-
-input[type="radio"]#darkblue + label .color {
-  background-color: #1f6cad;
-}
-
-input[type="radio"]#darkblue + label .selected {
-  background: radial-gradient(white 0%, black 80%);
-  opacity: 0;
-}
-
 input[type="radio"]#purple + label .color {
   background-color: #7b4ea3;
-}
-
-input[type="radio"]#purple + label .selected {
-  background: radial-gradient(white 0%, black 80%);
-  opacity: 0;
 }
 
 input[type="radio"] + label:hover {

@@ -53,17 +53,9 @@ const mutations = {
         hexacode = '#7bbd22'
         colorPalette = ['C0EA86', '7BBD21', '0F7B33', '18A4DB']
         break
-      case 'darkgreen':
-        hexacode = '#0e7b33'
-        colorPalette = ['1EB651', '0F7B33', '18A4DB', '0F7B33']
-        break
       case 'blue':
         hexacode = '#1281ab'
         colorPalette = ['A3DEF5', '18A4DB', '1F6CAD', '7B4EA3']
-        break
-      case 'darkblue':
-        hexacode = '#1f6cad'
-        colorPalette = ['63AAE3', '1F6CAD', '7B4EA3', '18A4DB']
         break
       case 'purple':
         hexacode = '#7b4ea3'
