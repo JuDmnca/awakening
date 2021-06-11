@@ -1,17 +1,22 @@
 /* eslint-disable no-unused-vars */
 import * as THREE from 'three'
+import { Vector3 } from 'three'
+
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import Stats from 'three/examples/jsm/libs/stats.module'
+import gemModel from '@/assets/models/gems_constellation/gem-1-compressed.gltf'
 import Camera from '../Camera'
 import MainGui from '../Utils/MainGui'
 import Cube from '../Desert/Cube'
 import Raycaster from '../Utils/Raycaster'
 import Bloom from '../Utils/Bloom.js'
+import Loader from '../Loader'
 
 let store
+
 let nuxt
 if (process.browser) {
   window.onNuxtReady(({ $nuxt, $store }) => {
@@ -67,6 +72,7 @@ class Constellation {
 
     this.cubes = []
     this.randomCubesSpeed = []
+    this.gemGeometry = null
 
     // Post Processing
     this.bloom = null
@@ -177,12 +183,11 @@ class Constellation {
       renderer: this.renderer,
       params: {
         exposure: 1,
-        bloomStrength: 3.5,
+        bloomStrength: 2.5,
         bloomThreshold: 0,
         bloomRadius: 1
       }
     })
-    // Params for constellation : BT : 0, BS: 1, BR : 0.4
 
     // GUI
     this.gui = new MainGui()
@@ -204,7 +209,7 @@ class Constellation {
     return Math.floor(Math.random() * max)
   }
 
-  generateCrystals () {
+  async generateCrystals () {
     // Cube
     const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
 
@@ -236,6 +241,19 @@ class Constellation {
       // map: textureCrystalsTest
     })
 
+    const cubeMaterial2 = new THREE.MeshPhongMaterial({
+
+      color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
+      // opacity: 1,
+      // transparent: 1,
+      envMap: textureCrystals,
+      refractionRatio: 0.98
+      // reflectivity: 0.9
+    })
+
+    // Load gems geometry
+    // this.scene.add(this.gemGeometry)
+
     // Generation of this.cubes
     for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
       const cubeMaterial = new THREE.MeshPhongMaterial({
@@ -248,16 +266,26 @@ class Constellation {
         // reflectivity: 0.9
       })
 
-      this.cubes.push(new THREE.Mesh(cubeGeometry, cubeMaterial))
+      const gemGeometry = await new Loader({ material: cubeMaterial2, model: gemModel, position: { x: 0, y: 0, z: -5 } }).initGems()
       const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
       const y = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
       const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
-      this.cubes[i].position.set(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
-      this.cubes[i].layers.enable(1)
-      this.cubes[i].datas = store.state.constellation.dataUsers[i]
-      this.cubes[i].userId = i
+      const pos = new Vector3(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
+      console.log(pos)
+      gemGeometry.position.copy(pos)
+      gemGeometry.layers.enable(1)
+      gemGeometry.datas = store.state.constellation.dataUsers[i]
+      gemGeometry.userId = i
+      this.cubes.push(gemGeometry)
+
       this.scene.add(this.cubes[i])
     }
+    console.log(this.cubes)
+    // this.scene.add(this.cubes[0])
+    // this.scene.add(this.cubes[1])
+    // this.scene.add(this.cubes[2])
+    // this.scene.add(this.cubes[3])
+    // this.scene.add(this.cubes[10])
 
     // Generation of random cube speed
     for (let i = 0; i < this.cubes.length; i++) {
@@ -290,9 +318,11 @@ class Constellation {
   render () {
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
-    for (let i = 0; i < this.cubes.length; i++) {
-      this.cubes[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
-      this.cubes[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
+    if (this.cubes.length === store.state.constellation.dataUsers.length) {
+      for (let i = 0; i < this.cubes.length; i++) {
+        this.cubes[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
+        this.cubes[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
+      }
     }
 
     this.intersectedObject = this.raycaster.render(this.scene)
