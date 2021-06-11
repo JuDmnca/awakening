@@ -10,7 +10,6 @@
         name="input"
         type="string"
         required
-        onfocus="this.placeholder = ''"
       >
       <div v-else ref="input" class="colors">
         <input id="red" type="radio" name="color" value="red">
