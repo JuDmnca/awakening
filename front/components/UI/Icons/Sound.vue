@@ -41,6 +41,7 @@ export default {
         // Listener
         canvas.addEventListener('click', () => {
           this.isClicked = !this.isClicked
+          this.$nuxt.$emit('toggleMute')
         })
       } else {
         // console.log('errer sound icon')

@@ -124,7 +124,6 @@ export default class Desert {
 
     // Add cube for sound spacialization
     this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
-    // this.soundCube.cube.add(this.crystalSound)
 
     // Init sound spacialization
     this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube })
@@ -168,16 +167,6 @@ export default class Desert {
 
   addSound () {
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile })
-
-    // Watch on store if we have to mute sounds
-    store.watch(() => store.state.desert.isMuted, (isMuted) => {
-      if (isMuted) {
-        this.sound.sound.pause()
-      } else {
-        this.sound.sound.play()
-      }
-    })
-    this.sound.sound.play()
   }
 
   async addFlowers () {
