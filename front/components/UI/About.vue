@@ -1,19 +1,25 @@
 <template>
-  <section class="common">
-    <button class="about">
-      ABOUT
-    </button>
-    <UI-Icons-Sound width="40" height="40" icon-color="#fff" />
-  </section>
+  <transition name="fade">
+    <section v-if="showCommon" class="common">
+      <button class="about">
+        ABOUT
+      </button>
+      <UI-Icons-Sound width="40" height="40" icon-color="#fff" />
+    </section>
+  </transition>
 </template>
 
 <script>
 export default {
   data () {
     return {
+      showCommon: false
     }
   },
   mounted () {
+    this.$nuxt.$on('started', () => {
+      this.showCommon = true
+    })
   }
 }
 </script>

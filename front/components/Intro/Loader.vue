@@ -13,7 +13,9 @@
     </transition>
     <transition name="fade">
       <div v-if="loaded" class="loader__btn">
-        <button @click="startIntro()">Redécouvre tes sens</button>
+        <button @click="startIntro()">
+          Redécouvrir mes sens
+        </button>
       </div>
     </transition>
     <transition name="fade">
@@ -78,7 +80,7 @@ export default {
       this.endLoaded = true
       setTimeout(() => {
         this.loaded = true
-      }, 500)
+      }, 1000)
     })
     this.$nuxt.$on('started', () => {
       setTimeout(() => {
