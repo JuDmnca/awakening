@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 import * as THREE from 'three'
 import Land from '../Land'
-import modelForest from '../../../../assets/models/m_forest.glb'
+import modelForest from '../../../../assets/models/m_foret_export.glb'
 import Raycaster from '../Utils/Raycaster'
 
-const grassTexture = require('../../../../assets/textures/t_sand.png')
+// const grassTexture = require('../../../../assets/textures/t_sand.png')
 
 let store
 if (process.browser) {
@@ -16,11 +16,11 @@ if (process.browser) {
 export default class Forest {
   constructor (props) {
     this.props = props
-    this.name = 'forest'
+    this.name = 'Forest'
 
     // Generals params
     this.hold = false
-    this.land = new Land({ texture: grassTexture, index: 1 })
+    this.land = new Land({ index: 1 })
 
     this.camera = this.props.camera
     this.raycaster = new Raycaster()

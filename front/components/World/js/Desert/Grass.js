@@ -47,6 +47,8 @@ export default class Grass {
       dummy.position.copy(_position)
       // dummy.lookAt(_normal)
       dummy.updateMatrix()
+      dummy.rotation.y += i
+      dummy.scale.set(0.5 + i / 200, 0.5 + i / 200, 0.5 + i / 200)
       this.mesh.setMatrixAt(i, dummy.matrix)
     }
     this.mesh.instanceMatrix.needsUpdate = true

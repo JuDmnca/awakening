@@ -120,3 +120,18 @@ input:focus, button:focus {
   opacity: 0;
 }
 
+
+.fadeCanvas-enter-active, .fadeCanvas-leave-active {
+  transition: opacity 2s;
+}
+.fadeCanvas-enter, .fadeCanvas-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.fadeCanvasOut-enter-active, .fadeCanvasOut-leave-active {
+  transition: opacity 2s;
+}
+.fadeCanvasOut-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+

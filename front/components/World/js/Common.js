@@ -16,11 +16,16 @@ const desertCurve = [
 ]
 
 const forestCurve = [
-  [41.891, 0.85967, -41.585],
-  [37.092, 2.2471, -25.002],
-  [22.111, 1.6593, -25.574],
-  [15.148, 2.2951, -4.389],
-  [-4.7436, 1.6304, 6.2753]
+  [-39.9991, 2, 9.91934],
+  [-30.2841, 2, 14.3279],
+  [-15.1083, 2, 28.0624],
+  [6.2926, 0.827358, 22.9185],
+  [9.55505, 2.56179, 6.12564],
+  [6.74007, 4.17393, 0.254782],
+  [10.534, 3.30262, -3.18313],
+  [10.7498, 2, -9.15631],
+  [-5.18898, 2, -18.1431],
+  [-27.2973, 1.70418, -13.7742]
 ]
 
 const allCurves = [desertCurve, forestCurve]
@@ -269,6 +274,7 @@ class Common {
       switch (store.state.sceneIndex) {
         case 1:
           this.sporesCanMove = false
+          this.curveNumber = 1
           this.currentScene = new Forest({ camera: this.camera })
           this.currentScene.init(this.scene, this.renderer)
           break
@@ -315,7 +321,7 @@ class Common {
 
     // Update camera rotation & look at
     if (store && !store.state.cameraIsZoomed) {
-      if (store && store.state.desert.interaction) {
+      if (store && store.state.desert.interaction && store.state.sceneIndex === 1) {
         this.camera.camera.position.lerp(end, 0.1)
       } else {
         this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)
