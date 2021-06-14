@@ -130,7 +130,6 @@ export default {
       this.loaded = false
       this.showIntroParagraph = false
       this.$nuxt.$emit('started')
-      this.nextQuestion()
     }
   }
 }
