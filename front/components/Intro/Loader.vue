@@ -1,9 +1,19 @@
 <template>
   <section class="loader__container">
     <transition name="fade">
-      <div v-if="!loaded" class="loader">
-        <div class="progress" :style="progress" />
-        <span style="display: none">{{ completed }}</span>
+      <div v-if="!endLoaded" class="container">
+        <p class="text-white">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor.
+        </p>
+        <div class="loader">
+          <div class="progress" :style="progress" />
+          <span style="display: none">{{ completed }}</span>
+        </div>
+      </div>
+    </transition>
+    <transition name="fade">
+      <div v-if="loaded" class="loader__btn">
+        <button @click="startIntro()">Redécouvre tes sens</button>
       </div>
     </transition>
     <transition name="fade">
@@ -39,6 +49,8 @@ export default {
   data () {
     return {
       loaded: false,
+      endLoaded: false,
+      started: false,
       showLogo: false,
       showName: false,
       showMic: false,
@@ -52,7 +64,8 @@ export default {
       }
     },
     completed () {
-      if (this.$store.state.loading === 2000) {
+      // endLoaded to avoid infinite loop
+      if (this.$store.state.loading === 2000 && !this.endLoaded) {
         this.$nuxt.$emit('loaded')
         return true
       } else {
@@ -62,8 +75,14 @@ export default {
   },
   mounted () {
     this.$nuxt.$on('loaded', () => {
+      this.endLoaded = true
       setTimeout(() => {
         this.loaded = true
+      }, 500)
+    })
+    this.$nuxt.$on('started', () => {
+      setTimeout(() => {
+        this.started = true
       }, 1000)
       setTimeout(() => {
         this.showLogo = true
@@ -96,6 +115,10 @@ export default {
         this.$emit('done')
         this.$nuxt.$emit('startExperience')
       }, 1000)
+    },
+    startIntro () {
+      this.loaded = false
+      this.$nuxt.$emit('started')
     }
   }
 }
@@ -104,7 +127,7 @@ export default {
 <style>
 .loader__container {
   position: absolute;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   z-index: 4;
   display: flex;
@@ -114,11 +137,21 @@ export default {
   background-color: black;
 }
 
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .loader {
   border-radius: 10px;
   width: 200px;
   height: 3px;
   background-color: rgba(255, 255, 255, 0.5);
+  margin-top: 200px;
 }
 
 .progress {
