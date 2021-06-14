@@ -233,7 +233,7 @@ class Common {
         this.currentScene.sporesOnMouseMove(e)
       }
       // Disable animation if mousemove on desert scene
-      if (this.currentScene.name === 'desert') {
+      if (this.currentScene.name === 'Desert') {
         this.currentScene.onCursorMovement(e)
       }
     })
@@ -248,14 +248,14 @@ class Common {
       }
 
       // DESERT
-      if (this.currentScene.name === 'desert') {
+      if (this.currentScene.name === 'Desert') {
         this.currentScene.onWheelMovement(e)
       }
     })
 
     window.addEventListener('mousedown', () => {
       // DESERT
-      if (this.currentScene.name === 'desert') {
+      if (this.currentScene.name === 'Desert') {
         this.currentScene.onHold()
       }
 

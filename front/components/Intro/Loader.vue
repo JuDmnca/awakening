@@ -15,13 +15,15 @@
         </transition>
         <transition name="fade">
           <div v-if="loaded" class="container__inner container__inner--bottom">
-            <button @click="startIntro()">
-              Redécouvrir mes sens
-            </button>
+            <div ref="button" class="button-wrapper" @click="startIntro()">
+              <button>
+                Redécouvrir mes sens
+              </button>
+            </div>
           </div>
         </transition>
         <transition name="fade">
-          <div class="container__logo" v-if="showLogo">
+          <div v-if="showLogo" class="container__logo">
             <img class="logo" src="~/assets/svg/monogram.svg" alt="">
           </div>
         </transition>
@@ -146,16 +148,20 @@ export default {
 }
 
 .container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
 }
 
-.container__inner{
+.container__inner {
   text-align: center;
 }
 
 .container__inner--top {
   margin-top: 300px;
+  width: 800px;
   color: white;
 }
 

@@ -31,7 +31,7 @@ if (process.browser) {
 export default class Desert {
   constructor (props) {
     this.props = props
-    this.name = 'desert'
+    this.name = 'Desert'
 
     this.hold = false
 
@@ -64,7 +64,7 @@ export default class Desert {
     this.noise = new perlinNoise3d()
 
     // SOUND
-    this.ambiantFile = require('../../../../assets/sounds/intro/vent.wav')
+    this.ambiantFile = require('../../../../assets/sounds/wind.ogg')
 
     // CURSOR
     this.isCursorActive = false
@@ -102,7 +102,7 @@ export default class Desert {
   init (scene, renderer) {
     renderer.toneMappingExposure = Math.pow(1.5, 4.0)
 
-    // LOAD MODEL
+    // GET MODEL
     this.desertGroup.add(this.desertModel)
 
     // FLOWERS
@@ -199,23 +199,11 @@ export default class Desert {
     }
     this.flowersHoverZone = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.6 } })
 
-    // this.addGrass()
+    this.addGrass()
 
     this.plantsGroup.position.set(-41, 0.5, 1.4)
     this.plantsGroup.scale.set(2.5, 2.5, 2.5)
     this.plantsGroup.name = 'Plants'
-    this.desertGroup.add(this.plantsGroup)
-
-    // Spores
-    this.spores = new Particles()
-    this.spores.particles.position.set(-41, 1, 1.4)
-    /*
-      Axis Helper for spores
-    */
-    const axesHelper = new THREE.AxesHelper(5)
-    this.spores.particles.add(axesHelper)
-
-    this.desertGroup.add(this.spores.particles)
     this.desertGroup.add(this.plantsGroup)
   }
 
@@ -229,6 +217,17 @@ export default class Desert {
         scaleFactor: 0.5,
         material
       })
+  }
+
+  addParticles () {
+    this.spores = new Particles({ color: store.state.colorPalette })
+    this.spores.particles.position.set(-41, 1, 1.4)
+
+    // Axis Helper for spores
+    // const axesHelper = new THREE.AxesHelper(5)
+    // this.spores.particles.add(axesHelper)
+
+    this.desertGroup.add(this.spores.particles)
   }
 
   addFog (scene) {
@@ -283,6 +282,7 @@ export default class Desert {
     })
     nuxt.$on('ColorSetted', () => {
       this.colorCrystals()
+      this.addParticles()
     })
   }
 
@@ -359,7 +359,6 @@ export default class Desert {
   inhale (mousemove = false) {
     gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
     gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
-    // console.log(this.sporesElevation)
     // Movement on mousemove
     if (mousemove) {
       gsap.to(
@@ -416,6 +415,7 @@ export default class Desert {
   render (elapsedTime, timeDelta, progression) {
     if (nuxt && store && !this.events) {
       this.addEvents()
+      this.events = true
     }
     if (this.plantsGroup.children[0]) {
       this.intersects = this.raycaster.render(this.plantsGroup)
@@ -448,7 +448,7 @@ export default class Desert {
       nuxt.$emit('unactiveCursor')
     }
     if (this.spores) {
-      this.spores.particles.material.uniforms.uTime.value = elapsedTime
+      this.spores.render(elapsedTime)
     }
     this.plants.forEach((plant) => {
       plant.update()

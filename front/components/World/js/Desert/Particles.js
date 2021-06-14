@@ -18,15 +18,18 @@ class Particles {
     this.particlesMaterial = null
     this.particles = null
     this.count = 20000
+    this.colors = this.props.color
     this.init()
   }
 
   init () {
-    /*
-      * Particles
-      */
     // Geometry
     this.particlesGeometry = new THREE.BufferGeometry()
+
+    const NormalizedColors = []
+    for (let i = 0; i < this.colors.length; i++) {
+      NormalizedColors[i] = this.hexToRGB(`0x${this.colors[i]}`)
+    }
 
     const positions = new Float32Array(this.count * 3)
     const scales = new Float32Array(this.count)
@@ -46,9 +49,9 @@ class Particles {
       scales[i] = Math.random() + 0.2
 
       // Colors
-      colors[i3 + 0] = 1
-      colors[i3 + 1] = 87 / 255
-      colors[i3 + 2] = 233 / 255
+      colors[i3 + 0] = NormalizedColors[1].x
+      colors[i3 + 1] = NormalizedColors[1].y
+      colors[i3 + 2] = NormalizedColors[1].z
 
       // Random Speed
       randomSpeed[i] = Math.pow(noise2D(xOff, yOff), 2)
@@ -101,10 +104,17 @@ class Particles {
     // this.particles.position.y += 10
   }
 
+  hexToRGB (hexColor) {
+    return {
+      x: ((hexColor >> 16) & 0xFF) / 255,
+      y: ((hexColor >> 8) & 0xFF) / 255,
+      z: (hexColor & 0xFF) / 255
+    }
+  }
+
   render (elapsedTime) {
     this.particlesMaterial.uniforms.uTime.value = elapsedTime
   }
 }
 
 export default Particles
-

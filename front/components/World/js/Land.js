@@ -1,5 +1,5 @@
 import Desert from '../../../assets/models/m_desert.glb'
-import Forest from '../../../assets/models/m_foret_export.glb'
+import Forest from '../../../assets/models/m_forest.glb'
 import Loader from './Loader'
 
 const sandTexture = require('../../../assets/textures/t_sand.png')

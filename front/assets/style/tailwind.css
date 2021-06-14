@@ -33,9 +33,14 @@ body {
   height: 100vh;
   overflow: hidden;
   font-family: 'Sofia Pro';
-  line-height: 56px;
+  line-height: 30px;
   margin: 0;
   padding: 0;
+  cursor: none !important;
+}
+
+.container {
+  max-width: unset;
 }
 
 /* For icons */
@@ -54,10 +59,10 @@ button {
   text-transform: none;
   overflow: visible;
   font-family: inherit;
-	font-size: 12px;
+  font-size: 12px;
 	line-height: 1.15;
 	margin: 0;
-  -webkit-appearance: button;
+  -webkit-appearance: none;
   border-style: none;
 	padding: 0;
   background-color: transparent;
@@ -86,19 +91,20 @@ button::after{
   transform-origin: 0 100%;
 }
 
-button:hover::after, button:hover::before {
+.button-wrapper {
+  padding: 20px;
+}
+
+.button-wrapper:hover button::after, .button-wrapper:hover button::before {
   transform-origin: 50% 0;
   transform: scaleX(1);
+  cursor: none;
 }
 
 input {
   background-color: transparent;
   border: none;
   font-family: 'Sofia Pro';
-}
-
-button:hover {
-  cursor: pointer;
 }
 
 input:focus, button:focus {
@@ -119,7 +125,6 @@ input:focus, button:focus {
 .fadeOut-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
-
 
 .fadeCanvas-enter-active, .fadeCanvas-leave-active {
   transition: opacity 2s;

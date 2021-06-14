@@ -1,9 +1,11 @@
 <template>
   <transition name="fade">
     <section v-if="showCommon" class="common">
-      <button class="about">
-        ABOUT
-      </button>
+      <div class="button-wrapper about">
+        <n-link to="about">
+          ABOUT
+        </n-link>
+      </div>
       <UI-Icons-Sound width="40" height="40" icon-color="#fff" />
     </section>
   </transition>
@@ -27,8 +29,11 @@ export default {
 <style>
   .about {
     position: absolute;
-    bottom: 50px;
-    left: 50px;
+    bottom: 30px;
+    left: 30px;
     z-index: 10;
+  }
+  .about a {
+    color: white;
   }
 </style>

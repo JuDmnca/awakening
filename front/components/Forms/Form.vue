@@ -44,9 +44,11 @@
         </label>
       </div>
     </form>
-    <button ref="button" class="button" @click="sendValidation">
-      {{ confirmation }}
-    </button>
+    <div ref="button" class="button button-wrapper" @click="sendValidation">
+      <button>
+        {{ confirmation }}
+      </button>
+    </div>
   </div>
 </template>
 
