@@ -5,8 +5,8 @@ export default class Scene {
     this.init()
   }
 
-  init () {
-    Common.init(this.props.$canvas)
+  async init () {
+    await Common.init(this.props.$canvas)
     window.addEventListener('resize', this.resize.bind(this))
     this.loop()
   }

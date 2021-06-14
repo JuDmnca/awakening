@@ -4,6 +4,7 @@ import Camera from './Camera'
 import MainGui from './Utils/MainGui'
 // import Bloom from './Utils/Bloom'
 
+import Land from './Land'
 import Desert from './Desert/Desert'
 import Forest from './Forest/Forest'
 
@@ -100,7 +101,7 @@ class Common {
     this.sporesCanMove = false
   }
 
-  init ($canvas) {
+  async init ($canvas) {
     // FPS
     // eslint-disable-next-line
     (function () { const script = document.createElement('script'); script.onload = function () { const stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop () { stats.update(); requestAnimationFrame(loop) }) }; script.src = '//mrdoob.github.io/stats.js/build/stats.min.js'; document.head.appendChild(script) })()
@@ -122,6 +123,10 @@ class Common {
     this.clock = new THREE.Clock()
     this.clock.start()
 
+    // Load Scene Models
+    this.lands = new Land()
+    this.models = await this.lands.load()
+
     // Init camera
     this.cameraDisplacement()
     this.vectCam = new THREE.Vector3(this.p1.x, this.p1.y, this.p1.z)
@@ -130,7 +135,7 @@ class Common {
     this.addEventListeners()
 
     // Load first group (desert)
-    this.currentScene = new Desert({ camera: this.camera })
+    this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0) })
     this.currentScene.init(this.scene, this.renderer)
 
     // Init light
@@ -187,13 +192,13 @@ class Common {
     this.currentScene.progression = this.progression
     this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
 
-    if (store) {
+    if (store && store.state.sceneIndex === 1) {
       const euler = this.camera.camera.rotation.clone()
       store.commit('updateWorldRotation', euler)
     }
 
     // Enable spores movement and inhale if end of path
-    if (this.currentScene.name === 'desert' && this.progression >= this.enableSporesElevationAt && this.sporesCanMove === false) {
+    if (store.state.sceneIndex === 1 && this.progression >= this.enableSporesElevationAt && this.sporesCanMove === false) {
       this.sporesCanMove = true
     }
   }
@@ -274,8 +279,7 @@ class Common {
       switch (store.state.sceneIndex) {
         case 1:
           this.sporesCanMove = false
-          this.curveNumber = 1
-          this.currentScene = new Forest({ camera: this.camera })
+          this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1) })
           this.currentScene.init(this.scene, this.renderer)
           break
         case 2:
@@ -283,6 +287,8 @@ class Common {
           // this.currentScene.init(this.scene, this.renderer)
           break
       }
+      this.curveNumber += 1
+      this.progression = 0
       store.commit('increaseSceneIndex')
     })
     nuxt.$on('endSceneTransition', () => {
@@ -312,8 +318,8 @@ class Common {
   render () {
     if (nuxt && store && !this.events) {
       this.addTransitionEvent()
-      this.events = true
       this.camera.addEvents()
+      this.events = true
     }
 
     this.time.delta = this.clock.getDelta()

@@ -12,7 +12,6 @@ export default class Loader {
   constructor (props) {
     this.loader = null
     this.props = props
-    this.material = this.props.material
     this.loader = new GLTFLoader()
     this.init()
   }
@@ -24,13 +23,13 @@ export default class Loader {
     this.loader.setDRACOLoader(dracoLoader)
   }
 
-  defaultInit () {
+  defaultInit (index) {
     const promise = new Promise((resolve) => {
       const position = this.props.position
-      const materialImported = this.material
+      const materialImported = this.props.material[index]
 
       this.loader.load(
-        this.props.model,
+        this.props.models[index],
         function (gltf) {
           gltf.scene.position.x = position.x
           gltf.scene.position.y = position.y

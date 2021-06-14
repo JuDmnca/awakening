@@ -126,7 +126,7 @@ export default {
   width: 0px;
   height: 3px;
   background-color: #fff;
-  transition: 0.32s ease-in-out width;
+  transition: 0.5s ease-in-out width;
 }
 
 .logo {

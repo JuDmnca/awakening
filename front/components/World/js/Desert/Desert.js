@@ -4,8 +4,6 @@ import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
 import { ReinhardToneMapping } from 'three'
 import Raycaster from '../Utils/Raycaster'
-import modelDesert from '../../../../assets/models/m_desert.glb'
-import Land from '../Land'
 import Rotation from '../Utils/Rotation'
 import Sound from '../Utils/SoundLoader'
 import crystalSoundURL from '../../../../assets/sounds/crystalSound.mp3'
@@ -22,8 +20,6 @@ import Plant from './Plant'
 import Grass from './Grass'
 import Cube from './Cube'
 
-const sandTexture = require('../../../../assets/textures/t_sand.png')
-
 let store, nuxt
 if (process.browser) {
   window.onNuxtReady(({ $nuxt, $store }) => {
@@ -38,7 +34,6 @@ export default class Desert {
     this.name = 'desert'
 
     this.hold = false
-    this.land = new Land({ texture: sandTexture, index: 0 })
 
     this.camera = this.props.camera
 
@@ -47,7 +42,7 @@ export default class Desert {
     this.intersected = null
 
     this.desertGroup = new THREE.Group()
-    this.desertModel = null
+    this.desertModel = this.props.model
 
     // FLOWERS
     this.plantsGroup = new THREE.Group()
@@ -104,11 +99,10 @@ export default class Desert {
     this.inhaleIsCompleted = false
   }
 
-  async init (scene, renderer) {
+  init (scene, renderer) {
     renderer.toneMappingExposure = Math.pow(1.5, 4.0)
 
     // LOAD MODEL
-    this.desertModel = await this.land.load(modelDesert, 1)
     this.desertGroup.add(this.desertModel)
 
     // FLOWERS
@@ -204,7 +198,7 @@ export default class Desert {
     }
     this.flowersHoverZone = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.6 } })
 
-    this.addGrass()
+    // this.addGrass()
 
     this.plantsGroup.position.set(-41, 0.5, 1.4)
     this.plantsGroup.scale.set(2.5, 2.5, 2.5)

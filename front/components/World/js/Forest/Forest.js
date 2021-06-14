@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import * as THREE from 'three'
 import Land from '../Land'
-import modelForest from '../../../../assets/models/m_foret_export.glb'
 import Raycaster from '../Utils/Raycaster'
 
 // const grassTexture = require('../../../../assets/textures/t_sand.png')
@@ -30,12 +29,12 @@ export default class Forest {
     this.progression = null
 
     this.forestGroup = new THREE.Group()
+    this.forestModel = this.props.model
   }
 
-  async init (scene, renderer) {
+  init (scene, renderer) {
     renderer.toneMappingExposure = Math.pow(2, 4.0)
-    const forestModel = await this.land.load(modelForest, 1)
-    this.forestGroup.add(forestModel)
+    this.forestGroup.add(this.forestModel)
 
     // Raycaster
     this.raycaster.init(this.camera, renderer)
