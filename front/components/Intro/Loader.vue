@@ -119,6 +119,7 @@ export default {
     },
     startExperience () {
       this.showColor = false
+      this.$nuxt.$emit('swoosh')
       setTimeout(() => {
         this.$emit('done')
         this.$nuxt.$emit('startExperience')
@@ -128,6 +129,7 @@ export default {
       this.loaded = false
       this.showIntroParagraph = false
       this.$nuxt.$emit('started')
+      this.nextQuestion()
     }
   }
 }
