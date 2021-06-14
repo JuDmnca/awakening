@@ -64,7 +64,7 @@ export default class Desert {
     this.noise = new perlinNoise3d()
 
     // SOUND
-    this.ambiantFile = require('../../../../assets/sounds/wind.ogg')
+    this.ambiantFile = require('../../../../assets/sounds/intro/vent.wav')
 
     // CURSOR
     this.isCursorActive = false
