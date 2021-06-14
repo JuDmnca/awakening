@@ -64,7 +64,7 @@ export default class Desert {
     this.noise = new perlinNoise3d()
 
     // SOUND
-    this.ambiantFile = require('../../../../assets/sounds/wind.ogg')
+    this.ambiantFile = require('../../../../assets/sounds/intro/vent.wav')
 
     // CURSOR
     this.isCursorActive = false
@@ -108,8 +108,16 @@ export default class Desert {
     // FLOWERS
     this.addFlowers()
 
+    // Add cube for sound spacialization
+    this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
+
     // SOUND
-    this.addSound()
+    nuxt.$on('started', () => {
+      this.addSound()
+      // Init sound spacialization
+      this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube })
+      this.soundCube.cube.add(this.crystalSound.sound)
+    })
 
     // RAYCASTER
     this.raycaster.init(this.camera, renderer)
@@ -123,13 +131,6 @@ export default class Desert {
     // MOUSE
     this.lastMouseX = -1
     this.lastMouseY = -1
-
-    // Add cube for sound spacialization
-    this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
-
-    // Init sound spacialization
-    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube })
-    this.soundCube.cube.add(this.crystalSound.sound)
 
     // Add desert scene to main scene
     this.desertGroup.name = this.name
