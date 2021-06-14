@@ -37,9 +37,6 @@ const mutations = {
       state.sRotation = state.sRotation.applyEuler(resp.euler)
     }
   },
-  toggleMute (state) {
-    state.isMuted = !state.isMuted
-  },
   toggleInteraction (state) {
     state.interaction = !state.interaction
   }
