@@ -61,7 +61,9 @@ export default class Desert {
     this.noise = new perlinNoise3d()
 
     // SOUND
+    this.swooshSound = null
     this.ambiantFile = require('../../../../assets/sounds/intro/vent.wav')
+    this.swooshFile = require('../../../../assets/sounds/intro/swoosh.wav')
 
     // CURSOR
     this.isCursorActive = false
@@ -110,18 +112,22 @@ export default class Desert {
     this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
 
     // SOUND
+    this.addSound()
+
     nuxt.$on('started', () => {
-      this.addSound()
-      // Init sound spacialization
-      this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube })
-      this.soundCube.cube.add(this.crystalSound.sound)
+      this.sound.sound.play()
+      this.crystalSound.sound.play()
+    })
+
+    nuxt.$on('swoosh', () => {
+      this.swooshSound.sound.play()
     })
 
     // RAYCASTER
     this.raycaster.init(this.camera, renderer)
 
     // FOG
-    // this.addFog(scene)
+    this.addFog(scene)
 
     // SKYBOX
     this.addSkybox(scene)
@@ -167,7 +173,11 @@ export default class Desert {
   }
 
   addSound () {
-    this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile })
+    this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true })
+    // Init sound spacialization
+    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube })
+    this.soundCube.cube.add(this.crystalSound.sound)
+    this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false })
   }
 
   async addFlowers () {

@@ -25,12 +25,13 @@ export default class SoundLoader {
     this.sound = new THREE.Audio(this.listener)
     this.audioLoader.load(this.audioFile.default, (buffer) => {
       this.sound.setBuffer(buffer)
-      this.sound.setLoop(true)
+      this.sound.setLoop(this.props.loop)
       this.sound.setVolume(0.5)
-      this.sound.play()
-      nuxt.$on('toggleMute', (e) => {
-        this.sound.isPlaying ? this.sound.pause() : this.sound.play()
-      })
+      if (this.props.canToggle) {
+        nuxt.$on('toggleMute', (e) => {
+          this.sound.isPlaying ? this.sound.pause() : this.sound.play()
+        })
+      }
     })
   }
 }

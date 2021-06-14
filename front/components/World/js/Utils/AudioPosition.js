@@ -27,7 +27,6 @@ export default class AudioPosition {
       this.sound.setMaxDistance(0.1)
       this.sound.setLoop(true)
       this.sound.setVolume(5)
-      this.sound.play()
       nuxt.$on('toggleMute', () => {
         this.sound.isPlaying ? this.sound.pause() : this.sound.play()
       })
