@@ -1,28 +1,33 @@
 <template>
   <section class="loader__container">
     <transition name="fade">
-      <div v-if="!endLoaded" class="container">
-        <p class="text-white">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor.
-        </p>
-        <div class="loader">
-          <div class="progress" :style="progress" />
-          <span style="display: none">{{ completed }}</span>
-        </div>
+      <div class="container">
+        <transition name="fade">
+          <p v-if="showIntroParagraph" class="container__inner container__inner--top">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor.
+          </p>
+        </transition>
+        <transition name="fade">
+          <div v-if="!endLoaded" class="loader container__inner container__inner--bottom">
+            <div class="progress" :style="progress" />
+            <span style="display: none">{{ completed }}</span>
+          </div>
+        </transition>
+        <transition name="fade">
+          <div v-if="loaded" class="container__inner container__inner--bottom">
+            <button @click="startIntro()">
+              Redécouvrir mes sens
+            </button>
+          </div>
+        </transition>
+        <transition name="fade">
+          <div class="container__logo" v-if="showLogo">
+            <img class="logo" src="~/assets/svg/monogram.svg" alt="">
+          </div>
+        </transition>
       </div>
     </transition>
-    <transition name="fade">
-      <div v-if="loaded" class="loader__btn">
-        <button @click="startIntro()">
-          Redécouvrir mes sens
-        </button>
-      </div>
-    </transition>
-    <transition name="fade">
-      <div v-if="showLogo">
-        <img class="logo" src="~/assets/svg/monogram.svg" alt="">
-      </div>
-    </transition>
+
     <transition name="fade">
       <FormsQuestion
         v-if="showName"
@@ -53,6 +58,7 @@ export default {
       loaded: false,
       endLoaded: false,
       started: false,
+      showIntroParagraph: true,
       showLogo: false,
       showName: false,
       showMic: false,
@@ -120,6 +126,7 @@ export default {
     },
     startIntro () {
       this.loaded = false
+      this.showIntroParagraph = false
       this.$nuxt.$emit('started')
     }
   }
@@ -142,10 +149,20 @@ export default {
 .container {
   width: 100vw;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+}
+
+.container__inner{
+  text-align: center;
+}
+
+.container__inner--top {
+  margin-top: 300px;
+  color: white;
+}
+
+.container__inner--bottom {
+  margin: auto;
+  margin-top: 200px;
 }
 
 .loader {
@@ -153,6 +170,9 @@ export default {
   width: 200px;
   height: 3px;
   background-color: rgba(255, 255, 255, 0.5);
+}
+
+.loader__btn {
   margin-top: 200px;
 }
 
@@ -164,7 +184,13 @@ export default {
   transition: 0.32s ease-in-out width;
 }
 
+.container__logo {
+  height: 100vh;
+  display: flex;
+}
+
 .logo {
   width: 40px;
+  margin: auto;
 }
 </style>
