@@ -415,11 +415,9 @@ export default class Desert {
           onComplete: () => {
             this.inhaleIsCompleted = true
             if (store.state.desert.counter < 3) {
-              console.log('play note')
               this.noteSound.sound.play()
             } else if (store.state.desert.counter === 3) {
               this.accordSound.sound.play()
-              console.log('play accord')
             }
           }
         }
