@@ -26,7 +26,7 @@ export default class SoundLoader {
     this.audioLoader.load(this.audioFile.default, (buffer) => {
       this.sound.setBuffer(buffer)
       this.sound.setLoop(this.props.loop)
-      this.sound.setVolume(0.5)
+      this.sound.setVolume(this.props.volume)
       if (this.props.canToggle) {
         nuxt.$on('toggleMute', (e) => {
           this.sound.isPlaying ? this.sound.pause() : this.sound.play()
