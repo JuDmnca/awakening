@@ -9,6 +9,7 @@ import Sound from '../Utils/SoundLoader'
 import crystalSoundURL from '../../../../assets/sounds/desert/crystalSound.mp3'
 import exhaleSoundURL from '../../../../assets/sounds/desert/exhale.mp3'
 import inhaleSoundURL from '../../../../assets/sounds/desert/inhale.mp3'
+import fairyDustSoundURL from '../../../../assets/sounds/desert/fairy-dust-2.mp3'
 import AudioPosition from '../Utils/AudioPosition'
 
 import modelTulip from '../../../../assets/models/m_tulip.gltf'
@@ -73,6 +74,7 @@ export default class Desert {
     this.swooshFile = require('../../../../assets/sounds/intro/swoosh.mp3')
     this.noteFile = require('../../../../assets/sounds/desert/note.mp3')
     this.accordFile = require('../../../../assets/sounds/desert/accord.mp3')
+    this.sporesPlayer = null
 
     // CURSOR
     this.isCursorActive = false
@@ -192,6 +194,7 @@ export default class Desert {
     this.soundCube.cube.add(this.crystalSound.sound)
     this.inhaleSound = await new AudioPosition({ url: inhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 60 })
     this.exhaleSound = await new AudioPosition({ url: exhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 60 })
+    this.sporesSound = await new AudioPosition({ url: fairyDustSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 0 })
   }
 
   async loadFlowers () {
@@ -390,6 +393,7 @@ export default class Desert {
   }
 
   inhale (mousemove = false) {
+    const volume = { x: 0 }
     gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
     gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
     // Movement on mousemove
@@ -398,10 +402,38 @@ export default class Desert {
         this.spores.particles.material.uniforms.uZSpeed,
         {
           value: this.sporesElevation / 1000,
-          duration: 3,
-          ease: 'power3.out'
+          duration: 0.5,
+          ease: 'power3.out',
+          onComplete: () => {
+            gsap.killTweensOf([this.sporesSound.sound])
+            gsap.to(
+              volume,
+              {
+                x: 0,
+                duration: 0.3,
+                ease: 'power3.out',
+                onUpdate: () => this.sporesSound.sound.setVolume(volume.x)
+              }
+            )
+            this.sporesSound.sound.stop()
+          }
         }
       )
+
+      // Fairy dust sound
+      if (!this.sporesSound.sound.isPlaying && !this.intersectedClick) {
+        gsap.killTweensOf([this.sporesSound.sound])
+        this.sporesSound.sound.play()
+        gsap.to(
+          volume,
+          {
+            x: 60,
+            duration: 0.3,
+            ease: 'power3.in',
+            onUpdate: () => this.sporesSound.sound.setVolume(volume.x)
+          }
+        )
+      }
     } else {
       // Movement on hold
       gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
