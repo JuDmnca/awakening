@@ -7,6 +7,8 @@ import Raycaster from '../Utils/Raycaster'
 import Rotation from '../Utils/Rotation'
 import Sound from '../Utils/SoundLoader'
 import crystalSoundURL from '../../../../assets/sounds/crystalSound.mp3'
+import exhaleSoundURL from '../../../../assets/sounds/desert/exhale.mp3'
+import inhaleSoundURL from '../../../../assets/sounds/desert/inhale.mp3'
 import AudioPosition from '../Utils/AudioPosition'
 
 import modelTulip from '../../../../assets/models/m_tulip_draco.gltf'
@@ -65,8 +67,12 @@ export default class Desert {
 
     // SOUND
     this.swooshSound = null
-    this.ambiantFile = require('../../../../assets/sounds/intro/vent.wav')
-    this.swooshFile = require('../../../../assets/sounds/intro/swoosh.wav')
+    this.inhaleSound = null
+    this.exhaleSound = null
+    this.ambiantFile = require('../../../../assets/sounds/intro/vent.mp3')
+    this.swooshFile = require('../../../../assets/sounds/intro/swoosh.mp3')
+    this.noteFile = require('../../../../assets/sounds/desert/note.mp3')
+    this.accordFile = require('../../../../assets/sounds/desert/accord.mp3')
 
     // CURSOR
     this.isCursorActive = false
@@ -99,6 +105,8 @@ export default class Desert {
     this.progression = 0
 
     this.inhaleIsCompleted = false
+
+    this.intersectedClick = false
   }
 
   init (scene, renderer) {
@@ -174,12 +182,16 @@ export default class Desert {
     }
   }
 
-  addSound () {
-    this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true })
+  async addSound () {
+    this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true, volume: 0.2 })
+    this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false, volume: 0.05 })
+    this.noteSound = new Sound({ camera: this.camera, audioFile: this.noteFile, loop: false, canToggle: false, volume: 0.2 })
+    this.accordSound = new Sound({ camera: this.camera, audioFile: this.accordFile, loop: false, canToggle: false, volume: 0.2 })
+
     // Init sound spacialization
-    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube })
-    this.soundCube.cube.add(this.crystalSound.sound)
-    this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false })
+    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true })
+    this.inhaleSound = await new AudioPosition({ url: inhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false })
+    this.exhaleSound = await new AudioPosition({ url: exhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false })
   }
 
   async addFlowers () {
@@ -331,10 +343,15 @@ export default class Desert {
   sporesOnHold () {
     this.hold = true
     this.sporesElevation += 1000
-    this.inhale()
-    if (store.state.desert.interaction) {
-      nuxt.$emit('zoomCamera', { position: { x: -41, y: 1, z: 1.4 } })
+    if (this.intersects.length > 0 && !store.state.desert.interaction) {
+      this.intersectedClick = true
     }
+    this.inhale()
+
+    // If we find how to do a clean camera zoom
+    // if (store.state.desert.interaction) {
+    //   nuxt.$emit('zoomCamera', { position: { x: -41, y: 1, z: 1.4 } })
+    // }
   }
 
   sporesOnMouseMove (e) {
@@ -355,9 +372,9 @@ export default class Desert {
     } else {
       this.inhaleIsCompleted = false
     }
-    if (store.state.cameraIsZoomed) {
-      nuxt.$emit('unzoomCamera')
-    }
+    // if (store.state.cameraIsZoomed) {
+    //   nuxt.$emit('unzoomCamera')
+    // }
   }
 
   handleClick () {
@@ -391,6 +408,13 @@ export default class Desert {
           ease: 'power4.inOut',
           onComplete: () => {
             this.inhaleIsCompleted = true
+            if (store.state.desert.counter < 3) {
+              console.log('play note')
+              this.noteSound.sound.play()
+            } else if (store.state.desert.counter === 3) {
+              this.accordSound.sound.play()
+              console.log('play accord')
+            }
           }
         }
       )
@@ -405,10 +429,20 @@ export default class Desert {
           }
         }
       )
+
+      // Sound
+      // If raycaster is empty
+      if (!this.intersectedClick) {
+        this.inhaleSound.sound.play()
+        if (this.exhaleSound.sound.isPlaying) {
+          this.exhaleSound.sound.stop()
+        }
+      }
     }
   }
 
   exhale () {
+    // Spores
     gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
     gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
     this.sporesElevation -= 1000
@@ -420,6 +454,17 @@ export default class Desert {
         ease: 'power3.out'
       }
     )
+
+    // Sound
+    // If raycaster is empty
+    if (!this.intersectedClick) {
+      if (this.inhaleSound.sound.isPlaying) {
+        this.inhaleSound.sound.stop()
+      }
+      this.exhaleSound.sound.play()
+    } else {
+      this.intersectedClick = false
+    }
   }
 
   render (elapsedTime, timeDelta, progression) {
