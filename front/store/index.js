@@ -5,6 +5,7 @@ const state = () => ({
     name: '',
     mic: false,
     color: '',
+    colorName: '',
     smell: '',
     taste: '',
     sound: ''
@@ -63,6 +64,7 @@ const mutations = {
         break
     }
     state.user.color = hexacode
+    state.user.colorName = resp
     state.colorPalette = colorPalette
   },
   setUserSmell (state, resp) {

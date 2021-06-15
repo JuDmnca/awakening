@@ -96,6 +96,12 @@ export default class Plant {
     return this.plantMesh
   }
 
+  updateColor () {
+    if (this.flower.flowerObject.name === 'tulip') {
+      this.flower.updateColor()
+    }
+  }
+
   update () {
     if (store && store.state.desert.sRotation != null && store.state.desert.interaction) {
       const distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3())

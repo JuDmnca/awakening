@@ -105,8 +105,11 @@ export default class Desert {
     // GET MODEL
     this.desertGroup.add(this.desertModel)
 
-    // ADD FLOWERS
-    this.addFlowers()
+    // LOAD FLOWERS MODELS
+    this.loadFlowers()
+
+    // ADD GRASS
+    this.addGrass()
 
     // SOUND
     this.addSound(scene)
@@ -179,12 +182,15 @@ export default class Desert {
     this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false })
   }
 
-  async addFlowers () {
+  async loadFlowers () {
     for (let j = 0; j <= (this.flowerModels.length - 1); j++) {
       const loader = new Loader({ model: this.flowerModels[j] })
       this.flowerModels[j] = await loader.initFlowerObject(this.flowerTypes[j])
     }
+    this.addFlowers()
+  }
 
+  async addFlowers () {
     let index = -1
     for (let nbPlants = 0; nbPlants <= 40; nbPlants++) {
       index++
@@ -205,8 +211,6 @@ export default class Desert {
     }
     this.flowersHoverZone = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.6 } })
 
-    this.addGrass()
-
     this.plantsGroup.position.set(-41, 0.5, 1.4)
     this.plantsGroup.scale.set(2.5, 2.5, 2.5)
     this.plantsGroup.name = 'Plants'
@@ -223,6 +227,12 @@ export default class Desert {
         scaleFactor: 0.5,
         material
       })
+  }
+
+  updateFlowersColor () {
+    this.plants.forEach((plant) => {
+      plant.updateColor()
+    })
   }
 
   addParticles () {
@@ -282,6 +292,7 @@ export default class Desert {
       this.handleClick()
     })
     nuxt.$on('ColorSetted', () => {
+      this.updateFlowersColor()
       this.addColorToCrystal()
       this.addParticles()
     })
