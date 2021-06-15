@@ -37,7 +37,8 @@ const end = new THREE.Vector3(start.x - 1, start.y + 6, start.z - 7.4)
 let store
 let nuxt
 if (process.browser) {
-  window.onNuxtReady(({ $store }) => {
+  window.onNuxtReady(({ $nuxt, $store }) => {
+    nuxt = $nuxt
     store = $store
   })
 }
@@ -269,37 +270,31 @@ class Common {
         this.currentScene.sporesOnMouseUp()
       }
     })
-    window.onNuxtReady(({ $nuxt }) => {
-      nuxt = $nuxt
-      nuxt.$on('startSceneTransition', () => {
-        this.pauseRender = true
-        this.removeGroup(this.currentScene)
-        switch (store.state.sceneIndex) {
-          case 1:
-            this.sporesCanMove = false
-            this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1) })
-            this.currentScene.init(this.scene, this.renderer)
-            break
-          case 2:
-            // this.currentScene = new Forest({camera: this.camera})
-            // this.currentScene.init(this.scene, this.renderer)
-            break
-        }
-        this.curveNumber += 1
-        this.progression = 0
-        store.commit('increaseSceneIndex')
-      })
-      nuxt.$on('endSceneTransition', () => {
-        this.pauseRender = false
-      })
-      nuxt.$on('pauseRender', () => {
-        this.pauseRender = true
-      })
-      nuxt.$on('playRender', () => {
-        this.pauseRender = false
-      })
-      this.camera.addEvents()
-      this.events = true
+  }
+
+  addTransitionEvent () {
+    nuxt.$on('startSceneTransition', () => {
+      this.pauseRender = true
+      this.removeGroup(this.currentScene)
+      switch (store.state.sceneIndex) {
+        case 1:
+          this.sporesCanMove = false
+          this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1) })
+          this.currentScene.init(this.scene, this.renderer)
+          break
+      }
+      this.curveNumber += 1
+      this.progression = 0
+      store.commit('increaseSceneIndex')
+    })
+    nuxt.$on('endSceneTransition', () => {
+      this.pauseRender = false
+    })
+    nuxt.$on('pauseRender', () => {
+      this.pauseRender = true
+    })
+    nuxt.$on('playRender', () => {
+      this.pauseRender = false
     })
   }
 
@@ -324,6 +319,12 @@ class Common {
   }
 
   render () {
+    if (nuxt && store && !this.events) {
+      this.addTransitionEvent()
+      this.camera.addEvents()
+      this.events = true
+    }
+
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
 

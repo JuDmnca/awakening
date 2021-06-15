@@ -29,7 +29,6 @@
         </transition>
       </div>
     </transition>
-
     <transition name="fade">
       <FormsQuestion
         v-if="showName"
