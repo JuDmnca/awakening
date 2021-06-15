@@ -9,9 +9,9 @@ import Sound from '../Utils/SoundLoader'
 import crystalSoundURL from '../../../../assets/sounds/crystalSound.mp3'
 import AudioPosition from '../Utils/AudioPosition'
 
-import modelTulip from '../../../../assets/models/m_tulip_draco.gltf'
-import modelWhite from '../../../../assets/models/m_white_flower_draco.gltf'
-import modelBlue from '../../../../assets/models/m_blue_flower_draco.gltf'
+import modelTulip from '../../../../assets/models/m_tulip.gltf'
+import modelWhite from '../../../../assets/models/m_white_flower.gltf'
+import modelBlue from '../../../../assets/models/m_blue_flower.gltf'
 
 import Loader from '../Loader'
 
