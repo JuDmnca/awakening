@@ -1,6 +1,5 @@
 <template>
-  <div class="container">
-    <UI-HoldCursor />
+  <div class="container about">
     <h1>About</h1>
   </div>
 </template>
@@ -11,7 +10,15 @@ export default {
 </script>
 
 <style>
-body {
+.about.container {
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
   background-color: black;
   cursor: none;
 }
