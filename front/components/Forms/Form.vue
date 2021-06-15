@@ -214,10 +214,6 @@ input[type="radio"] + label {
   transition: all ease-out 0.3s;
 }
 
-input[type="radio"]#red + label .color {
-  background-color: #dc0c47;
-}
-
 input[type="radio"]#red + label .selected,
 input[type="radio"]#orange + label .selected,
 input[type="radio"]#yellow + label .selected,
@@ -228,6 +224,10 @@ input[type="radio"]#purple + label .selected
   background: radial-gradient(white 0%, black 80%);
   opacity: 0;
   z-index: -1;
+}
+
+input[type="radio"]#red + label .color {
+  background-color: #E83100;
 }
 
 input[type="radio"]#orange + label .color {

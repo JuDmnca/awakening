@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { ReinhardToneMapping } from 'three'
 import Camera from './Camera'
 import MainGui from './Utils/MainGui'
-// import Bloom from './Utils/Bloom'
+import Bloom from './Utils/Bloom'
 
 import Land from './Land'
 import Desert from './Desert/Desert'
@@ -118,7 +118,7 @@ class Common {
     this.renderer.toneMapping = ReinhardToneMapping
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(this.size.windowW, this.size.windowH)
-    // this.renderer.setClearColor(0xFF0000)
+    this.renderer.setClearColor(0xFF0000)
 
     this.clock = new THREE.Clock()
     this.clock.start()
@@ -149,7 +149,7 @@ class Common {
     moonFolder.add(this.light, 'intensity', 0, 3, 0.1).name('intensity')
 
     this.scene.add(this.light)
-    // this.initBloom()
+    this.initBloom()
   }
 
   initCamera () {
@@ -301,19 +301,20 @@ class Common {
     this.scene.remove(selectedObject)
   }
 
-  // initBloom () {
-  //   this.bloom = new Bloom({
-  //     scene: this.scene,
-  //     camera: this.camera.camera,
-  //     renderer: this.renderer,
-  //     params: {
-  //       exposure: 2, // Set to one when bloom renderer actived
-  //       bloomStrength: 1.5,
-  //       bloomThreshold: 0,
-  //       bloomRadius: 1
-  //     }
-  //   })
-  // }
+  initBloom () {
+    this.bloom = new Bloom({
+      scene: this.scene,
+      camera: this.camera.camera,
+      renderer: this.renderer,
+      size: this.size,
+      params: {
+        exposure: 1, // Set to one when bloom renderer actived
+        bloomStrength: 1.8,
+        bloomThreshold: 0,
+        bloomRadius: 0.8
+      }
+    })
+  }
 
   render () {
     if (nuxt && store && !this.events) {
@@ -348,9 +349,9 @@ class Common {
     //     // this.camera.camera.rotation.y += 0.2 * ( this.target.x - this.camera.camera.rotation.y )
     // }
 
-    // this.bloom.render()
     if (!this.pauseRender) {
-      this.renderer.render(this.scene, this.camera.camera)
+      this.bloom.render()
+      // this.renderer.render(this.scene, this.camera.camera)
     }
   }
 }

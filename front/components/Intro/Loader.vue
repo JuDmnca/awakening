@@ -94,14 +94,14 @@ export default {
         this.started = true
       }, 1000)
       setTimeout(() => {
-        this.showLogo = true
+        this.showColor = true
       }, 3500)
-      setTimeout(() => {
-        this.showLogo = false
-      }, 7000)
-      setTimeout(() => {
-        this.showName = true
-      }, 8000)
+      // setTimeout(() => {
+      //   this.showLogo = false
+      // }, 7000)
+      // setTimeout(() => {
+      //   this.showName = true
+      // }, 8000)
     })
   },
   methods: {

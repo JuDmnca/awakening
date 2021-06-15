@@ -102,19 +102,14 @@ export default class Desert {
   }
 
   init (scene, renderer) {
-    renderer.toneMappingExposure = Math.pow(1.5, 4.0)
-
     // GET MODEL
     this.desertGroup.add(this.desertModel)
 
-    // FLOWERS
+    // ADD FLOWERS
     this.addFlowers()
 
-    // Add cube for sound spacialization
-    this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
-
     // SOUND
-    this.addSound()
+    this.addSound(scene)
 
     nuxt.$on('started', () => {
       this.sound.sound.play()
@@ -174,22 +169,23 @@ export default class Desert {
     }
   }
 
-  addSound () {
+  addSound (scene) {
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true })
+
     // Init sound spacialization
+    this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
     this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube })
     this.soundCube.cube.add(this.crystalSound.sound)
     this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false })
   }
 
   async addFlowers () {
-    let index = -1
-
     for (let j = 0; j <= (this.flowerModels.length - 1); j++) {
       const loader = new Loader({ model: this.flowerModels[j] })
       this.flowerModels[j] = await loader.initFlowerObject(this.flowerTypes[j])
     }
 
+    let index = -1
     for (let nbPlants = 0; nbPlants <= 40; nbPlants++) {
       index++
       if (index >= 3) {
@@ -245,10 +241,6 @@ export default class Desert {
     scene.fog = new THREE.Fog(colorBG, 10, 300)
   }
 
-  addSoundToCrystal (crystal) {
-    crystal.add(this.crystalSound.sound)
-  }
-
   addSkybox (scene) {
     const loader = new THREE.CubeTextureLoader()
     loader.premultiplyAlpha = true
@@ -276,7 +268,6 @@ export default class Desert {
     )
 
     skybox.material.uniforms.envMap.value = SkyboxTexture
-    // skybox.layers.enable(1)
     Object.defineProperty(skybox.material, 'envMap', {
       get () {
         return this.uniforms.envMap.value
@@ -291,12 +282,16 @@ export default class Desert {
       this.handleClick()
     })
     nuxt.$on('ColorSetted', () => {
-      this.colorCrystals()
+      this.addColorToCrystal()
       this.addParticles()
     })
   }
 
-  colorCrystals () {
+  addSoundToCrystal (crystal) {
+    crystal.add(this.crystalSound.sound)
+  }
+
+  addColorToCrystal () {
     const colorCrystals = new THREE.Color(store.state.user.color)
     const crystalsMaterial = new THREE.MeshPhongMaterial({
       color: colorCrystals,
@@ -304,7 +299,7 @@ export default class Desert {
       refractionRatio: 0.5,
       combine: THREE.AddOperation,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.85,
       premultipliedAlpha: true,
       depthWrite: false
     })
@@ -313,7 +308,7 @@ export default class Desert {
       opacity: 0.5,
       transparent: true,
       emissive: colorCrystals,
-      emissiveIntensity: 1
+      emissiveIntensity: 0.2
     })
 
     for (let i = 0; i <= this.desertGroup.children[0].children.length - 1; i++) {
