@@ -6,7 +6,7 @@ import { ReinhardToneMapping } from 'three'
 import Raycaster from '../Utils/Raycaster'
 import Rotation from '../Utils/Rotation'
 import Sound from '../Utils/SoundLoader'
-import crystalSoundURL from '../../../../assets/sounds/crystalSound.mp3'
+import crystalSoundURL from '../../../../assets/sounds/desert/crystalSound.mp3'
 import exhaleSoundURL from '../../../../assets/sounds/desert/exhale.mp3'
 import inhaleSoundURL from '../../../../assets/sounds/desert/inhale.mp3'
 import AudioPosition from '../Utils/AudioPosition'
@@ -180,27 +180,18 @@ export default class Desert {
     }
   }
 
-<<<<<<< HEAD
-  async addSound () {
+  async addSound (scene) {
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true, volume: 0.2 })
     this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false, volume: 0.05 })
     this.noteSound = new Sound({ camera: this.camera, audioFile: this.noteFile, loop: false, canToggle: false, volume: 0.2 })
     this.accordSound = new Sound({ camera: this.camera, audioFile: this.accordFile, loop: false, canToggle: false, volume: 0.2 })
 
     // Init sound spacialization
+    this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
     this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true })
+    this.soundCube.cube.add(this.crystalSound.sound)
     this.inhaleSound = await new AudioPosition({ url: inhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false })
     this.exhaleSound = await new AudioPosition({ url: exhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false })
-=======
-  addSound (scene) {
-    this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true })
-
-    // Init sound spacialization
-    this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
-    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube })
-    this.soundCube.cube.add(this.crystalSound.sound)
-    this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false })
->>>>>>> 52515bedab1ded3966a38644e622296cb4f823b1
   }
 
   async loadFlowers () {
