@@ -15,13 +15,15 @@
         </transition>
         <transition name="fade">
           <div v-if="loaded" class="container__inner container__inner--bottom">
-            <button @click="startIntro()">
-              Redécouvrir mes sens
-            </button>
+            <div ref="button" class="button-wrapper" @click="startIntro()">
+              <button>
+                Redécouvrir mes sens
+              </button>
+            </div>
           </div>
         </transition>
         <transition name="fade">
-          <div class="container__logo" v-if="showLogo">
+          <div v-if="showLogo" class="container__logo">
             <img class="logo" src="~/assets/svg/monogram.svg" alt="">
           </div>
         </transition>
@@ -68,12 +70,11 @@ export default {
   computed: {
     progress () {
       return {
-        width: `${this.$store.state.loading / 20}%`
+        width: `${this.$store.state.loading / 5}%`
       }
     },
     completed () {
-      // endLoaded to avoid infinite loop
-      if (this.$store.state.loading === 2000 && !this.endLoaded) {
+      if (this.$store.state.loading === 500) {
         this.$nuxt.$emit('loaded')
         return true
       } else {
@@ -129,7 +130,6 @@ export default {
       this.loaded = false
       this.showIntroParagraph = false
       this.$nuxt.$emit('started')
-      this.nextQuestion()
     }
   }
 }
@@ -149,16 +149,20 @@ export default {
 }
 
 .container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
 }
 
-.container__inner{
+.container__inner {
   text-align: center;
 }
 
 .container__inner--top {
   margin-top: 300px;
+  width: 800px;
   color: white;
 }
 
@@ -183,7 +187,7 @@ export default {
   width: 0px;
   height: 3px;
   background-color: #fff;
-  transition: 0.32s ease-in-out width;
+  transition: 0.5s ease-in-out width;
 }
 
 .container__logo {

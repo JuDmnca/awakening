@@ -1,6 +1,6 @@
 <template>
   <section class="question" :style="style">
-    <transition name="fade">
+    <transition name="fadeCanvas">
       <FormsBackground v-if="!intro" />
     </transition>
     <transition name="fade">

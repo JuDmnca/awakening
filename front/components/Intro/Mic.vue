@@ -66,11 +66,8 @@ export default {
   color: white;
 }
 
-button:first-of-type {
-  margin-right: 50px;
-}
-
 .buttons button:last-of-type {
+  margin-left: 50px;
   color: #888888;
   margin-right: 0;
 }

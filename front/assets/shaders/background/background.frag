@@ -111,7 +111,7 @@ void main()
 
   for(float i = 0.0; i < 5.0; i++) {
 
-    vec2 newCenter = vec2(center.x + (i / 30.0) + (noise * i / 3.0) , center.y + (noise * i / 10.0));
+    vec2 newCenter = vec2(center.x + ((i + 1.0) / 30.0) + (noise * (i + 1.0) / 3.0) , center.y + (noise * (i + 1.0) / 10.0));
     newCenter.x *= rez.x/rez.y;
 
     pct = distance(uv, newCenter);

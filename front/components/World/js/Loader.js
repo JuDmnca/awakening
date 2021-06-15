@@ -12,7 +12,6 @@ export default class Loader {
   constructor (props) {
     this.loader = null
     this.props = props
-    this.material = this.props.material
     this.loader = new GLTFLoader()
     this.init()
   }
@@ -24,18 +23,17 @@ export default class Loader {
     this.loader.setDRACOLoader(dracoLoader)
   }
 
-  defaultInit () {
-    return new Promise((resolve) => {
+  defaultInit (index) {
+    const promise = new Promise((resolve) => {
       const position = this.props.position
-      const materialImported = this.material
+      const materialImported = this.props.material[index]
 
       this.loader.load(
-        this.props.model,
+        this.props.models[index],
         function (gltf) {
           gltf.scene.position.x = position.x
           gltf.scene.position.y = position.y
           gltf.scene.position.z = position.z
-          gltf.scene.scale.set(3, 3, 3)
 
           let material = null
           if (materialImported) {
@@ -46,17 +44,21 @@ export default class Loader {
             })
           }
 
-          if (gltf.scene.children[38]) {
-            gltf.scene.children[38].material = material
+          if (gltf.scene.children[0].name === 'Desert') {
+            gltf.scene.children[0].children[0].material = material
+            gltf.scene.children[0].children[1].material = material
           }
           resolve(gltf.scene)
-        },
-        function (xhr) {
-        })
+        }
+      )
     }, undefined, function (error) {
       // eslint-disable-next-line no-console
       console.error(error)
     })
+    promise.then(function () {
+      store.commit('setLoading', 100)
+    })
+    return promise
   }
 
   initGems () {
@@ -87,7 +89,6 @@ export default class Loader {
 
   initFlowerObject (type) {
     const promise = new Promise((resolve) => {
-      const materialImported = this.material
       let rotation = 0
 
       const flower = new THREE.Object3D()
@@ -96,16 +97,6 @@ export default class Loader {
         this.props.model,
         function (gltf) {
           rotation = rotation + (Math.floor(Math.random() * 360))
-
-          if (type !== 'blue') {
-            for (let nbChildren = 0; nbChildren <= (gltf.scene.children.length - 1); nbChildren++) {
-              gltf.scene.children[nbChildren].material = materialImported
-            }
-          } else {
-            for (let nbChildren = 0; nbChildren <= (gltf.scene.children[0].children.length - 1); nbChildren++) {
-              gltf.scene.children[0].children[nbChildren].material = materialImported
-            }
-          }
 
           gltf.scene.rotation.y = rotation
 
@@ -141,16 +132,19 @@ export default class Loader {
   }
 
   initGrass () {
-    const grass = new THREE.Object3D()
-    this.loader.load(this.props.model, function (gltf) {
-      gltf.scene.scale.set(1.6, 1.6, 1.6)
-      gltf.scene.position.set(2.5, -1.5, 2)
-      grass.add(gltf.scene)
-      grass.name = 'grass'
+    const promise = new Promise((resolve) => {
+      this.loader.load(
+        this.props.model,
+        function (gltf) {
+          resolve(gltf.scene.children[0])
+        })
     }, undefined, function (error) {
-      // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console
       console.error(error)
     })
-    return grass
+    promise.then(function () {
+      store.commit('setLoading', 100)
+    })
+    return promise
   }
 }

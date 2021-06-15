@@ -27,6 +27,7 @@ export default class Plant {
     this.length = this.getRandomFloat(0.2, 0.5)
 
     this.flowerType = this.props.flowerType
+    this.flowerModel = this.props.model
     this.flower = null
     this.toInitial = false
 
@@ -83,7 +84,7 @@ export default class Plant {
   async init () {
     // Add flower
     this.flower = new Flower()
-    const flower = await this.flower.init(this.flowerType)
+    const flower = await this.flower.init(this.flowerType, this.flowerModel)
     this.plant.add(flower)
 
     // Set flower at the top of the stem
@@ -98,14 +99,14 @@ export default class Plant {
   update () {
     if (store && store.state.desert.sRotation != null && store.state.desert.interaction) {
       const distRotation = store.state.desert.sRotation.clone().sub(this.plantMesh.children[0].rotation.toVector3())
-      // const distRotationMatrix = this.createRotationMatrix(distRotation)
+      const distRotationMatrix = this.createRotationMatrix(distRotation)
 
       // Force to apply at flowerObject
       const rotationForce = distRotation.multiplyScalar(store.state.desert.velStem)
 
       // Update rotation with rotationForce
       this.plantMesh.children[0].rotation.setFromVector3(this.plantMesh.children[0].rotation.toVector3().add(rotationForce))
-      // this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix
+      this.plantMesh.children[0].children[0].material.uniforms.rotationForceMatrix.value = distRotationMatrix
 
       // Update flower petals
       if (this.flower) {
