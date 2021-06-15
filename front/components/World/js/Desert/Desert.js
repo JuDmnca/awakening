@@ -11,9 +11,9 @@ import exhaleSoundURL from '../../../../assets/sounds/desert/exhale.mp3'
 import inhaleSoundURL from '../../../../assets/sounds/desert/inhale.mp3'
 import AudioPosition from '../Utils/AudioPosition'
 
-import modelTulip from '../../../../assets/models/m_tulip_draco.gltf'
-import modelWhite from '../../../../assets/models/m_white_flower_draco.gltf'
-import modelBlue from '../../../../assets/models/m_blue_flower_draco.gltf'
+import modelTulip from '../../../../assets/models/m_tulip.gltf'
+import modelWhite from '../../../../assets/models/m_white_flower.gltf'
+import modelBlue from '../../../../assets/models/m_blue_flower.gltf'
 
 import Loader from '../Loader'
 
@@ -110,19 +110,17 @@ export default class Desert {
   }
 
   init (scene, renderer) {
-    renderer.toneMappingExposure = Math.pow(1.5, 4.0)
-
     // GET MODEL
     this.desertGroup.add(this.desertModel)
 
-    // FLOWERS
-    this.addFlowers()
+    // LOAD FLOWERS MODELS
+    this.loadFlowers()
 
-    // Add cube for sound spacialization
-    this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
+    // ADD GRASS
+    this.addGrass()
 
     // SOUND
-    this.addSound()
+    this.addSound(scene)
 
     nuxt.$on('started', () => {
       this.sound.sound.play()
@@ -182,6 +180,7 @@ export default class Desert {
     }
   }
 
+<<<<<<< HEAD
   async addSound () {
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true, volume: 0.2 })
     this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false, volume: 0.05 })
@@ -192,16 +191,28 @@ export default class Desert {
     this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true })
     this.inhaleSound = await new AudioPosition({ url: inhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false })
     this.exhaleSound = await new AudioPosition({ url: exhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false })
+=======
+  addSound (scene) {
+    this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true })
+
+    // Init sound spacialization
+    this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
+    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube })
+    this.soundCube.cube.add(this.crystalSound.sound)
+    this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false })
+>>>>>>> 52515bedab1ded3966a38644e622296cb4f823b1
   }
 
-  async addFlowers () {
-    let index = -1
-
+  async loadFlowers () {
     for (let j = 0; j <= (this.flowerModels.length - 1); j++) {
       const loader = new Loader({ model: this.flowerModels[j] })
       this.flowerModels[j] = await loader.initFlowerObject(this.flowerTypes[j])
     }
+    this.addFlowers()
+  }
 
+  async addFlowers () {
+    let index = -1
     for (let nbPlants = 0; nbPlants <= 40; nbPlants++) {
       index++
       if (index >= 3) {
@@ -221,8 +232,6 @@ export default class Desert {
     }
     this.flowersHoverZone = new Cube({ scene: this.plantsGroup, position: { x: 0.2, y: 0, z: 0.6 } })
 
-    this.addGrass()
-
     this.plantsGroup.position.set(-41, 0.5, 1.4)
     this.plantsGroup.scale.set(2.5, 2.5, 2.5)
     this.plantsGroup.name = 'Plants'
@@ -241,6 +250,12 @@ export default class Desert {
       })
   }
 
+  updateFlowersColor () {
+    this.plants.forEach((plant) => {
+      plant.updateColor()
+    })
+  }
+
   addParticles () {
     this.spores = new Particles({ color: store.state.colorPalette })
     this.spores.particles.position.set(-41, 1, 1.4)
@@ -255,10 +270,6 @@ export default class Desert {
   addFog (scene) {
     const colorBG = new THREE.Color('#040408')
     scene.fog = new THREE.Fog(colorBG, 10, 300)
-  }
-
-  addSoundToCrystal (crystal) {
-    crystal.add(this.crystalSound.sound)
   }
 
   addSkybox (scene) {
@@ -288,7 +299,6 @@ export default class Desert {
     )
 
     skybox.material.uniforms.envMap.value = SkyboxTexture
-    // skybox.layers.enable(1)
     Object.defineProperty(skybox.material, 'envMap', {
       get () {
         return this.uniforms.envMap.value
@@ -303,12 +313,17 @@ export default class Desert {
       this.handleClick()
     })
     nuxt.$on('ColorSetted', () => {
-      this.colorCrystals()
+      this.updateFlowersColor()
+      this.addColorToCrystal()
       this.addParticles()
     })
   }
 
-  colorCrystals () {
+  addSoundToCrystal (crystal) {
+    crystal.add(this.crystalSound.sound)
+  }
+
+  addColorToCrystal () {
     const colorCrystals = new THREE.Color(store.state.user.color)
     const crystalsMaterial = new THREE.MeshPhongMaterial({
       color: colorCrystals,
@@ -316,7 +331,7 @@ export default class Desert {
       refractionRatio: 0.5,
       combine: THREE.AddOperation,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.85,
       premultipliedAlpha: true,
       depthWrite: false
     })
@@ -325,7 +340,7 @@ export default class Desert {
       opacity: 0.5,
       transparent: true,
       emissive: colorCrystals,
-      emissiveIntensity: 1
+      emissiveIntensity: 0.2
     })
 
     for (let i = 0; i <= this.desertGroup.children[0].children.length - 1; i++) {

@@ -5,6 +5,7 @@ const state = () => ({
     name: '',
     mic: false,
     color: '',
+    colorName: '',
     smell: '',
     taste: '',
     sound: ''
@@ -38,7 +39,7 @@ const mutations = {
     let colorPalette = []
     switch (resp) {
       case 'red':
-        hexacode = '#dc0c47'
+        hexacode = '#E83100'
         colorPalette = ['FBB1C6', 'DC0B47', 'E8721F', '7B4EA3']
         break
       case 'orange':
@@ -63,6 +64,7 @@ const mutations = {
         break
     }
     state.user.color = hexacode
+    state.user.colorName = resp
     state.colorPalette = colorPalette
   },
   setUserSmell (state, resp) {

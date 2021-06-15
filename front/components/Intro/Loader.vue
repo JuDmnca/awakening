@@ -70,11 +70,11 @@ export default {
   computed: {
     progress () {
       return {
-        width: `${this.$store.state.loading / 5}%`
+        width: `${this.$store.state.loading / 6}%`
       }
     },
     completed () {
-      if (this.$store.state.loading === 500) {
+      if (this.$store.state.loading === 600) {
         this.$nuxt.$emit('loaded')
         return true
       } else {
@@ -94,14 +94,14 @@ export default {
         this.started = true
       }, 1000)
       setTimeout(() => {
-        this.showLogo = true
+        this.showColor = true
       }, 3500)
-      setTimeout(() => {
-        this.showLogo = false
-      }, 7000)
-      setTimeout(() => {
-        this.showName = true
-      }, 8000)
+      // setTimeout(() => {
+      //   this.showLogo = false
+      // }, 7000)
+      // setTimeout(() => {
+      //   this.showName = true
+      // }, 8000)
     })
   },
   methods: {

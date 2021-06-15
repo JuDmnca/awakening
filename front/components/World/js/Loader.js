@@ -74,7 +74,6 @@ export default class Loader {
           gltf.scene.position.z = position.z
           gltf.scene.scale.set(3, 3, 3)
 
-          console.log('created')
           const mesh = new THREE.Mesh(gltf.scene.children[0].geometry, materialImported)
           gltf.scene.children[0].material = materialImported
           resolve(mesh)

@@ -3,7 +3,8 @@ import MainGui from '../Utils/MainGui'
 import vertex from '../../../../assets/shaders/bloom/bloom.vert'
 import fragment from '../../../../assets/shaders/bloom/bloom.frag'
 
-const ENTIRE_SCENE = 0; const BLOOM_SCENE = 1
+const ENTIRE_SCENE = 0
+const BLOOM_SCENE = 1
 
 const bloomLayer = new THREE.Layers()
 bloomLayer.set(BLOOM_SCENE)
@@ -20,7 +21,10 @@ export default class Bloom {
     let renderPass = null
     let shaderPass = null
     let unrealBloomPass = null
+
     this.renderer = props.renderer
+    this.size = props.size
+
     this.camera = props.camera
     this.scene = props.scene
     const params = props.params
@@ -35,12 +39,13 @@ export default class Bloom {
     const renderScene = new renderPass.RenderPass(this.scene, this.camera)
 
     this.renderer.toneMappingExposure = Math.pow(params.exposure, 4.0)
+    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setSize(this.size.windowW, this.size.windowH)
+
     const bloomPass = new unrealBloomPass.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85)
     bloomPass.threshold = params.bloomThreshold
     bloomPass.strength = params.bloomStrength
     bloomPass.radius = params.bloomRadius
-
-    // this.initGUI(params, this.renderer, bloomPass)
 
     bloomComposer = new effectComposer.EffectComposer(this.renderer)
     bloomComposer.renderToScreen = false
@@ -63,6 +68,8 @@ export default class Bloom {
     finalComposer = new effectComposer.EffectComposer(this.renderer)
     finalComposer.addPass(renderScene)
     finalComposer.addPass(finalPass)
+
+    this.initGUI(params, this.renderer, bloomPass)
   }
 
   initGUI (params, renderer, bloomPass) {
@@ -82,6 +89,15 @@ export default class Bloom {
     this.gui.gui.add(params, 'bloomRadius', 0.0, 1.0).step(0.01).onChange(function (value) {
       bloomPass.radius = Number(value)
     })
+  }
+
+  setSize () {
+    this.size = {
+      windowW: window.innerWidth,
+      windowH: window.innerHeight
+    }
+    this.windowHalf.x = this.size.windowW / 2
+    this.windowHalf.y = this.size.windowH / 2
   }
 
   renderBloom (mask) {

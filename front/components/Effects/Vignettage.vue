@@ -1,8 +1,10 @@
 <template>
   <section class="v">
-    <div ref="v_1" class="v_1" :style="colorSetted? v1 : ''" />
-    <div ref="v_2" class="v_2" :style="colorSetted? v2 : ''" />
-    <div ref="v_3" class="v_3" :style="colorSetted? v3 : ''" />
+    <div class="v_inner">
+      <div ref="v_1" class="v_1" :style="colorSetted? v1 : ''" />
+      <div ref="v_2" class="v_2" :style="colorSetted? v2 : ''" />
+      <div ref="v_3" class="v_3" :style="colorSetted? v3 : ''" />
+    </div>
   </section>
 </template>
 
@@ -107,23 +109,34 @@ export default {
 </script>
 
 <style>
+.v {
+  position: fixed;
+  top: 0;
+}
+
+.v_inner {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
 .v_1, .v_2, .v_3 {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .v_1 {
-    opacity: 0;
-    filter: blur(80px);
+  opacity: 0;
+  filter: blur(80px);
 }
 
 .v_2 {
-    opacity: 0;
-    filter: blur(80px);
+  opacity: 0;
+  filter: blur(80px);
 }
 
 .v_3 {
-    opacity: 0;
+  opacity: 0;
 }
 </style>

@@ -20,29 +20,49 @@ export default class Flower {
 
   init (flowerType, flowerModel) {
     let flowerFrag = null
-    let flowerVert = null
 
     switch (flowerType) {
       case 'white':
         flowerFrag = require('../../../../assets/textures/t_white.png')
-        flowerVert = require('../../../../assets/textures/t_petal_s.jpg')
         break
       case 'tulip':
-        flowerFrag = require('../../../../assets/textures/t_tulip.jpeg')
-        flowerVert = require('../../../../assets/textures/t_petal_s.jpg')
+        flowerFrag = require('../../../../assets/textures/t_tulip_red.jpg')
         break
       case 'blue':
         flowerFrag = require('../../../../assets/textures/t_blue.png')
-        flowerVert = require('../../../../assets/textures/t_petal_s.jpg')
         break
     }
 
     // Petal texture
     const flowerTexture = new THREE.TextureLoader().load(flowerFrag)
-    // Petal springiness texture
+
+    const flowerShaderMaterial = this.toMaterial(flowerTexture)
+
+    this.flowerObject = flowerModel
+    if (flowerType !== 'blue') {
+      this.applyMaterial(flowerShaderMaterial)
+    } else {
+      for (let nbChildren = 0; nbChildren <= (this.flowerObject.children[0].children[0].children.length - 1); nbChildren++) {
+        this.flowerObject.children[0].children[0].children[nbChildren].material = flowerShaderMaterial
+      }
+    }
+
+    return this.flowerObject
+  }
+
+  updateColor () {
+    const flowerFrag = require(`../../../../assets/textures/t_tulip_${store.state.user.colorName}.jpg`)
+    const flowerTexture = new THREE.TextureLoader().load(flowerFrag)
+    const flowerShaderMaterial = this.toMaterial(flowerTexture)
+
+    this.applyMaterial(flowerShaderMaterial)
+  }
+
+  toMaterial (flowerTexture) {
+    const flowerVert = require('../../../../assets/textures/t_petal_s.jpg')
     const flowerSpringiness = new THREE.TextureLoader().load(flowerVert)
 
-    const flowerShaderMaterial = new THREE.ShaderMaterial({
+    return new THREE.ShaderMaterial({
       uniforms: {
         petalMap: { type: 't', value: flowerTexture },
         springinessMap: { type: 't', value: flowerSpringiness },
@@ -52,19 +72,12 @@ export default class Flower {
       fragmentShader: petalFrag,
       side: THREE.DoubleSide
     })
+  }
 
-    this.flowerObject = flowerModel
-    if (flowerType !== 'blue') {
-      for (let nbChildren = 0; nbChildren <= (this.flowerObject.children[0].children.length - 1); nbChildren++) {
-        this.flowerObject.children[0].children[nbChildren].material = flowerShaderMaterial
-      }
-    } else {
-      for (let nbChildren = 0; nbChildren <= (this.flowerObject.children[0].children.length - 1); nbChildren++) {
-        this.flowerObject.children[0].children[nbChildren].material = flowerShaderMaterial
-      }
+  applyMaterial (material) {
+    for (let nbChildren = 0; nbChildren <= (this.flowerObject.children[0].children.length - 1); nbChildren++) {
+      this.flowerObject.children[0].children[nbChildren].material = material
     }
-
-    return this.flowerObject
   }
 
   update () {

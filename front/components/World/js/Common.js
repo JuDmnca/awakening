@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { ReinhardToneMapping } from 'three'
 import Camera from './Camera'
 import MainGui from './Utils/MainGui'
-// import Bloom from './Utils/Bloom'
+import Bloom from './Utils/Bloom'
 
 import Land from './Land'
 import Desert from './Desert/Desert'
@@ -37,8 +37,7 @@ const end = new THREE.Vector3(start.x - 1, start.y + 6, start.z - 7.4)
 let store
 let nuxt
 if (process.browser) {
-  window.onNuxtReady(({ $nuxt, $store }) => {
-    nuxt = $nuxt
+  window.onNuxtReady(({ $store }) => {
     store = $store
   })
 }
@@ -107,18 +106,8 @@ class Common {
     (function () { const script = document.createElement('script'); script.onload = function () { const stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop () { stats.update(); requestAnimationFrame(loop) }) }; script.src = '//mrdoob.github.io/stats.js/build/stats.min.js'; document.head.appendChild(script) })()
 
     this.setSize()
-
     this.scene = new THREE.Scene()
-
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: $canvas,
-      antialias: true,
-      alpha: true
-    })
-    this.renderer.toneMapping = ReinhardToneMapping
-    this.renderer.setPixelRatio(window.devicePixelRatio)
-    this.renderer.setSize(this.size.windowW, this.size.windowH)
-    // this.renderer.setClearColor(0xFF0000)
+    this.addRenderer($canvas)
 
     this.clock = new THREE.Clock()
     this.clock.start()
@@ -149,7 +138,27 @@ class Common {
     moonFolder.add(this.light, 'intensity', 0, 3, 0.1).name('intensity')
 
     this.scene.add(this.light)
-    // this.initBloom()
+    this.initBloom()
+  }
+
+  setSize () {
+    this.size = {
+      windowW: window.innerWidth,
+      windowH: window.innerHeight
+    }
+    this.windowHalf.x = this.size.windowW / 2
+    this.windowHalf.y = this.size.windowH / 2
+  }
+
+  addRenderer ($canvas) {
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: $canvas,
+      antialias: true,
+      alpha: true
+    })
+    this.renderer.toneMapping = ReinhardToneMapping
+    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setSize(this.size.windowW, this.size.windowH)
   }
 
   initCamera () {
@@ -177,7 +186,6 @@ class Common {
       }
     })
 
-    // Init variables
     this.p1 = this.curves[0].points[0]
     this.progression = 0
     this.curveNumber = 0
@@ -201,15 +209,6 @@ class Common {
     if (store.state.sceneIndex === 1 && this.progression >= this.enableSporesElevationAt && this.sporesCanMove === false) {
       this.sporesCanMove = true
     }
-  }
-
-  setSize () {
-    this.size = {
-      windowW: window.innerWidth,
-      windowH: window.innerHeight
-    }
-    this.windowHalf.x = this.size.windowW / 2
-    this.windowHalf.y = this.size.windowH / 2
   }
 
   mouseMovement (e) {
@@ -270,29 +269,37 @@ class Common {
         this.currentScene.sporesOnMouseUp()
       }
     })
-  }
-
-  addTransitionEvent () {
-    nuxt.$on('startSceneTransition', () => {
-      this.pauseRender = true
-      this.removeGroup(this.currentScene)
-      switch (store.state.sceneIndex) {
-        case 1:
-          this.sporesCanMove = false
-          this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1) })
-          this.currentScene.init(this.scene, this.renderer)
-          break
-        case 2:
-          // this.currentScene = new Forest({camera: this.camera})
-          // this.currentScene.init(this.scene, this.renderer)
-          break
-      }
-      this.curveNumber += 1
-      this.progression = 0
-      store.commit('increaseSceneIndex')
-    })
-    nuxt.$on('endSceneTransition', () => {
-      this.pauseRender = false
+    window.onNuxtReady(({ $nuxt }) => {
+      nuxt = $nuxt
+      nuxt.$on('startSceneTransition', () => {
+        this.pauseRender = true
+        this.removeGroup(this.currentScene)
+        switch (store.state.sceneIndex) {
+          case 1:
+            this.sporesCanMove = false
+            this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1) })
+            this.currentScene.init(this.scene, this.renderer)
+            break
+          case 2:
+            // this.currentScene = new Forest({camera: this.camera})
+            // this.currentScene.init(this.scene, this.renderer)
+            break
+        }
+        this.curveNumber += 1
+        this.progression = 0
+        store.commit('increaseSceneIndex')
+      })
+      nuxt.$on('endSceneTransition', () => {
+        this.pauseRender = false
+      })
+      nuxt.$on('pauseRender', () => {
+        this.pauseRender = true
+      })
+      nuxt.$on('playRender', () => {
+        this.pauseRender = false
+      })
+      this.camera.addEvents()
+      this.events = true
     })
   }
 
@@ -301,43 +308,24 @@ class Common {
     this.scene.remove(selectedObject)
   }
 
-  // initBloom () {
-  //   this.bloom = new Bloom({
-  //     scene: this.scene,
-  //     camera: this.camera.camera,
-  //     renderer: this.renderer,
-  //     params: {
-  //       exposure: 2, // Set to one when bloom renderer actived
-  //       bloomStrength: 1.5,
-  //       bloomThreshold: 0,
-  //       bloomRadius: 1
-  //     }
-  //   })
-  // }
+  initBloom () {
+    this.bloom = new Bloom({
+      scene: this.scene,
+      camera: this.camera.camera,
+      renderer: this.renderer,
+      size: this.size,
+      params: {
+        exposure: 1, // Set to one when bloom renderer actived
+        bloomStrength: 1.8,
+        bloomThreshold: 0,
+        bloomRadius: 0.8
+      }
+    })
+  }
 
   render () {
-    if (nuxt && store && !this.events) {
-      this.addTransitionEvent()
-      this.camera.addEvents()
-      this.events = true
-    }
-
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
-
-    // Update camera rotation & look at
-    if (store && !store.state.cameraIsZoomed) {
-      if (store && store.state.desert.interaction && store.state.sceneIndex === 1) {
-        this.camera.camera.position.lerp(end, 0.1)
-      } else {
-        this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)
-        this.camera.camera.position.lerp(this.vectCam, 0.1)
-      }
-    }
-    this.camLook.lerp(this.camTarget, 0.05)
-    this.camera.camera.lookAt(this.camLook)
-
-    this.currentScene.render(this.time.total, this.time.delta, this.progression)
 
     // TO DO : update code so camera moves like head following the mouse BUT needs to check camera rotation before
     // if (!this.currentScene.isFixedView()) {
@@ -348,9 +336,24 @@ class Common {
     //     // this.camera.camera.rotation.y += 0.2 * ( this.target.x - this.camera.camera.rotation.y )
     // }
 
-    // this.bloom.render()
     if (!this.pauseRender) {
-      this.renderer.render(this.scene, this.camera.camera)
+      // Update camera rotation & look at
+      if (store && !store.state.cameraIsZoomed) {
+        if (store && store.state.desert.interaction && store.state.sceneIndex === 1) {
+          this.camera.camera.position.lerp(end, 0.1)
+        } else {
+          this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)
+          this.camera.camera.position.lerp(this.vectCam, 0.1)
+        }
+      }
+      this.camLook.lerp(this.camTarget, 0.05)
+      this.camera.camera.lookAt(this.camLook)
+
+      this.currentScene.render(this.time.total, this.time.delta, this.progression)
+
+      // Render
+      this.bloom.render()
+      // this.renderer.render(this.scene, this.camera.camera)
     }
   }
 }
