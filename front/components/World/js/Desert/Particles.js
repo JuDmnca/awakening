@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import particlesFragmentShader from '../../../../assets/shaders/particles/particles.frag'
 import particlesVertexShader from '../../../../assets/shaders/particles/particles.vert'
-import noise2D from '../Utils/Noise2D'
+import noise2D from '../../../Utils/js/Noise2D'
 
 // eslint-disable-next-line no-unused-vars
 let store

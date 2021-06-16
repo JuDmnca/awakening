@@ -8,9 +8,10 @@
 </template>
 
 <script>
-import Scene from '../components/World/js/Constellation/Scene'
+import Scene from '../components/Constellation/js/Scene'
 export default {
   name: 'Constellation',
+  layout: 'constellation',
   data () {
     return {
       isVisible: false,

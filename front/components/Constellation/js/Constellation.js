@@ -1,22 +1,20 @@
 /* eslint-disable no-unused-vars */
 import * as THREE from 'three'
 import { Vector3 } from 'three'
+import Stats from 'three/examples/jsm/libs/stats.module'
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import Stats from 'three/examples/jsm/libs/stats.module'
+
 import gemModel from '@/assets/models/gems_constellation/gem-1-compressed.gltf'
-import Camera from '../Camera'
-import MainGui from '../Utils/MainGui'
-import Cube from '../Desert/Cube'
-import Raycaster from '../Utils/Raycaster'
-import Bloom from '../Utils/Bloom.js'
-import Loader from '../Loader'
+
+import Camera from '../../Utils/js/Camera'
+import Loader from '../../Utils/js/Loader'
+import Raycaster from '../../Utils/js/Raycaster'
+import Bloom from '../../Utils/js/Bloom'
+import MainGui from '../../Utils/js/MainGui'
 
 let store
-
 let nuxt
 if (process.browser) {
   window.onNuxtReady(({ $nuxt, $store }) => {
@@ -27,10 +25,13 @@ if (process.browser) {
 
 class Constellation {
   constructor () {
+    this.clock = null
+
     this.scene = null
     this.renderer = null
 
     this.camera = null
+    this.light = null
 
     this.events = false
 
@@ -41,14 +42,10 @@ class Constellation {
       windowH: null
     }
 
-    this.clock = null
-
     this.time = {
       total: null,
       delta: null
     }
-
-    this.light = null
 
     // General Params
     this.params = {
@@ -60,16 +57,17 @@ class Constellation {
       }
     }
 
-    this.gui = null
-
+    // Orbit Control
     this.controls = null
 
+    // Raycaster
     this.raycaster = null
     this.intersectedObject = null
     this.lastIntersectedObject = null
     this.isIntersected = false
-    this.cristalScale = 1.5
 
+    // Crystals
+    this.cristalScale = 1.5
     this.cubes = []
     this.randomCubesSpeed = []
     this.gemGeometry = null
@@ -85,62 +83,23 @@ class Constellation {
     this.setSize()
 
     this.scene = new THREE.Scene()
-
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: $canvas
-    })
-
-    this.renderer.setPixelRatio(window.devicePixelRatio)
-
-    this.renderer.setSize(this.size.windowW, this.size.windowH)
-
     this.clock = new THREE.Clock()
     this.clock.start()
 
+    this.addRenderer($canvas)
+    this.initCamera()
+    this.initLight()
+
     // Skybox
-    const loader = new THREE.CubeTextureLoader()
-    loader.premultiplyAlpha = true
-    const texture = loader.load([
-      require('../../../../assets/textures/png/constellation/px.png'),
-      require('../../../../assets/textures/png/constellation/nx.png'),
-      require('../../../../assets/textures/png/constellation/py.png'),
-      require('../../../../assets/textures/png/constellation/ny.png'),
-      require('../../../../assets/textures/png/constellation/pz.png'),
-      require('../../../../assets/textures/png/constellation/nz.png')
-    ])
-    texture.encoding = THREE.sRGBEncoding
-    const skybox = new THREE.Mesh(
-      new THREE.BoxBufferGeometry(200, 200, 200),
-      new THREE.ShaderMaterial({
-        uniforms: THREE.UniformsUtils.clone(THREE.ShaderLib.cube.uniforms),
-        vertexShader: THREE.ShaderLib.cube.vertexShader,
-        fragmentShader: THREE.ShaderLib.cube.fragmentShader,
-        depthTest: false,
-        depthWrite: false,
-        side: THREE.BackSide,
-        toneMapped: false
-      })
-    )
+    this.loadTexture()
+    this.addSkybox()
 
-    skybox.material.uniforms.envMap.value = texture
-    // skybox.layers.enable(1)
-
-    Object.defineProperty(skybox.material, 'envMap', {
-
-      get () {
-        return this.uniforms.envMap.value
-      }
-
-    })
-
-    const skyboxGroup = new THREE.Group()
-    skyboxGroup.add(skybox)
-    this.scene.add(skyboxGroup)
-
+    // Crystals
     this.generateCrystals()
 
-    // Init camera
-    this.initCamera()
+    this.addControls()
+    this.addRaycaster()
+    this.addBloom()
 
     // Listeners
     this.addWheelEvent()
@@ -155,142 +114,8 @@ class Constellation {
       }
     })
 
-    // Init light
-    this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-    this.light.position.set(0, 0, 0)
-    this.scene.add(this.light)
-
-    // this.scene.background = new THREE.Color('#003c66')
-
-    // Controls
-    this.controls = new OrbitControls(this.camera.camera, this.renderer.domElement)
-    this.controls.enableDamping = true
-    this.controls.enableZoom = false
-    this.controls.minPolarAngle = Math.PI / 2
-    this.controls.rotateSpeed = 1
-    this.controls.enableRotate = true
-    this.controls.minDistance = 1
-
-    // Raycaster
-    this.raycaster = new Raycaster()
-    this.raycaster.init(this.camera, this.renderer)
-    this.raycaster.render(this.scene)
-
-    // Post Processing
-    this.bloom = new Bloom({
-      scene: this.scene,
-      camera: this.camera.camera,
-      renderer: this.renderer,
-      params: {
-        exposure: 1,
-        bloomStrength: 2.5,
-        bloomThreshold: 0,
-        bloomRadius: 1
-      }
-    })
-
-    // GUI
-    this.gui = new MainGui()
-    const controlsFolder = this.gui.gui.addFolder('Controls')
-    controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
-  }
-
-  initCamera () {
-    this.camera = new Camera({
-      window: this.size
-    })
-  }
-
-  getRandomArbitrary (min, max) {
-    return Math.random() * (max - min) + min
-  }
-
-  getRandomInt (max) {
-    return Math.floor(Math.random() * max)
-  }
-
-  async generateCrystals () {
-    // Cube
-    const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
-
-    // Refraction
-    const cubeMap = [
-      require('../../../../assets/textures/png/constellation/px.png'),
-      require('../../../../assets/textures/png/constellation/nx.png'),
-      require('../../../../assets/textures/png/constellation/py.png'),
-      require('../../../../assets/textures/png/constellation/ny.png'),
-      require('../../../../assets/textures/png/constellation/pz.png'),
-      require('../../../../assets/textures/png/constellation/nz.png')
-    ]
-
-    const textureCrystals = new THREE.CubeTextureLoader().load(cubeMap)
-    textureCrystals.mapping = THREE.CubeRefractionMapping
-    textureCrystals.encoding = THREE.sRGBEncoding
-    const crystalsMaterial = new THREE.MeshPhongMaterial({
-      envMap: textureCrystals,
-      side: THREE.DoubleSide,
-      // refractionRatio: 1,
-      reflectivity: 1,
-      // combine: THREE.AddOperation,
-      transparent: true,
-      opacity: 0.8,
-      // premultipliedAlpha: true,
-      depthWrite: false
-      // emissive: colorCrystals,
-      // emissiveIntensity: 0.8
-      // map: textureCrystalsTest
-    })
-
-    const cubeMaterial2 = new THREE.MeshPhongMaterial({
-
-      color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
-      // opacity: 1,
-      // transparent: 1,
-      envMap: textureCrystals,
-      refractionRatio: 0.98
-      // reflectivity: 0.9
-    })
-
-    // Load gems geometry
-    // this.scene.add(this.gemGeometry)
-
-    // Generation of this.cubes
-    for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
-      const cubeMaterial = new THREE.MeshPhongMaterial({
-
-        color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
-        // opacity: 1,
-        // transparent: 1,
-        envMap: textureCrystals,
-        refractionRatio: 0.98
-        // reflectivity: 0.9
-      })
-
-      const gemGeometry = await new Loader({ material: cubeMaterial2, model: gemModel, position: { x: 0, y: 0, z: -5 } }).initGems()
-      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
-      const y = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
-      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
-      const pos = new Vector3(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
-      console.log(pos)
-      gemGeometry.position.copy(pos)
-      gemGeometry.layers.enable(1)
-      gemGeometry.datas = store.state.constellation.dataUsers[i]
-      gemGeometry.userId = i
-      this.cubes.push(gemGeometry)
-
-      this.scene.add(this.cubes[i])
-    }
-    console.log(this.cubes)
-    // this.scene.add(this.cubes[0])
-    // this.scene.add(this.cubes[1])
-    // this.scene.add(this.cubes[2])
-    // this.scene.add(this.cubes[3])
-    // this.scene.add(this.cubes[10])
-
-    // Generation of random cube speed
-    for (let i = 0; i < this.cubes.length; i++) {
-      this.randomCubesSpeed.push(Math.random())
-    }
+    // Debug
+    this.addGUI()
   }
 
   setSize () {
@@ -309,15 +134,171 @@ class Constellation {
     this.renderer.setSize(this.size.windowW, this.size.windowH)
   }
 
+  addRenderer ($canvas) {
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: $canvas
+    })
+    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setSize(this.size.windowW, this.size.windowH)
+  }
+
+  initCamera () {
+    this.camera = new Camera({
+      window: this.size
+    })
+  }
+
+  initLight () {
+    this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
+    this.light.position.set(0, 0, 0)
+    this.scene.add(this.light)
+  }
+
+  loadTexture () {
+    const loader = new THREE.CubeTextureLoader()
+    loader.premultiplyAlpha = true
+    this.texture = loader.load([
+      require('../../../assets/textures/png/constellation/px.png'),
+      require('../../../assets/textures/png/constellation/nx.png'),
+      require('../../../assets/textures/png/constellation/py.png'),
+      require('../../../assets/textures/png/constellation/ny.png'),
+      require('../../../assets/textures/png/constellation/pz.png'),
+      require('../../../assets/textures/png/constellation/nz.png')
+    ])
+    this.texture.encoding = THREE.sRGBEncoding
+  }
+
+  addSkybox () {
+    const skybox = new THREE.Mesh(
+      new THREE.BoxBufferGeometry(200, 200, 200),
+      new THREE.ShaderMaterial({
+        uniforms: THREE.UniformsUtils.clone(THREE.ShaderLib.cube.uniforms),
+        vertexShader: THREE.ShaderLib.cube.vertexShader,
+        fragmentShader: THREE.ShaderLib.cube.fragmentShader,
+        depthTest: false,
+        depthWrite: false,
+        side: THREE.BackSide,
+        toneMapped: false
+      })
+    )
+
+    skybox.material.uniforms.envMap.value = this.texture
+
+    Object.defineProperty(skybox.material, 'envMap', {
+      get () {
+        return this.uniforms.envMap.value
+      }
+    })
+
+    const skyboxGroup = new THREE.Group()
+    skyboxGroup.add(skybox)
+    this.scene.add(skyboxGroup)
+  }
+
+  async generateCrystals () {
+    const textureCrystals = this.texture
+    textureCrystals.mapping = THREE.CubeRefractionMapping
+    textureCrystals.encoding = THREE.sRGBEncoding
+    const crystalsMaterial = new THREE.MeshPhongMaterial({
+      envMap: textureCrystals,
+      side: THREE.DoubleSide,
+      // refractionRatio: 1,
+      reflectivity: 1,
+      // combine: THREE.AddOperation,
+      transparent: true,
+      opacity: 0.8,
+      // premultipliedAlpha: true,
+      depthWrite: false
+      // emissive: colorCrystals,
+      // emissiveIntensity: 0.8
+      // map: textureCrystalsTest
+    })
+
+    // Load gems geometry
+    // this.scene.add(this.gemGeometry)
+
+    // Generation of this.cubes
+    for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
+      const cubeMaterial = new THREE.MeshPhongMaterial({
+        color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
+        envMap: textureCrystals,
+        refractionRatio: 0.98
+      })
+      const gemGeometry = await new Loader({ material: cubeMaterial, model: gemModel, position: { x: 0, y: 0, z: -5 } }).initGems()
+      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      const y = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      const pos = new Vector3(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
+      gemGeometry.position.copy(pos)
+      gemGeometry.layers.enable(1)
+      gemGeometry.datas = store.state.constellation.dataUsers[i]
+      gemGeometry.userId = i
+      this.cubes.push(gemGeometry)
+
+      this.scene.add(this.cubes[i])
+    }
+
+    // Generation of random cube speed
+    for (let i = 0; i < this.cubes.length; i++) {
+      this.randomCubesSpeed.push(Math.random())
+    }
+  }
+
+  addControls () {
+    this.controls = new OrbitControls(this.camera.camera, this.renderer.domElement)
+    this.controls.enableDamping = true
+    this.controls.enableZoom = false
+    this.controls.minPolarAngle = Math.PI / 2
+    this.controls.rotateSpeed = 1
+    this.controls.enableRotate = true
+    this.controls.minDistance = 1
+  }
+
+  addRaycaster () {
+    this.raycaster = new Raycaster()
+    this.raycaster.init(this.camera, this.renderer)
+    this.raycaster.render(this.scene)
+  }
+
+  addBloom () {
+    this.bloom = new Bloom({
+      scene: this.scene,
+      camera: this.camera.camera,
+      renderer: this.renderer,
+      size: this.size,
+      params: {
+        exposure: 1,
+        bloomStrength: 2.5,
+        bloomThreshold: 0,
+        bloomRadius: 1
+      }
+    })
+  }
+
   addWheelEvent () {
     window.addEventListener('resize', () => {
       this.resize()
     })
   }
 
+  addGUI () {
+    this.gui = new MainGui()
+    const controlsFolder = this.gui.gui.addFolder('Controls')
+    controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
+  }
+
+  getRandomArbitrary (min, max) {
+    return Math.random() * (max - min) + min
+  }
+
+  getRandomInt (max) {
+    return Math.floor(Math.random() * max)
+  }
+
   render () {
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
+
     if (this.cubes.length === store.state.constellation.dataUsers.length) {
       for (let i = 0; i < this.cubes.length; i++) {
         this.cubes[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
@@ -356,10 +337,7 @@ class Constellation {
       this.isIntersected = false
     }
 
-    // this.renderer.render(this.scene, this.camera.camera)
-
     this.controls.update()
-
     this.bloom.render()
   }
 }

@@ -5,7 +5,7 @@
   </section>
 </template>
 <script>
-import noise1d from '../../World/js/Utils/Noise1D'
+import noise1d from '../../Utils/js/Noise1D'
 export default {
   props: {
     iconName: {

@@ -1,9 +1,7 @@
 /* eslint-disable no-unused-vars */
 import * as THREE from 'three'
 import Land from '../Land'
-import Raycaster from '../Utils/Raycaster'
-
-// const grassTexture = require('../../../../assets/textures/t_sand.png')
+import Raycaster from '../../../Utils/js/Raycaster'
 
 let store
 if (process.browser) {

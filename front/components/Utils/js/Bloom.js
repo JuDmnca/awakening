@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import MainGui from '../Utils/MainGui'
-import vertex from '../../../../assets/shaders/bloom/bloom.vert'
-import fragment from '../../../../assets/shaders/bloom/bloom.frag'
+import vertex from '../../../assets/shaders/bloom/bloom.vert'
+import fragment from '../../../assets/shaders/bloom/bloom.frag'
+import MainGui from './MainGui'
 
 const ENTIRE_SCENE = 0
 const BLOOM_SCENE = 1

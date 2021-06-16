@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { ReinhardToneMapping } from 'three'
-import Camera from './Camera'
-import MainGui from './Utils/MainGui'
-import Bloom from './Utils/Bloom'
+import Camera from '../../Utils/js/Camera'
+import MainGui from '../../Utils/js/MainGui'
+import Bloom from '../../Utils/js/Bloom'
 
 import Land from './Land'
 import Desert from './Desert/Desert'

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import CustomSinCurve from '../Utils/CustomSinCurve'
+import CustomSinCurve from '../../../Utils/js/CustomSinCurve'
 
 import stemVert from '../../../../assets/shaders/plant/stem.vert'
 import stemFrag from '../../../../assets/shaders/plant/stem.frag'

@@ -1,6 +1,6 @@
 import { Object3D, Mesh, Vector3, InstancedMesh } from 'three/build/three.module'
 import modelGrass from '../../../../assets/models/m_grass.glb'
-import Loader from '../Loader'
+import Loader from '../../../Utils/js/Loader'
 
 export default class Grass {
   constructor (params) {
