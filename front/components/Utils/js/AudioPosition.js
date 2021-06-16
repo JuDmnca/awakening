@@ -27,8 +27,12 @@ export default class AudioPosition {
       this.sound.setMaxDistance(0.1)
       this.sound.setLoop(this.props.loop)
       this.sound.setVolume(this.props.volume)
-      nuxt.$on('toggleMute', () => {
-        this.sound.isPlaying ? this.sound.pause() : this.sound.play()
+      nuxt.$on('mute', () => {
+        this.sound.setVolume(0)
+        console.log('muteeee')
+      })
+      nuxt.$on('unMute', () => {
+        this.sound.setVolume(this.props.volume)
       })
     })
     mesh.add(this.sound)

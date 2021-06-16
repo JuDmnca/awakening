@@ -108,7 +108,8 @@ export default class Desert {
 
     this.inhaleIsCompleted = false
 
-    this.intersectedClick = false
+    this.haveClickedOnFlower = false
+    this.sporesSoundAlreadyPlayed = false
   }
 
   init (scene, renderer) {
@@ -183,18 +184,18 @@ export default class Desert {
   }
 
   async addSound (scene) {
-    this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true, volume: 1 })
+    this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true, volume: 0.2 })
     this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false, volume: 0.4 })
-    this.noteSound = new Sound({ camera: this.camera, audioFile: this.noteFile, loop: false, canToggle: false, volume: 1 })
-    this.accordSound = new Sound({ camera: this.camera, audioFile: this.accordFile, loop: false, canToggle: false, volume: 1 })
+    this.noteSound = new Sound({ camera: this.camera, audioFile: this.noteFile, loop: false, canToggle: false, volume: 5 })
+    this.accordSound = new Sound({ camera: this.camera, audioFile: this.accordFile, loop: false, canToggle: false, volume: 5 })
 
     // Init sound spacialization
     this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
-    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true, volume: 40 })
+    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true, volume: 50 })
     this.soundCube.cube.add(this.crystalSound.sound)
-    this.inhaleSound = await new AudioPosition({ url: inhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 60 })
-    this.exhaleSound = await new AudioPosition({ url: exhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 60 })
-    this.sporesSound = await new AudioPosition({ url: fairyDustSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 0 })
+    this.inhaleSound = await new AudioPosition({ url: inhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 70 })
+    this.exhaleSound = await new AudioPosition({ url: exhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 70 })
+    this.sporesSound = await new AudioPosition({ url: fairyDustSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 20 })
   }
 
   async loadFlowers () {
@@ -352,9 +353,6 @@ export default class Desert {
   sporesOnHold () {
     this.hold = true
     this.sporesElevation += 1000
-    if (this.intersects.length > 0 && !store.state.desert.interaction) {
-      this.intersectedClick = true
-    }
     this.inhale()
 
     // If we find how to do a clean camera zoom
@@ -402,37 +400,15 @@ export default class Desert {
         this.spores.particles.material.uniforms.uZSpeed,
         {
           value: this.sporesElevation / 1000,
-          duration: 0.5,
-          ease: 'power3.out',
-          onComplete: () => {
-            gsap.killTweensOf([this.sporesSound.sound])
-            gsap.to(
-              volume,
-              {
-                x: 0,
-                duration: 0.3,
-                ease: 'power3.out',
-                onUpdate: () => this.sporesSound.sound.setVolume(volume.x)
-              }
-            )
-            this.sporesSound.sound.stop()
-          }
+          duration: 3,
+          ease: 'power3.out'
         }
       )
 
       // Fairy dust sound
-      if (!this.sporesSound.sound.isPlaying && !this.intersectedClick) {
-        gsap.killTweensOf([this.sporesSound.sound])
+      if (this.haveClickedOnFlower && !this.sporesSoundAlreadyPlayed) {
         this.sporesSound.sound.play()
-        gsap.to(
-          volume,
-          {
-            x: 60,
-            duration: 0.3,
-            ease: 'power3.in',
-            onUpdate: () => this.sporesSound.sound.setVolume(volume.x)
-          }
-        )
+        this.sporesSoundAlreadyPlayed = true
       }
     } else {
       // Movement on hold
@@ -454,6 +430,7 @@ export default class Desert {
           }
         }
       )
+
       gsap.to(
         this.spores.particles.material.uniforms.uZSpeed,
         {
@@ -468,7 +445,7 @@ export default class Desert {
 
       // Sound
       // If raycaster is empty
-      if (!this.intersectedClick) {
+      if (this.haveClickedOnFlower) {
         this.inhaleSound.sound.play()
         if (this.exhaleSound.sound.isPlaying) {
           this.exhaleSound.sound.stop()
@@ -493,13 +470,15 @@ export default class Desert {
 
     // Sound
     // If raycaster is empty
-    if (!this.intersectedClick) {
+    if (this.haveClickedOnFlower) {
       if (this.inhaleSound.sound.isPlaying) {
         this.inhaleSound.sound.stop()
       }
+      console.log('exhale play')
       this.exhaleSound.sound.play()
-    } else {
-      this.intersectedClick = false
+    }
+    if (this.intersects.length > 0 && !store.state.desert.interaction && !this.haveClickedOnFlower) {
+      this.haveClickedOnFlower = true
     }
   }
 

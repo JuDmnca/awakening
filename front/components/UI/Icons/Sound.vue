@@ -26,7 +26,8 @@ export default {
       newDate: null,
       myReq: null,
       oldDate: new Date().getTime(),
-      isClicked: false
+      isClicked: false,
+      isMuted: false
     }
   },
   mounted () {
@@ -41,7 +42,13 @@ export default {
         // Listener
         canvas.addEventListener('click', () => {
           this.isClicked = !this.isClicked
-          this.$nuxt.$emit('toggleMute')
+          if (this.isMuted) {
+            this.$nuxt.$emit('unMute')
+            this.isMuted = false
+          } else {
+            this.$nuxt.$emit('mute')
+            this.isMuted = true
+          }
         })
       } else {
         // console.log('errer sound icon')
