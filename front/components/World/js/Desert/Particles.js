@@ -41,8 +41,8 @@ class Particles {
     for (let i = 0; i < this.count * 3; i++) {
       const i3 = i * 3
       // Position
-      positions[i3 + 0] = (Math.random() - 0.5) * 10 * Math.random() - 2
-      positions[i3 + 1] = (Math.random() - 0.5) * 75 * Math.random() - 40
+      positions[i3 + 0] = (Math.random() - 0.5) * 10 * Math.random()
+      positions[i3 + 1] = (Math.random() - 0.5) * 75 * Math.random() - 38
       positions[i3 + 2] = (Math.random() - 0.5) * 10 * Math.random()
 
       // Scale

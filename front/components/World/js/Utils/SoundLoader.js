@@ -27,11 +27,12 @@ export default class SoundLoader {
       this.sound.setBuffer(buffer)
       this.sound.setLoop(this.props.loop)
       this.sound.setVolume(this.props.volume)
-      if (this.props.canToggle) {
-        nuxt.$on('toggleMute', (e) => {
-          this.sound.isPlaying ? this.sound.pause() : this.sound.play()
-        })
-      }
+      nuxt.$on('mute', () => {
+        this.sound.setVolume(0)
+      })
+      nuxt.$on('unMute', () => {
+        this.sound.setVolume(this.props.volume)
+      })
     })
   }
 }
