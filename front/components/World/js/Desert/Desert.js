@@ -134,6 +134,10 @@ export default class Desert {
     nuxt.$on('swoosh', () => {
       this.swooshSound.sound.play()
       this.intersectIsEnable = true
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Test de sous-titre')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 3000)
     })
 
     // RAYCASTER
@@ -476,7 +480,6 @@ export default class Desert {
       if (this.inhaleSound.sound.isPlaying) {
         this.inhaleSound.sound.stop()
       }
-      console.log('exhale play')
       this.exhaleSound.sound.play()
     }
     if (this.intersects.length > 0 && !store.state.desert.interaction && !this.haveClickedOnFlower) {

@@ -246,7 +246,6 @@ class Common {
       window.addEventListener('wheel', (e) => {
         if (this.curves[this.curveNumber] !== undefined) {
           this.moveCamera(e)
-          console.log('progression : ', this.progression, ' camLook : ', this.camLook, ' camTarget : ', this.camTarget)
         }
 
         // DESERT
