@@ -122,7 +122,5 @@ export default {
 
     #canvasSoundIcon {
         margin: auto;
-        border: solid 1px white;
-        border-radius: 9999px;
     }
 </style>

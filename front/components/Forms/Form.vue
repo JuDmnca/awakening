@@ -1,7 +1,7 @@
 <template>
   <div class="form-wrapper">
     <form ref="form" @submit.prevent>
-      <label ref="label">{{ label }}</label>
+      <label ref="label" class="title-big">{{ label }}</label>
       <input
         v-if="step != 1"
         ref="input"
