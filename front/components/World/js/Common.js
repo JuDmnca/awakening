@@ -242,15 +242,18 @@ class Common {
       this.resize()
     })
 
-    window.addEventListener('wheel', (e) => {
-      if (this.curves[this.curveNumber] !== undefined) {
-        this.moveCamera(e)
-      }
+    nuxt.$on('startExperience', () => {
+      window.addEventListener('wheel', (e) => {
+        if (this.curves[this.curveNumber] !== undefined) {
+          this.moveCamera(e)
+          console.log('progression : ', this.progression, ' camLook : ', this.camLook, ' camTarget : ', this.camTarget)
+        }
 
-      // DESERT
-      if (this.currentScene.name === 'Desert') {
-        this.currentScene.onWheelMovement(e)
-      }
+        // DESERT
+        if (this.currentScene.name === 'Desert') {
+          this.currentScene.onWheelMovement(e)
+        }
+      })
     })
 
     window.addEventListener('mousedown', () => {
