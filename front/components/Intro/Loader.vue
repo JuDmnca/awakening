@@ -8,6 +8,11 @@
           </p>
         </transition>
         <transition name="fade">
+          <p v-if="showIntroParagraph2" class="container__inner container__inner--top title-big">
+            Ce lien peut être retrouvé à travers l'éveil de nos sens.
+          </p>
+        </transition>
+        <transition name="fade">
           <div v-if="!endLoaded" class="loader container__inner container__inner--bottom">
             <div class="progress" :style="progress" />
             <span style="display: none">{{ completed }}</span>
@@ -60,6 +65,7 @@ export default {
       endLoaded: false,
       started: false,
       showIntroParagraph: true,
+      showIntroParagraph2: false,
       showLogo: false,
       showName: false,
       showMic: false,
@@ -82,10 +88,16 @@ export default {
     }
   },
   mounted () {
+    // setTimeout(() => {
+    //   this.showIntroParagraph = false
+    //   setTimeout(() => { this.showIntroParagraph2 = true }, 1000)
+    // }, 3000)
     this.$nuxt.$on('loaded', () => {
       this.endLoaded = true
+      this.showIntroParagraph = false
       setTimeout(() => {
         this.loaded = true
+        this.showIntroParagraph2 = true
       }, 1000)
     })
     this.$nuxt.$on('started', () => {
@@ -127,7 +139,7 @@ export default {
     },
     startIntro () {
       this.loaded = false
-      this.showIntroParagraph = false
+      this.showIntroParagraph2 = false
       this.$nuxt.$emit('started')
     }
   }
