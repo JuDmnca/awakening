@@ -110,6 +110,7 @@ export default class Desert {
 
     this.haveClickedOnFlower = false
     this.sporesSoundAlreadyPlayed = false
+    this.intersectIsEnable = false
   }
 
   init (scene, renderer) {
@@ -132,6 +133,7 @@ export default class Desert {
 
     nuxt.$on('swoosh', () => {
       this.swooshSound.sound.play()
+      this.intersectIsEnable = true
     })
 
     // RAYCASTER
@@ -487,7 +489,7 @@ export default class Desert {
       this.addEvents()
       this.events = true
     }
-    if (this.plantsGroup.children[0]) {
+    if (this.plantsGroup.children[0] && this.progression > 0.8) {
       this.intersects = this.raycaster.render(this.plantsGroup)
     }
     // Indications
