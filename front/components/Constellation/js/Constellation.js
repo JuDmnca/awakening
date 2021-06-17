@@ -225,9 +225,9 @@ class Constellation {
         refractionRatio: 0.98
       })
       const gemGeometry = await new Loader({ material: cubeMaterial, model: gemModel, position: { x: 0, y: 0, z: -5 } }).initGems()
-      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
-      const y = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
-      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
+      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
+      const y = [this.getRandomArbitrary(-15, -5), this.getRandomArbitrary(5, 30)]
+      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
       const pos = new Vector3(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
       gemGeometry.position.copy(pos)
       gemGeometry.layers.enable(1)

@@ -66,7 +66,7 @@ export default class Loader {
   initGems () {
     return new Promise((resolve) => {
       const position = this.props.position
-      const materialImported = this.material
+      const materialImported = this.props.material
 
       this.loader.load(
         this.props.model,
@@ -77,7 +77,6 @@ export default class Loader {
           gltf.scene.scale.set(3, 3, 3)
 
           const mesh = new THREE.Mesh(gltf.scene.children[0].geometry, materialImported)
-          gltf.scene.children[0].material = materialImported
           resolve(mesh)
         },
         function (xhr) {

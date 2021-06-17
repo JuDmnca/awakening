@@ -238,7 +238,7 @@ export default class Desert {
         container: this.desertGroup,
         surface: this.desertGroup.children[0].children[1],
         count: 250,
-        scaleFactor: 3,
+        scaleFactor: 4,
         material
       })
   }
