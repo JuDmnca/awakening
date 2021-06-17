@@ -56,8 +56,8 @@ class Constellation {
       light: {
         angle: Math.PI / 2,
         color: '#ffffff',
-        intensity: 10,
-        distance: 400
+        intensity: 0.3,
+        distance: 1000
       }
     }
 
@@ -154,7 +154,7 @@ class Constellation {
 
   initLight () {
     this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-    this.light.position.set(0, 0, 0)
+    this.light.position.set(0, -17, 0)
     this.scene.add(this.light)
   }
 
@@ -225,20 +225,44 @@ class Constellation {
     for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
       const cubeMaterial = new THREE.MeshPhongMaterial({
         color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
-        envMap: textureCrystals,
+        // envMap: textureCrystals,
         refractionRatio: 0.98
       })
-      const gemGeometry = await new Loader({ material: cubeMaterial, model: this.gemsModels[this.getRandomInt(3)], position: { x: 0, y: 0, z: -5 } }).initGems()
+      const gemMesh = await new Loader({ material: cubeMaterial, model: this.gemsModels[this.getRandomInt(3)], position: { x: 0, y: 0, z: -5 } }).initGems()
       const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
       const y = [this.getRandomArbitrary(-10, -5), this.getRandomArbitrary(5, 30)]
       const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
       const pos = new Vector3(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
-      gemGeometry.position.copy(pos)
-      gemGeometry.layers.enable(1)
-      gemGeometry.datas = store.state.constellation.dataUsers[i]
-      gemGeometry.Ydirection = Math.random() < 0.5 ? -1 : 1 // Random -1 or 1 direction
-      gemGeometry.userId = i
-      this.gems.push(gemGeometry)
+      gemMesh.position.copy(pos)
+      gemMesh.layers.enable(1)
+      gemMesh.datas = store.state.constellation.dataUsers[i]
+      // gemMesh.material.color = new THREE.Color('#29ff3e')
+      console.log(gemMesh.datas.color)
+      switch (gemMesh.datas.color) {
+        case 'blue':
+          gemMesh.material.color = new THREE.Color('#2461ff')
+          break
+        case 'purple':
+          gemMesh.material.color = new THREE.Color('#be6eff')
+          break
+        case 'lime':
+          gemMesh.material.color = new THREE.Color('#29ff3e')
+          break
+        case 'orange':
+          gemMesh.material.color = new THREE.Color('#ff9224')
+          break
+        case 'red':
+          gemMesh.material.color = new THREE.Color('#ff2424')
+          break
+        case 'yellow':
+          gemMesh.material.color = new THREE.Color('#ffff29')
+          break
+        default:
+          gemMesh.material.color = new THREE.Color('#ffff29')
+      }
+      gemMesh.Ydirection = Math.random() < 0.5 ? -1 : 1 // Random -1 or 1 direction
+      gemMesh.userId = i
+      this.gems.push(gemMesh)
 
       this.scene.add(this.gems[i])
     }
@@ -272,7 +296,7 @@ class Constellation {
       renderer: this.renderer,
       size: this.size,
       params: {
-        exposure: 1,
+        exposure: 2.5,
         bloomStrength: 2.5,
         bloomThreshold: 0,
         bloomRadius: 1
@@ -290,6 +314,11 @@ class Constellation {
     this.gui = new MainGui()
     const controlsFolder = this.gui.gui.addFolder('Controls')
     controlsFolder.add(this.controls, 'rotateSpeed', 0, 2, 0.1).name('Controls Speed')
+
+    const lightFolder = this.gui.gui.addFolder('Light')
+    lightFolder.add(this.light, 'intensity', 0, 30, 0.1).name('Intensity')
+    lightFolder.add(this.light, 'distance', 0, 2000, 1).name('Distance')
+    lightFolder.add(this.light.position, 'y', -100, 100, 1).name('y')
   }
 
   getRandomArbitrary (min, max) {
