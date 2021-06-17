@@ -3,8 +3,13 @@
     <transition name="fade">
       <div class="container">
         <transition name="fade">
-          <p v-if="showIntroParagraph" class="container__inner container__inner--top">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor.
+          <p v-if="showIntroParagraph" class="container__inner container__inner--top title-big">
+            Certaines périodes peuvent nous faire perdre ce qui nous relie à nous-même.
+          </p>
+        </transition>
+        <transition name="fade">
+          <p v-if="showIntroParagraph2" class="container__inner container__inner--top title-big">
+            Ce lien peut être retrouvé à travers l'éveil de nos sens.
           </p>
         </transition>
         <transition name="fade">
@@ -32,7 +37,7 @@
     <transition name="fade">
       <FormsQuestion
         v-if="showName"
-        :label="'Quel est votre surnom ?'"
+        :label="'Comment voulez-vous vous appeler ?'"
         :step="0"
         :confirmation="`C'est bon`"
         @done="nextQuestion"
@@ -60,6 +65,7 @@ export default {
       endLoaded: false,
       started: false,
       showIntroParagraph: true,
+      showIntroParagraph2: false,
       showLogo: false,
       showName: false,
       showMic: false,
@@ -82,10 +88,16 @@ export default {
     }
   },
   mounted () {
+    // setTimeout(() => {
+    //   this.showIntroParagraph = false
+    //   setTimeout(() => { this.showIntroParagraph2 = true }, 1000)
+    // }, 3000)
     this.$nuxt.$on('loaded', () => {
       this.endLoaded = true
+      this.showIntroParagraph = false
       setTimeout(() => {
         this.loaded = true
+        this.showIntroParagraph2 = true
       }, 1000)
     })
     this.$nuxt.$on('started', () => {
@@ -127,7 +139,7 @@ export default {
     },
     startIntro () {
       this.loaded = false
-      this.showIntroParagraph = false
+      this.showIntroParagraph2 = false
       this.$nuxt.$emit('started')
     }
   }
@@ -160,14 +172,14 @@ export default {
 }
 
 .container__inner--top {
-  margin-top: 300px;
-  width: 800px;
+  margin: auto;
+  width: 1100px;
   color: white;
 }
 
 .container__inner--bottom {
-  margin: auto;
-  margin-top: 200px;
+  position: absolute;
+  bottom: 100px;
 }
 
 .loader {

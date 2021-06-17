@@ -15,7 +15,8 @@ const state = () => ({
   sceneIndex: 1,
   durationHold: 1.5,
   cameraZoomed: false,
-  userIsOkToSendDatas: false
+  userIsOkToSendDatas: false,
+  subtitle: ''
 })
 
 const actions = {
@@ -84,6 +85,9 @@ const mutations = {
   },
   updateCameraZoom (state) {
     state.cameraZoomed = !state.cameraZoomed
+  },
+  setSubtitle (state, resp) {
+    state.subtitle = resp
   }
 }
 

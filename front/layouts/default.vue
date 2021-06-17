@@ -7,15 +7,18 @@
     <UI-About />
     <Nuxt />
     <World />
+    <Subtitle />>
   </div>
 </template>
 
 <script>
 import World from '~/components/World/index'
+import Subtitle from '~/components/Subtitles/Subtitle'
 
 export default {
   components: {
-    World
+    World,
+    Subtitle
   },
   data () {
     return {

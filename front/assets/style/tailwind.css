@@ -112,6 +112,12 @@ input:focus, button:focus {
   color: white;
 }
 
+.title-big {
+  font-family: 'ButlerLight';
+  font-size: 60px;
+  line-height: 84px;
+} 
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity 1s;
 }

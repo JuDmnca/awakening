@@ -99,6 +99,7 @@ export default class Desert {
 
     this.haveClickedOnFlower = false
     this.sporesSoundAlreadyPlayed = false
+    this.intersectIsEnable = false
   }
 
   init (scene, renderer) {
@@ -121,6 +122,11 @@ export default class Desert {
 
     nuxt.$on('swoosh', () => {
       this.swooshSound.sound.play()
+      this.intersectIsEnable = true
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Test de sous-titre')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 3000)
     })
 
     // RAYCASTER
@@ -180,11 +186,11 @@ export default class Desert {
 
     // Init sound spacialization
     this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
-    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true, volume: 50 })
+    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true, volume: 15 })
     this.soundCube.cube.add(this.crystalSound.sound)
-    this.inhaleSound = await new AudioPosition({ url: inhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 70 })
-    this.exhaleSound = await new AudioPosition({ url: exhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 70 })
-    this.sporesSound = await new AudioPosition({ url: fairyDustSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 20 })
+    this.inhaleSound = await new AudioPosition({ url: inhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 40 })
+    this.exhaleSound = await new AudioPosition({ url: exhaleSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 40 })
+    this.sporesSound = await new AudioPosition({ url: fairyDustSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 5 })
   }
 
   async loadFlowers () {
@@ -448,7 +454,6 @@ export default class Desert {
       if (this.inhaleSound.sound.isPlaying) {
         this.inhaleSound.sound.stop()
       }
-      console.log('exhale play')
       this.exhaleSound.sound.play()
     }
     if (this.intersects.length > 0 && !store.state.desert.interaction && !this.haveClickedOnFlower) {
@@ -461,7 +466,7 @@ export default class Desert {
       this.addEvents()
       this.events = true
     }
-    if (this.plantsGroup.children[0]) {
+    if (this.plantsGroup.children[0] && this.progression > 0.8) {
       this.intersects = this.raycaster.render(this.plantsGroup)
     }
     // Indications
