@@ -2,9 +2,9 @@
 import { gsap } from 'gsap'
 import * as THREE from 'three'
 import perlinNoise3d from 'perlin-noise-3d'
-import { ReinhardToneMapping } from 'three'
 import Raycaster from '../../../Utils/js/Raycaster'
 import Rotation from '../../../Utils/js/Rotation'
+
 import Sound from '../../../Utils/js/SoundLoader'
 import crystalSoundURL from '../../../../assets/sounds/desert/crystalSound.mp3'
 import exhaleSoundURL from '../../../../assets/sounds/desert/exhale.mp3'
@@ -62,6 +62,8 @@ export default class Desert {
     this.spores = null
     this.sporesElevation = 0
 
+    this.crystal = props.crystal
+
     // NOISE
     // eslint-disable-next-line new-cap
     this.noise = new perlinNoise3d()
@@ -78,19 +80,6 @@ export default class Desert {
 
     // CURSOR
     this.isCursorActive = false
-
-    // CRYSTALS
-    this.cubeMap = [
-      require('../../../../assets/textures/png/constellation/px.png'),
-      require('../../../../assets/textures/png/constellation/nx.png'),
-      require('../../../../assets/textures/png/constellation/py.png'),
-      require('../../../../assets/textures/png/constellation/ny.png'),
-      require('../../../../assets/textures/png/constellation/pz.png'),
-      require('../../../../assets/textures/png/constellation/nz.png')
-    ]
-    this.textureCrystals = new THREE.CubeTextureLoader().load(this.cubeMap)
-    this.textureCrystals.mapping = THREE.CubeRefractionMapping
-    this.textureCrystals.encoding = THREE.sRGBEncoding
 
     // TIMES
     this.time = {
@@ -234,13 +223,16 @@ export default class Desert {
   }
 
   async addGrass () {
-    const material = new THREE.MeshNormalMaterial()
+    const color = new THREE.Color('#333333')
+    const material = new THREE.MeshBasicMaterial({
+      color
+    })
     this.grass = await new Grass(
       {
         container: this.desertGroup,
         surface: this.desertGroup.children[0].children[1],
-        count: 200,
-        scaleFactor: 0.5,
+        count: 250,
+        scaleFactor: 3,
         material
       })
   }
@@ -308,6 +300,7 @@ export default class Desert {
       this.handleClick()
     })
     nuxt.$on('ColorSetted', () => {
+      this.crystal.getColor()
       this.updateFlowersColor()
       this.addColorToCrystal()
       this.addParticles()
@@ -319,32 +312,13 @@ export default class Desert {
   }
 
   addColorToCrystal () {
-    const colorCrystals = new THREE.Color(store.state.user.color)
-    const crystalsMaterial = new THREE.MeshPhongMaterial({
-      color: colorCrystals,
-      envMap: this.textureCrystals,
-      refractionRatio: 0.5,
-      combine: THREE.AddOperation,
-      transparent: true,
-      opacity: 0.85,
-      premultipliedAlpha: true,
-      depthWrite: false
-    })
-    const innerCrystalsMaterial = new THREE.MeshPhongMaterial({
-      color: colorCrystals,
-      opacity: 0.5,
-      transparent: true,
-      emissive: colorCrystals,
-      emissiveIntensity: 0.2
-    })
-
     for (let i = 0; i <= this.desertGroup.children[0].children.length - 1; i++) {
       const child = this.desertGroup.children[0].children[i]
       if (child.name.includes('inside')) {
-        child.material = innerCrystalsMaterial
+        child.material = this.crystal.getInnerMaterial()
         child.layers.enable(1)
       } else if (child.name.includes('outside')) {
-        child.material = crystalsMaterial
+        child.material = this.crystal.getExteriorMaterial()
         child.layers.enable(1)
       }
     }

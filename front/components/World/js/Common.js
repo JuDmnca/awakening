@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { ReinhardToneMapping } from 'three'
 import Camera from '../../Utils/js/Camera'
 import MainGui from '../../Utils/js/MainGui'
+import Crystal from '../../Utils/js/Crystal'
 import Bloom from '../../Utils/js/Bloom'
 
 import Land from './Land'
@@ -81,6 +82,8 @@ class Common {
 
     this.enableSporesElevationAt = 0.85
 
+    this.crystal = new Crystal()
+
     this.light = null
 
     // General Params
@@ -89,7 +92,7 @@ class Common {
       light: {
         angle: Math.PI / 2,
         color: '#ffffff',
-        intensity: 1,
+        intensity: 0.1,
         distance: 1000
       }
     }
@@ -121,24 +124,20 @@ class Common {
     this.cameraDisplacement()
     this.vectCam = new THREE.Vector3(this.p1.x, this.p1.y, this.p1.z)
     this.initCamera()
+    this.initLight()
 
     this.addEventListeners()
 
     // Load first group (desert)
-    this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0) })
+    this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
     this.currentScene.init(this.scene, this.renderer)
 
-    // Init light
-    this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
-    this.light.position.set(162, 162, -406)
-    this.gui = new MainGui()
-    const moonFolder = this.gui.gui.addFolder('Moon')
-    moonFolder.add(this.light.position, 'x', -1000, 1000, 1).name('x')
-    moonFolder.add(this.light.position, 'y', -1000, 1000, 1).name('y')
-    moonFolder.add(this.light.position, 'z', -1000, 1000, 1).name('z')
-    moonFolder.add(this.light, 'intensity', 0, 3, 0.1).name('intensity')
+    // Load second group (forest)
+    // this.sporesCanMove = false
+    // this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1) })
+    // this.currentScene.init(this.scene, this.renderer)
+    // this.curveNumber += 1
 
-    this.scene.add(this.light)
     this.initBloom()
   }
 
@@ -167,6 +166,19 @@ class Common {
       window: this.size
     })
     this.scene.add(this.camera.camera)
+  }
+
+  initLight () {
+    this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
+    this.light.position.set(162, 162, -406)
+    this.gui = new MainGui()
+    const moonFolder = this.gui.gui.addFolder('Moon')
+    moonFolder.add(this.light.position, 'x', -1000, 1000, 1).name('x')
+    moonFolder.add(this.light.position, 'y', -1000, 1000, 1).name('y')
+    moonFolder.add(this.light.position, 'z', -1000, 1000, 1).name('z')
+    moonFolder.add(this.light, 'intensity', 0, 3, 0.1).name('intensity')
+
+    this.scene.add(this.light)
   }
 
   cameraDisplacement () {
@@ -279,7 +291,7 @@ class Common {
       switch (store.state.sceneIndex) {
         case 1:
           this.sporesCanMove = false
-          this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1) })
+          this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
           this.currentScene.init(this.scene, this.renderer)
           break
       }
@@ -322,6 +334,7 @@ class Common {
     if (nuxt && store && !this.events) {
       this.addTransitionEvent()
       this.camera.addEvents()
+      this.crystal.loadImages()
       this.events = true
     }
 

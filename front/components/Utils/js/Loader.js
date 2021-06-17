@@ -35,18 +35,20 @@ export default class Loader {
           gltf.scene.position.y = position.y
           gltf.scene.position.z = position.z
 
-          let material = null
+          const materials = []
           if (materialImported) {
-            const texture = new THREE.TextureLoader().load(materialImported)
-            texture.flipY = false
-            material = new THREE.MeshBasicMaterial({
-              map: texture
-            })
+            for (let i = 0; i < materialImported.length; i++) {
+              const texture = new THREE.TextureLoader().load(materialImported[i])
+              texture.flipY = false
+              materials[i] = new THREE.MeshBasicMaterial({
+                map: texture
+              })
+            }
           }
 
           if (gltf.scene.children[0].name === 'Desert') {
-            gltf.scene.children[0].children[0].material = material
-            gltf.scene.children[0].children[1].material = material
+            gltf.scene.children[0].children[0].material = materials[0]
+            gltf.scene.children[0].children[1].material = materials[0]
           }
           resolve(gltf.scene)
         }

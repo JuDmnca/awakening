@@ -1,5 +1,5 @@
 import { Object3D, Mesh, Vector3, InstancedMesh } from 'three/build/three.module'
-import modelGrass from '../../../../assets/models/m_grass.glb'
+import modelGrass from '../../../../assets/models/m_grass.gltf'
 import Loader from '../../../Utils/js/Loader'
 
 export default class Grass {
@@ -48,6 +48,7 @@ export default class Grass {
       // dummy.lookAt(_normal)
       dummy.updateMatrix()
       dummy.rotation.y += i
+      dummy.position.y += 1
       dummy.scale.set(0.5 + i / 200, 0.5 + i / 200, 0.5 + i / 200)
       this.mesh.setMatrixAt(i, dummy.matrix)
     }

@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
 import * as THREE from 'three'
-import Land from '../Land'
 import Raycaster from '../../../Utils/js/Raycaster'
 
 let store
+let nuxt
 if (process.browser) {
-  window.onNuxtReady(({ $store }) => {
+  window.onNuxtReady(({ $nuxt, $store }) => {
+    nuxt = $nuxt
     store = $store
   })
 }
@@ -17,7 +18,6 @@ export default class Forest {
 
     // Generals params
     this.hold = false
-    this.land = new Land({ index: 1 })
 
     this.camera = this.props.camera
     this.raycaster = new Raycaster()
@@ -25,14 +25,17 @@ export default class Forest {
     this.intersected = null
 
     this.progression = null
+    this.events = false
 
     this.forestGroup = new THREE.Group()
     this.forestModel = this.props.model
+
+    this.crystal = props.crystal
   }
 
   init (scene, renderer) {
-    renderer.toneMappingExposure = Math.pow(2, 4.0)
     this.forestGroup.add(this.forestModel)
+    this.addColorToCrystal()
 
     // Raycaster
     this.raycaster.init(this.camera, renderer)
@@ -40,9 +43,28 @@ export default class Forest {
     scene.add(this.forestGroup)
   }
 
-  render () {
-    if (this.forestGroup) {
-      this.intersects = this.raycaster.render(this.forestGroup)
+  addColorToCrystal () {
+    for (let i = 0; i <= this.forestGroup.children[0].children.length - 1; i++) {
+      const child = this.forestGroup.children[0].children[i]
+      if (child.name.includes('inside')) {
+        child.material = this.crystal.getInnerMaterial()
+      } else if (child.name.includes('outside')) {
+        child.material = this.crystal.getExteriorMaterial()
+      }
+      child.layers.enable(1)
     }
+  }
+
+  addEvents () {
+  }
+
+  render () {
+    if (nuxt && store && !this.events) {
+      this.addEvents()
+      this.events = true
+    }
+    // if (this.forestGroup) {
+    //   this.intersects = this.raycaster.render(this.forestGroup)
+    // }
   }
 }
