@@ -236,6 +236,7 @@ class Constellation {
       gemGeometry.position.copy(pos)
       gemGeometry.layers.enable(1)
       gemGeometry.datas = store.state.constellation.dataUsers[i]
+      gemGeometry.Ydirection = Math.random() < 0.5 ? -1 : 1 // Random -1 or 1 direction
       gemGeometry.userId = i
       this.gems.push(gemGeometry)
 
@@ -306,7 +307,7 @@ class Constellation {
     if (this.gems.length === store.state.constellation.dataUsers.length) {
       for (let i = 0; i < this.gems.length; i++) {
         this.gems[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
-        this.gems[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
+        this.gems[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150) * this.gems[i].Ydirection
       }
     }
 
