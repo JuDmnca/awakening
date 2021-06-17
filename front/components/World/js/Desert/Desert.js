@@ -203,7 +203,7 @@ export default class Desert {
 
   async addFlowers () {
     let index = -1
-    for (let nbPlants = 0; nbPlants <= 40; nbPlants++) {
+    for (let nbPlants = 0; nbPlants <= 80; nbPlants++) {
       index++
       if (index >= 3) {
         index = 0
@@ -229,7 +229,7 @@ export default class Desert {
   }
 
   async addGrass () {
-    const color = new THREE.Color('#333333')
+    const color = new THREE.Color('#242424')
     const material = new THREE.MeshBasicMaterial({
       color
     })
@@ -237,7 +237,7 @@ export default class Desert {
       {
         container: this.desertGroup,
         surface: this.desertGroup.children[0].children[1],
-        count: 250,
+        count: 300,
         scaleFactor: 4,
         material
       })

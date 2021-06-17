@@ -18,13 +18,13 @@ export default class Plant {
   constructor (props) {
     this.props = props
 
-    this.POZ = new THREE.Vector3(this.getRandomFloat(-1, 1), 0.03, this.getRandomFloat(-1, 1))
+    this.POZ = new THREE.Vector3(this.getRandomFloat(-2, 2), 0.02, this.getRandomFloat(-2, 2))
     this.ROTATION = new THREE.Vector3(-this.getRandomFloat(0.5, 1), 0.5 - (this.props.orientation / 2), 0)
 
     this.segments = 32
     this.radiusSegment = 100
     this.size = 0.01
-    this.length = this.getRandomFloat(0.2, 0.5)
+    this.length = this.getRandomFloat(0.3, 0.6)
 
     this.flowerType = this.props.flowerType
     this.flowerModel = this.props.model
@@ -42,12 +42,8 @@ export default class Plant {
     this.stemGeometry = new THREE.TubeGeometry(this.curve, this.segments, this.size, this.radiusSegment)
 
     // Import stem texture
-    const stemAsset = require('../../../../assets/textures/t_stem.png')
-    const stemTexture = new THREE.TextureLoader().load(stemAsset)
-
     this.stemShaderMaterial = new THREE.ShaderMaterial({
       uniforms: {
-        stemMap: { type: 't', value: stemTexture },
         rotationForceMatrix: { type: 'm4', value: new THREE.Matrix4() }
       },
       vertexShader: stemVert,

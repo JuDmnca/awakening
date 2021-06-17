@@ -324,7 +324,7 @@ class Common {
       renderer: this.renderer,
       size: this.size,
       params: {
-        exposure: 1, // Set to one when bloom renderer actived
+        exposure: 1.15, // Set to one when bloom renderer actived
         bloomStrength: 1.8,
         bloomThreshold: 0,
         bloomRadius: 0.8
