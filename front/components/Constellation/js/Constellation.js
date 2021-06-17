@@ -7,6 +7,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap'
 
 import gemModel from '@/assets/models/gems_constellation/gem-1-compressed.gltf'
+import gemModel2 from '@/assets/models/gems_constellation/gem-2-compressed.gltf'
+import gemModel3 from '@/assets/models/gems_constellation/gem-3-compressed.gltf'
 
 import Camera from '../../Utils/js/Camera'
 import Loader from '../../Utils/js/Loader'
@@ -47,6 +49,8 @@ class Constellation {
       delta: null
     }
 
+    this.gemsModels = [gemModel, gemModel2, gemModel3]
+
     // General Params
     this.params = {
       light: {
@@ -68,7 +72,7 @@ class Constellation {
 
     // Crystals
     this.cristalScale = 1.5
-    this.cubes = []
+    this.gems = []
     this.randomCubesSpeed = []
     this.gemGeometry = null
 
@@ -217,29 +221,29 @@ class Constellation {
     // Load gems geometry
     // this.scene.add(this.gemGeometry)
 
-    // Generation of this.cubes
+    // Generation of this.gems
     for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
       const cubeMaterial = new THREE.MeshPhongMaterial({
         color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
         envMap: textureCrystals,
         refractionRatio: 0.98
       })
-      const gemGeometry = await new Loader({ material: cubeMaterial, model: gemModel, position: { x: 0, y: 0, z: -5 } }).initGems()
+      const gemGeometry = await new Loader({ material: cubeMaterial, model: this.gemsModels[this.getRandomInt(3)], position: { x: 0, y: 0, z: -5 } }).initGems()
       const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
-      const y = [this.getRandomArbitrary(-15, -5), this.getRandomArbitrary(5, 30)]
+      const y = [this.getRandomArbitrary(-10, -5), this.getRandomArbitrary(5, 30)]
       const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
       const pos = new Vector3(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
       gemGeometry.position.copy(pos)
       gemGeometry.layers.enable(1)
       gemGeometry.datas = store.state.constellation.dataUsers[i]
       gemGeometry.userId = i
-      this.cubes.push(gemGeometry)
+      this.gems.push(gemGeometry)
 
-      this.scene.add(this.cubes[i])
+      this.scene.add(this.gems[i])
     }
 
     // Generation of random cube speed
-    for (let i = 0; i < this.cubes.length; i++) {
+    for (let i = 0; i < this.gems.length; i++) {
       this.randomCubesSpeed.push(Math.random())
     }
   }
@@ -299,10 +303,10 @@ class Constellation {
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
 
-    if (this.cubes.length === store.state.constellation.dataUsers.length) {
-      for (let i = 0; i < this.cubes.length; i++) {
-        this.cubes[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
-        this.cubes[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
+    if (this.gems.length === store.state.constellation.dataUsers.length) {
+      for (let i = 0; i < this.gems.length; i++) {
+        this.gems[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
+        this.gems[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150)
       }
     }
 
