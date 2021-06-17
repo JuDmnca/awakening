@@ -34,6 +34,11 @@ export default class Forest {
   }
 
   init (scene, renderer) {
+    this.camera.updatePerspective()
+    this.camera.camera.updateProjectionMatrix()
+
+    this.addLight(scene)
+
     this.forestGroup.add(this.forestModel)
     this.addColorToCrystal()
 
@@ -43,19 +48,30 @@ export default class Forest {
     scene.add(this.forestGroup)
   }
 
+  addLight (scene) {
+    const light = new THREE.AmbientLight(0x404040, 1)
+    scene.add(light)
+  }
+
   addColorToCrystal () {
+    this.crystal.getColor()
     for (let i = 0; i <= this.forestGroup.children[0].children.length - 1; i++) {
       const child = this.forestGroup.children[0].children[i]
       if (child.name.includes('inside')) {
         child.material = this.crystal.getInnerMaterial()
+        child.layers.enable(1)
       } else if (child.name.includes('outside')) {
         child.material = this.crystal.getExteriorMaterial()
+        child.layers.enable(1)
       }
-      child.layers.enable(1)
     }
   }
 
   addEvents () {
+    // nuxt.$on('ColorSetted', () => {
+    //   this.crystal.getColor()
+    //   this.addColorToCrystal()
+    // })
   }
 
   render () {

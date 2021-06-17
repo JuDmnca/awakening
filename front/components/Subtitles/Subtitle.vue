@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <p v-if="show" class="subtitle">
+    <p v-if="subtitleVisible" class="subtitle">
       {{ $store.state.subtitle }}
     </p>
   </transition>
@@ -14,10 +14,15 @@ export default {
       show: false
     }
   },
+  computed: {
+    subtitleVisible () {
+      return this.show
+    }
+  },
   mounted () {
     this.$nuxt.$on('toggleShowSubtitle', () => {
       console.log('hello subtitle : ', this.show)
-      this.show = !this.show
+      // this.show = !this.show
     })
   },
   methods: {

@@ -34,6 +34,10 @@ export default class Camera {
     })
   }
 
+  updatePerspective () {
+    this.camera.fov = 50
+  }
+
   zoomCamera () {
     store.commit('updateCameraZoom')
     gsap.to(

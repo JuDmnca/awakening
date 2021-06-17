@@ -1,7 +1,5 @@
 import * as THREE from 'three'
-import { ReinhardToneMapping } from 'three'
 import Camera from '../../Utils/js/Camera'
-import MainGui from '../../Utils/js/MainGui'
 import Crystal from '../../Utils/js/Crystal'
 import Bloom from '../../Utils/js/Bloom'
 
@@ -18,16 +16,16 @@ const desertCurve = [
 ]
 
 const forestCurve = [
-  [-39.9991, 2, 9.91934],
-  [-30.2841, 2, 14.3279],
-  [-15.1083, 2, 28.0624],
-  [6.2926, 0.827358, 22.9185],
-  [9.55505, 2.56179, 6.12564],
-  [6.74007, 4.17393, 0.254782],
-  [10.534, 3.30262, -3.18313],
-  [10.7498, 2, -9.15631],
-  [-5.18898, 2, -18.1431],
-  [-27.2973, 1.70418, -13.7742]
+  [-39.9991, 1, 9.91934],
+  [-30.2841, 1, 14.3279],
+  [-15.1083, 1, 28.0624],
+  [6.2926, -1.827358, 22.9185],
+  [9.55505, 1.56179, 6.12564],
+  [6.74007, 3.17393, 0.254782],
+  [10.534, 2.30262, -3.18313],
+  [10.7498, 1, -9.15631],
+  [-5.18898, 1, -18.1431],
+  [-27.2973, 0.70418, -13.7742]
 ]
 
 const allCurves = [desertCurve, forestCurve]
@@ -124,7 +122,7 @@ class Common {
     this.cameraDisplacement()
     this.vectCam = new THREE.Vector3(this.p1.x, this.p1.y, this.p1.z)
     this.initCamera()
-    this.initLight()
+    this.addLight()
 
     this.addEventListeners()
 
@@ -134,7 +132,7 @@ class Common {
 
     // Load second group (forest)
     // this.sporesCanMove = false
-    // this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1) })
+    // this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
     // this.currentScene.init(this.scene, this.renderer)
     // this.curveNumber += 1
 
@@ -156,7 +154,6 @@ class Common {
       antialias: true,
       alpha: true
     })
-    this.renderer.toneMapping = ReinhardToneMapping
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(this.size.windowW, this.size.windowH)
   }
@@ -168,15 +165,10 @@ class Common {
     this.scene.add(this.camera.camera)
   }
 
-  initLight () {
+  addLight (scene) {
     this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
     this.light.position.set(162, 162, -406)
-    this.gui = new MainGui()
-    const moonFolder = this.gui.gui.addFolder('Moon')
-    moonFolder.add(this.light.position, 'x', -1000, 1000, 1).name('x')
-    moonFolder.add(this.light.position, 'y', -1000, 1000, 1).name('y')
-    moonFolder.add(this.light.position, 'z', -1000, 1000, 1).name('z')
-    moonFolder.add(this.light, 'intensity', 0, 3, 0.1).name('intensity')
+    this.light.name = 'Pointlight'
 
     this.scene.add(this.light)
   }
@@ -290,13 +282,11 @@ class Common {
     nuxt.$on('startSceneTransition', () => {
       this.pauseRender = true
       this.removeGroup(this.currentScene)
-      switch (store.state.sceneIndex) {
-        case 1:
-          this.sporesCanMove = false
-          this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
-          this.currentScene.init(this.scene, this.renderer)
-          break
-      }
+
+      this.sporesCanMove = false
+      this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
+      this.currentScene.init(this.scene, this.renderer)
+
       this.curveNumber += 1
       this.progression = 0
       store.commit('increaseSceneIndex')
@@ -324,7 +314,7 @@ class Common {
       renderer: this.renderer,
       size: this.size,
       params: {
-        exposure: 1.15, // Set to one when bloom renderer actived
+        exposure: 1.1, // Set to one when bloom renderer actived
         bloomStrength: 1.8,
         bloomThreshold: 0,
         bloomRadius: 0.8

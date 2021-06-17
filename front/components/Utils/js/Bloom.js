@@ -1,4 +1,6 @@
 import * as THREE from 'three'
+import { ReinhardToneMapping } from 'three'
+
 import vertex from '../../../assets/shaders/bloom/bloom.vert'
 import fragment from '../../../assets/shaders/bloom/bloom.frag'
 import MainGui from './MainGui'
@@ -38,6 +40,7 @@ export default class Bloom {
 
     const renderScene = new renderPass.RenderPass(this.scene, this.camera)
 
+    this.renderer.toneMapping = ReinhardToneMapping
     this.renderer.toneMappingExposure = Math.pow(params.exposure, 4.0)
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(this.size.windowW, this.size.windowH)

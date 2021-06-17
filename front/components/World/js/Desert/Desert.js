@@ -203,7 +203,7 @@ export default class Desert {
 
   async addFlowers () {
     let index = -1
-    for (let nbPlants = 0; nbPlants <= 80; nbPlants++) {
+    for (let nbPlants = 0; nbPlants <= 60; nbPlants++) {
       index++
       if (index >= 3) {
         index = 0
@@ -284,10 +284,8 @@ export default class Desert {
         uniforms: THREE.UniformsUtils.clone(THREE.ShaderLib.cube.uniforms),
         vertexShader: THREE.ShaderLib.cube.vertexShader,
         fragmentShader: THREE.ShaderLib.cube.fragmentShader,
-        // depthTest: false,
         depthWrite: false,
         side: THREE.BackSide
-        // toneMapped: false
       })
     )
 
