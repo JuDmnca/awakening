@@ -77,29 +77,33 @@ export default {
       )
     },
     launchEffect () {
-      switch (this.$store.state.desert.counter) {
-        case 0:
-          this.launchTransition(this.$refs.v_1.style, false)
-          break
-        case 1:
-          this.launchTransition(this.$refs.v_2.style, false)
-          break
-        case 2:
-          this.launchTransition(this.$refs.v_3.style, true)
-          break
+      if (this.$store.state.desert.haveClickedOnFlower) {
+        switch (this.$store.state.desert.counter) {
+          case 0:
+            this.launchTransition(this.$refs.v_1.style, false)
+            break
+          case 1:
+            this.launchTransition(this.$refs.v_2.style, false)
+            break
+          case 2:
+            this.launchTransition(this.$refs.v_3.style, true)
+            break
+        }
       }
     },
     unLaunchEffect () {
-      switch (this.$store.state.desert.counter) {
-        case 0:
-          this.unLaunchTransition(this.$refs.v_1.style)
-          break
-        case 1:
-          this.unLaunchTransition(this.$refs.v_2.style)
-          break
-        case 2:
-          this.unLaunchTransition(this.$refs.v_3.style)
-          break
+      if (this.$store.state.desert.haveClickedOnFlower) {
+        switch (this.$store.state.desert.counter) {
+          case 0:
+            this.unLaunchTransition(this.$refs.v_1.style)
+            break
+          case 1:
+            this.unLaunchTransition(this.$refs.v_2.style)
+            break
+          case 2:
+            this.unLaunchTransition(this.$refs.v_3.style)
+            break
+        }
       }
     }
   }

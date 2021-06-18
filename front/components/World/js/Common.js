@@ -263,10 +263,9 @@ class Common {
       // DESERT
       if (this.currentScene.name === 'Desert') {
         this.currentScene.onHold()
-      }
-
-      if (this.sporesCanMove) {
-        this.currentScene.sporesOnHold()
+        if (this.sporesCanMove) {
+          this.currentScene.sporesOnHold()
+        }
       }
     })
 
@@ -345,7 +344,7 @@ class Common {
     if (!this.pauseRender) {
       // Update camera rotation & look at
       if (store && !store.state.cameraIsZoomed) {
-        if (store && store.state.desert.interaction && store.state.sceneIndex === 1) {
+        if (store && store.state.desert.haveClickedOnFlower && store.state.sceneIndex === 1) {
           this.camera.camera.position.lerp(end, 0.1)
         } else {
           this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)
