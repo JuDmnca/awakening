@@ -24,11 +24,10 @@ export default {
     }
   },
   mounted () {
-    console.log(this.step)
     if (this.step === 2) {
-      this.text = 'Vous êtes enivré par le parfum des fleurs.'
+      this.text = 'Tes narines se remplissent du parfum enivrant des fleurs et une sensation de bien-être te submerge.'
     } else {
-      this.text = 'Votre mélodie à éveillé une force chez le papillon.'
+      this.text = 'Votre mélodie à éveillé une force chez le papillon blablabla.'
     }
   }
 }
@@ -47,5 +46,7 @@ export default {
 
 .sentence p {
   color: white;
+  transform: scale(0.7);
+  text-align: center;
 }
 </style>

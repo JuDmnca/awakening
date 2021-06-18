@@ -29,6 +29,7 @@ export default class Forest {
 
     this.forestGroup = new THREE.Group()
     this.forestModel = this.props.model
+    this.animations = this.props.animations
 
     this.crystal = props.crystal
   }
@@ -45,7 +46,8 @@ export default class Forest {
     // Raycaster
     this.raycaster.init(this.camera, renderer)
 
-    console.log(this.forestGroup)
+    this.animations[0].play()
+    this.animations[1].play()
 
     scene.add(this.forestGroup)
   }
@@ -69,10 +71,18 @@ export default class Forest {
     }
   }
 
+  handleClick () {
+    this.animations[0].play()
+    this.animations[1].play()
+  }
+
   addEvents () {
     // nuxt.$on('ColorSetted', () => {
     //   this.crystal.getColor()
     //   this.addColorToCrystal()
+    // })
+    // window.addEventListener('click', () => {
+    //   this.handleClick()
     // })
   }
 

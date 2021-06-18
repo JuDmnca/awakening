@@ -12,12 +12,14 @@ export default class Land {
   constructor (props) {
     this.props = props
     this.models = []
+    this.mixer = this.props.mixer
+    this.animations = this.props.animations
   }
 
   async load () {
     this.loader = new Loader({ models: [Desert, Forest], material: [sandTexture, forestTexture], position: { x: 0, y: 0, z: 0 } })
     for (let i = 0; i < 2; i++) {
-      this.models[i] = await this.loader.defaultInit(i)
+      this.models[i] = await this.loader.defaultInit(i, this.mixer, this.animations)
     }
   }
 

@@ -82,6 +82,8 @@ class Common {
 
     this.crystal = new Crystal()
 
+    this.mixer = []
+
     this.light = null
 
     // General Params
@@ -114,7 +116,8 @@ class Common {
     this.clock.start()
 
     // Load Scene Models
-    this.lands = new Land()
+    this.animations = []
+    this.lands = new Land({ mixer: this.mixer, animations: this.animations })
     this.models = await this.lands.load()
 
     // Init camera
@@ -128,11 +131,6 @@ class Common {
     // Load first group (desert)
     this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
     this.currentScene.init(this.scene, this.renderer)
-
-    // Load second group (forest)
-    // this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
-    // this.currentScene.init(this.scene, this.renderer)
-    // this.curveNumber += 1
 
     this.initBloom()
   }
@@ -212,6 +210,38 @@ class Common {
   mouseMovement (e) {
     this.mouse.x = (e.clientX - this.windowHalf.x)
     this.mouse.y = (e.clientY - this.windowHalf.y)
+
+    // DESERT
+    if (this.currentScene.name === 'Desert') {
+      this.currentScene.onCursorMovement(e)
+      if (store.state.desert.haveClickedOnFlower) {
+        this.currentScene.sporesOnMouseMove(e)
+      }
+    }
+  }
+
+  wheelMovement (e) {
+    // DESERT
+    if (this.currentScene.name === 'Desert') {
+      this.currentScene.onWheelMovement(e)
+    }
+  }
+
+  mouseDown () {
+    // DESERT
+    if (this.currentScene.name === 'Desert') {
+      this.currentScene.onHold()
+      if (store.state.desert.haveClickedOnFlower) {
+        this.currentScene.sporesOnHold()
+      }
+    }
+  }
+
+  mouseUp () {
+    // DESERT
+    if (store.state.desert.haveClickedOnFlower && this.currentScene.name === 'Desert') {
+      this.currentScene.sporesOnMouseUp()
+    }
   }
 
   resize () {
@@ -224,15 +254,6 @@ class Common {
   addEventListeners () {
     window.addEventListener('mousemove', (e) => {
       this.mouseMovement(e)
-
-      // DESERT
-      if (store.state.desert.haveClickedOnFlower) {
-        this.currentScene.sporesOnMouseMove(e)
-      }
-      // Disable animation if mousemove on desert scene
-      if (this.currentScene.name === 'Desert') {
-        this.currentScene.onCursorMovement(e)
-      }
     })
 
     window.addEventListener('resize', () => {
@@ -244,29 +265,16 @@ class Common {
         if (this.curves[this.curveNumber] !== undefined) {
           this.moveCamera(e)
         }
-
-        // DESERT
-        if (this.currentScene.name === 'Desert') {
-          this.currentScene.onWheelMovement(e)
-        }
+        this.wheelMovement(e)
       })
     })
 
     window.addEventListener('mousedown', () => {
-      // DESERT
-      if (this.currentScene.name === 'Desert') {
-        this.currentScene.onHold()
-        if (store.state.desert.haveClickedOnFlower) {
-          this.currentScene.sporesOnHold()
-        }
-      }
+      this.mouseDown()
     })
 
     window.addEventListener('mouseup', () => {
-      // DESERT
-      if (store.state.desert.haveClickedOnFlower) {
-        this.currentScene.sporesOnMouseUp()
-      }
+      this.mouseUp()
     })
   }
 
@@ -275,7 +283,12 @@ class Common {
       this.pauseRender = true
       this.removeGroup(this.currentScene)
 
-      this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
+      this.currentScene = new Forest({
+        camera: this.camera,
+        model: this.lands.get(1),
+        crystal: this.crystal,
+        animations: this.animations
+      })
       this.currentScene.init(this.scene, this.renderer)
 
       this.curveNumber += 1
@@ -347,6 +360,10 @@ class Common {
       this.camera.camera.lookAt(this.camLook)
 
       this.currentScene.render(this.time.total, this.time.delta, this.progression)
+
+      if (this.mixer.length > 0 && store.state.sceneIndex === 2) {
+        this.mixer[0].update(this.time.delta)
+      }
 
       // Render
       this.bloom.render()

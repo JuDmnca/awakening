@@ -1,5 +1,5 @@
 <template>
-  <section class="question">
+  <section class="mic-question">
     <label ref="label" class="">
       Nous autorisez-vous à activer votre micro afin de réaliser <br> des interactions au cours de cette expérience ?
     </label>
@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style>
-.question {
+.mic-question {
   position: absolute;
   width: 1100px;
   top: 50%;

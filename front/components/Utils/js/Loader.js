@@ -23,7 +23,7 @@ export default class Loader {
     this.loader.setDRACOLoader(dracoLoader)
   }
 
-  defaultInit (index) {
+  defaultInit (index, mixer, animations) {
     const promise = new Promise((resolve) => {
       const position = this.props.position
       const materialImported = this.props.material[index]
@@ -50,6 +50,15 @@ export default class Loader {
             gltf.scene.children[0].children[0].material = materials[0]
             gltf.scene.children[0].children[1].material = materials[0]
           }
+
+          if (gltf.animations) {
+            mixer.push(new THREE.AnimationMixer(gltf.scene))
+            gltf.animations.forEach((clip) => {
+              const animation = mixer[0].clipAction(clip)
+              animations.push(animation)
+            })
+          }
+
           resolve(gltf.scene)
         }
       )
