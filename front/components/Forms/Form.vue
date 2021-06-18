@@ -48,6 +48,11 @@
       <button>
         {{ confirmation }}
       </button>
+      <transition name="fade">
+        <p v-if="errorMessage" class="error_message">
+          {{ errorMessage }}
+        </p>
+      </transition>
     </div>
   </div>
 </template>
@@ -81,7 +86,8 @@ export default {
   data () {
     return {
       question: '',
-      input: ''
+      input: '',
+      errorMessage: ''
     }
   },
   mounted () {
@@ -134,13 +140,25 @@ export default {
           if (colors[i].checked) { data = colors[i].id }
         }
       }
+
+      // UNCOMMENT ON PROD
+      // if (!data && this.step === 1) {
+      //   this.errorMessage = 'Il faut choisir une couleur pour continuer le voyage'
+      // } else if (!data) {
+      //   this.errorMessage = 'Il faut répondre pour continuer le voyage'
+      // } else if (data) {
+      //   this.errorMessage = ''
+      //   this.$emit('validation', data)
+      // }
+
+      // COMMENT ON PROD
       this.$emit('validation', data)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 .form-wrapper {
   z-index: 5;
   width: 100%;
@@ -177,6 +195,11 @@ input::placeholder {
   opacity: 0.4;
 }
 
+.error_message {
+  position: absolute;
+  bottom: 130%;
+}
+
 .colors {
   width: 70%;
   display: flex;
@@ -193,6 +216,11 @@ input[type="radio"] {
   width: 20px;
   height: 20px;
   border-radius: 50%;
+}
+
+.button-wrapper {
+  text-align: center;
+  width: 300px;
 }
 
 .selected {
