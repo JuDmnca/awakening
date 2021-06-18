@@ -35,7 +35,7 @@
       </div>
     </transition>
     <transition name="fade">
-      <FormsQuestion
+      <TransitionQuestion
         v-if="showName"
         :label="'Comment voulez-vous vous appeler ?'"
         :step="0"
@@ -46,7 +46,7 @@
         v-if="showMic"
         @done="nextQuestion"
       />
-      <FormsQuestion
+      <TransitionQuestion
         v-if="showColor"
         :label="'Quelle est la couleur de votre humeur aujourd’hui ?'"
         :step="1"

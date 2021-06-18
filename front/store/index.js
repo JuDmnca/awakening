@@ -7,11 +7,10 @@ const state = () => ({
     color: '',
     colorName: '',
     smell: '',
-    taste: '',
     sound: ''
   },
   colorPalette: null,
-  worldRotation: null,
+  transition: false,
   sceneIndex: 1,
   durationHold: 1.5,
   cameraZoomed: false,
@@ -71,14 +70,8 @@ const mutations = {
   setUserSmell (state, resp) {
     state.user.smell = resp
   },
-  setUserTaste (state, resp) {
-    state.user.taste = resp
-  },
   setUserSound (state, resp) {
     state.user.sound = resp
-  },
-  updateWorldRotation (state, resp) {
-    state.worldRotation = resp
   },
   increaseSceneIndex (state) {
     state.sceneIndex++

@@ -1,10 +1,7 @@
 <template>
   <section class="question" :style="style">
-    <transition name="fadeCanvas">
-      <FormsBackground v-if="!intro" />
-    </transition>
     <transition name="fade">
-      <FormsForm
+      <TransitionForm
         :placeholder="placeholder"
         :step="step"
         :label="label"
@@ -43,11 +40,6 @@ export default {
       type: String,
       default: '',
       required: false
-    },
-    intro: {
-      type: Boolean,
-      default: true,
-      required: false
     }
   },
   async asyncData ({ app }) {
@@ -66,6 +58,9 @@ export default {
       return {
         color: this.color
       }
+    },
+    question () {
+      return this.$store.state.question
     }
   },
   methods: {
@@ -91,8 +86,7 @@ export default {
           break
       }
       if (this.step > 1) {
-        this.$nuxt.$emit('endSceneTransition')
-        this.$nuxt.$emit('questionHidden')
+        this.$emit('validation')
       }
     },
     other () {
@@ -111,17 +105,14 @@ export default {
 </script>
 
 <style>
-    .question {
-        position: absolute;
-        width: 100%;
-        height: 100vh;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 3;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
+  .question {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 </style>

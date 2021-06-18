@@ -7,7 +7,7 @@
     <UI-About />
     <Nuxt />
     <World />
-    <Subtitle />>
+    <Subtitle />
   </div>
 </template>
 

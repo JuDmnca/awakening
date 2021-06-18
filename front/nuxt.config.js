@@ -27,8 +27,8 @@ export default {
   components: [
     '~/components/',
     {
-      path: '~/components/Forms/',
-      prefix: 'Forms'
+      path: '~/components/Transition/',
+      prefix: 'Transition'
     },
     {
       path: '~/components/UI/',

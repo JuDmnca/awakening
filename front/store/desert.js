@@ -27,15 +27,9 @@ const mutations = {
   },
   updateFRotation (state, resp) {
     state.fRotation = new THREE.Vector3(-resp.x, 0, resp.z)
-    if (resp.euler !== undefined) {
-      state.fRotation = state.fRotation.applyEuler(resp.euler)
-    }
   },
   updateSRotation (state, resp) {
     state.sRotation = new THREE.Vector3(-resp.x, 0, resp.z)
-    if (resp.euler !== undefined) {
-      state.sRotation = state.sRotation.applyEuler(resp.euler)
-    }
   },
   toggleInteraction (state) {
     state.interaction = !state.interaction

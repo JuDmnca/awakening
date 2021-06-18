@@ -45,6 +45,8 @@ export default class Forest {
     // Raycaster
     this.raycaster.init(this.camera, renderer)
 
+    console.log(this.forestGroup)
+
     scene.add(this.forestGroup)
   }
 

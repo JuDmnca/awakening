@@ -6,6 +6,7 @@
 import Scene from './js/Scene'
 
 export default {
+  name: 'Background',
   data () {
     return {
       circles: []

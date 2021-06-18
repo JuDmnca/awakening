@@ -1,16 +1,14 @@
 <template>
   <transition name="fade">
     <section class="scene rel">
-      <canvas id="canvas" ref="canvas" />
-      <FormsQuestion
-        v-if="isVisibleQ"
-        :label="label"
-        :step="step"
-        :placeholder="placeholder"
-        :confirmation="confirmation"
-        :intro="false"
-      />
-      <EffectsVignettage v-if="isVisibleV" @onscreen="updateScene" />
+      <canvas id="canvas" ref="canvas" style="z-index: -2" />
+      <transition name="fade" mode="out-in">
+        <TransitionContainer
+          v-if="transitionVisible"
+          :step="step"
+        />
+      </transition>
+      <TransitionVignettage v-if="vignettageVisible" @onscreen="updateScene" />
       <!-- Just to test icons -->
       <!-- <UI-IconsSound width="40" height="40" iconColor="#fff"/> -->
     </section>
@@ -24,8 +22,8 @@ export default {
   name: 'Scene',
   data () {
     return {
-      visibleQ: false,
-      visibleV: true,
+      transition: false,
+      vignettage: true,
       label: '',
       placeholder: '',
       confirmation: '',
@@ -33,11 +31,11 @@ export default {
     }
   },
   computed: {
-    isVisibleQ () {
-      return this.visibleQ
+    transitionVisible () {
+      return this.transition
     },
-    isVisibleV () {
-      return this.visibleV
+    vignettageVisible () {
+      return this.vignettage
     }
   },
   mounted () {
@@ -45,24 +43,15 @@ export default {
     new Scene({
       $canvas: this.$refs.canvas
     })
-    this.$nuxt.$on('questionVisible', (step) => {
+    this.$nuxt.$on('startTransition', (step) => {
       this.step = step
-      if (step === 2) {
-        this.label = 'Quelle odeur vous a déjà procuré une telle sensation ?'
-        this.placeholder = 'La vanille'
-        this.confirmation = 'Confirmer'
-      } else if (step === 3) {
-        this.label = 'Goût'
-      } else {
-        this.label = 'Son'
-      }
-      this.visibleQ = true
+      this.transition = true
+      setTimeout(() => {
+        this.vignettage = false
+      }, 4000)
     })
-    this.$nuxt.$on('questionHidden', () => {
-      this.visibleQ = false
-    })
-    this.$nuxt.$on('endSceneTransition', () => {
-      this.visibleV = false
+    this.$nuxt.$on('endTransition', () => {
+      this.transition = false
     })
   },
   methods: {

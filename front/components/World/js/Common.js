@@ -205,11 +205,6 @@ class Common {
     this.currentScene.progression = this.progression
     this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
 
-    if (store && store.state.sceneIndex === 1) {
-      const euler = this.camera.camera.rotation.clone()
-      store.commit('updateWorldRotation', euler)
-    }
-
     // Enable spores movement and inhale if end of path
     if (store.state.sceneIndex === 1 && this.progression >= this.enableSporesElevationAt && this.sporesCanMove === false) {
       this.sporesCanMove = true

@@ -32,15 +32,10 @@ class RotationControl {
 
   rotateElement (x, z, type) {
     if (store) {
-      let euler
-      if (store.state.desert.worldRotation) {
-        euler = store.state.desert.worldRotation.clone()
-        euler.x = 0
-      }
       if (type === 'stem') {
-        store.commit('desert/updateSRotation', { x, z, euler })
+        store.commit('desert/updateSRotation', { x, z })
       } else {
-        store.commit('desert/updateFRotation', { x, z, euler })
+        store.commit('desert/updateFRotation', { x, z })
       }
     }
   }

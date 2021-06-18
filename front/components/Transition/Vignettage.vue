@@ -107,24 +107,33 @@ export default {
 </script>
 
 <style>
+.v {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+}
 .v_1, .v_2, .v_3 {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .v_1 {
-    opacity: 0;
-    filter: blur(80px);
+  opacity: 0;
+  filter: blur(80px);
 }
 
 .v_2 {
-    opacity: 0;
-    filter: blur(80px);
+  opacity: 0;
+  filter: blur(80px);
 }
 
 .v_3 {
-    opacity: 0;
+  opacity: 0;
 }
 </style>
