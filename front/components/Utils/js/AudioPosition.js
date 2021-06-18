@@ -29,7 +29,6 @@ export default class AudioPosition {
       this.sound.setVolume(this.props.volume)
       nuxt.$on('mute', () => {
         this.sound.setVolume(0)
-        console.log('muteeee')
       })
       nuxt.$on('unMute', () => {
         this.sound.setVolume(this.props.volume)
