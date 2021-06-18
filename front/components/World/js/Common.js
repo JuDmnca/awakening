@@ -99,7 +99,6 @@ class Common {
     this.bloom = null
 
     this.gui = null
-    this.sporesCanMove = false
   }
 
   async init ($canvas) {
@@ -131,7 +130,6 @@ class Common {
     this.currentScene.init(this.scene, this.renderer)
 
     // Load second group (forest)
-    // this.sporesCanMove = false
     // this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
     // this.currentScene.init(this.scene, this.renderer)
     // this.curveNumber += 1
@@ -209,11 +207,6 @@ class Common {
       const euler = this.camera.camera.rotation.clone()
       store.commit('updateWorldRotation', euler)
     }
-
-    // Enable spores movement and inhale if end of path
-    if (store.state.sceneIndex === 1 && this.progression >= this.enableSporesElevationAt && this.sporesCanMove === false) {
-      this.sporesCanMove = true
-    }
   }
 
   mouseMovement (e) {
@@ -233,7 +226,7 @@ class Common {
       this.mouseMovement(e)
 
       // DESERT
-      if (this.sporesCanMove) {
+      if (store.state.desert.haveClickedOnFlower) {
         this.currentScene.sporesOnMouseMove(e)
       }
       // Disable animation if mousemove on desert scene
@@ -263,7 +256,7 @@ class Common {
       // DESERT
       if (this.currentScene.name === 'Desert') {
         this.currentScene.onHold()
-        if (this.sporesCanMove) {
+        if (store.state.desert.haveClickedOnFlower) {
           this.currentScene.sporesOnHold()
         }
       }
@@ -271,7 +264,7 @@ class Common {
 
     window.addEventListener('mouseup', () => {
       // DESERT
-      if (this.sporesCanMove) {
+      if (store.state.desert.haveClickedOnFlower) {
         this.currentScene.sporesOnMouseUp()
       }
     })
@@ -282,7 +275,6 @@ class Common {
       this.pauseRender = true
       this.removeGroup(this.currentScene)
 
-      this.sporesCanMove = false
       this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
       this.currentScene.init(this.scene, this.renderer)
 
