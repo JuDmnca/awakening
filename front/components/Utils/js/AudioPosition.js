@@ -23,8 +23,8 @@ export default class AudioPosition {
     const audioLoader = new THREE.AudioLoader()
     audioLoader.load(this.url, (buffer) => {
       this.sound.setBuffer(buffer)
-      this.sound.setRefDistance(0.1)
-      this.sound.setMaxDistance(0.1)
+      this.sound.setRefDistance(this.props.refDistance)
+      this.sound.setMaxDistance(2)
       this.sound.setLoop(this.props.loop)
       this.sound.setVolume(this.props.volume)
       nuxt.$on('mute', () => {
