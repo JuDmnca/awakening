@@ -97,7 +97,10 @@ export default class Desert {
 
     this.inhaleIsCompleted = false
 
-    this.haveClickedOnFlower = false
+    // DEV : Set true
+    // PROD : Set false
+    this.canClickOnFlowers = true
+
     this.sporesSoundAlreadyPlayed = false
     this.intersectIsEnable = false
   }
@@ -124,9 +127,34 @@ export default class Desert {
       this.swooshSound.sound.play()
       this.intersectIsEnable = true
       setTimeout(() => {
-        store.commit('setSubtitle', 'Test de sous-titre')
+        store.commit('setSubtitle', 'Notre esprit peut parfois nous sembler vide…')
         nuxt.$emit('toggleShowSubtitle')
       }, 3000)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 8000)
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Et la perception de nos sens affaiblie.')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 8500)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 13500)
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Mais il suffit d’une stimulation singulière…')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 14000)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 19000)
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Pour redonner vie à notre monde intérieur.')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 19500)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+        this.canClickOnFlowers = true
+      }, 24500)
     })
 
     // RAYCASTER
@@ -334,7 +362,7 @@ export default class Desert {
     this.inhale()
 
     // If we find how to do a clean camera zoom
-    // if (store.state.desert.interaction) {
+    // if (store.state.desert.haveClickedOnFlowers) {
     //   nuxt.$emit('zoomCamera', { position: { x: -41, y: 1, z: 1.4 } })
     // }
   }
@@ -363,8 +391,8 @@ export default class Desert {
   }
 
   handleClick () {
-    if (this.intersects.length > 0 && !store.state.desert.interaction) {
-      store.commit('desert/toggleInteraction', true)
+    if (this.intersects.length > 0 && !store.state.desert.haveClickedOnFlower) {
+      store.commit('desert/setHaveClickedOnFlowers')
     }
   }
 
@@ -384,7 +412,7 @@ export default class Desert {
       )
 
       // Fairy dust sound
-      if (this.haveClickedOnFlower && !this.sporesSoundAlreadyPlayed) {
+      if (store.state.desert.haveClickedOnFlower && !this.sporesSoundAlreadyPlayed) {
         this.sporesSound.sound.play()
         this.sporesSoundAlreadyPlayed = true
       }
@@ -400,7 +428,7 @@ export default class Desert {
           ease: 'power4.inOut',
           onComplete: () => {
             this.inhaleIsCompleted = true
-            if (store.state.desert.counter < 3) {
+            if (store.state.desert.counter < 3 && store.state.desert.haveClickedOnFlower) {
               this.noteSound.sound.play()
             } else if (store.state.desert.counter === 3) {
               this.accordSound.sound.play()
@@ -423,7 +451,7 @@ export default class Desert {
 
       // Sound
       // If raycaster is empty
-      if (this.haveClickedOnFlower) {
+      if (store.state.desert.haveClickedOnFlower) {
         this.inhaleSound.sound.play()
         if (this.exhaleSound.sound.isPlaying) {
           this.exhaleSound.sound.stop()
@@ -448,14 +476,11 @@ export default class Desert {
 
     // Sound
     // If raycaster is empty
-    if (this.haveClickedOnFlower) {
+    if (store.state.desert.haveClickedOnFlower) {
       if (this.inhaleSound.sound.isPlaying) {
         this.inhaleSound.sound.stop()
       }
       this.exhaleSound.sound.play()
-    }
-    if (this.intersects.length > 0 && !store.state.desert.interaction && !this.haveClickedOnFlower) {
-      this.haveClickedOnFlower = true
     }
   }
 
@@ -464,7 +489,7 @@ export default class Desert {
       this.addEvents()
       this.events = true
     }
-    if (this.plantsGroup.children[0] && this.progression > 0.8) {
+    if (this.plantsGroup.children[0] && this.progression > 0.8 && this.canClickOnFlowers) {
       this.intersects = this.raycaster.render(this.plantsGroup)
     }
     // Indications

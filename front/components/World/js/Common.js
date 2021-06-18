@@ -99,7 +99,6 @@ class Common {
     this.bloom = null
 
     this.gui = null
-    this.sporesCanMove = false
   }
 
   async init ($canvas) {
@@ -131,7 +130,6 @@ class Common {
     this.currentScene.init(this.scene, this.renderer)
 
     // Load second group (forest)
-    // this.sporesCanMove = false
     // this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
     // this.currentScene.init(this.scene, this.renderer)
     // this.curveNumber += 1
@@ -228,7 +226,7 @@ class Common {
       this.mouseMovement(e)
 
       // DESERT
-      if (this.sporesCanMove) {
+      if (store.state.desert.haveClickedOnFlower) {
         this.currentScene.sporesOnMouseMove(e)
       }
       // Disable animation if mousemove on desert scene
@@ -258,16 +256,15 @@ class Common {
       // DESERT
       if (this.currentScene.name === 'Desert') {
         this.currentScene.onHold()
-      }
-
-      if (this.sporesCanMove) {
-        this.currentScene.sporesOnHold()
+        if (store.state.desert.haveClickedOnFlower) {
+          this.currentScene.sporesOnHold()
+        }
       }
     })
 
     window.addEventListener('mouseup', () => {
       // DESERT
-      if (this.sporesCanMove) {
+      if (store.state.desert.haveClickedOnFlower) {
         this.currentScene.sporesOnMouseUp()
       }
     })
@@ -278,7 +275,6 @@ class Common {
       this.pauseRender = true
       this.removeGroup(this.currentScene)
 
-      this.sporesCanMove = false
       this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
       this.currentScene.init(this.scene, this.renderer)
 
@@ -340,7 +336,7 @@ class Common {
     if (!this.pauseRender) {
       // Update camera rotation & look at
       if (store && !store.state.cameraIsZoomed) {
-        if (store && store.state.desert.interaction && store.state.sceneIndex === 1) {
+        if (store && store.state.desert.haveClickedOnFlower && store.state.sceneIndex === 1) {
           this.camera.camera.position.lerp(end, 0.1)
         } else {
           this.vectCam.set(this.p1.x, this.p1.y, this.p1.z)

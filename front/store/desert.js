@@ -9,7 +9,7 @@ const state = () => ({
   fRotation: null,
   sRotation: null,
   isMuted: false,
-  interaction: false
+  haveClickedOnFlower: false
 })
 
 const actions = {
@@ -31,8 +31,8 @@ const mutations = {
   updateSRotation (state, resp) {
     state.sRotation = new THREE.Vector3(-resp.x, 0, resp.z)
   },
-  toggleInteraction (state) {
-    state.interaction = !state.interaction
+  setHaveClickedOnFlowers (state) {
+    state.haveClickedOnFlower = true
   }
 }
 
