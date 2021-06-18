@@ -21,8 +21,7 @@ export default {
   },
   mounted () {
     this.$nuxt.$on('toggleShowSubtitle', () => {
-      console.log('hello subtitle : ', this.show)
-      // this.show = !this.show
+      this.show = !this.show
     })
   },
   methods: {

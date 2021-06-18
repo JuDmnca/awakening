@@ -124,9 +124,33 @@ export default class Desert {
       this.swooshSound.sound.play()
       this.intersectIsEnable = true
       setTimeout(() => {
-        store.commit('setSubtitle', 'Test de sous-titre')
+        store.commit('setSubtitle', 'Notre esprit peut parfois nous sembler vide…')
         nuxt.$emit('toggleShowSubtitle')
       }, 3000)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 8000)
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Et la perception de nos sens affaiblie.')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 8500)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 13500)
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Mais il suffit d’une stimulation singulière…')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 14000)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 19000)
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Pour redonner vie à notre monde intérieur.')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 19500)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 24500)
     })
 
     // RAYCASTER
