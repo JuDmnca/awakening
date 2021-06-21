@@ -23,7 +23,7 @@ export default class SoundLoader {
     this.audioLoader = new THREE.AudioLoader()
 
     this.sound = new THREE.Audio(this.listener)
-    this.audioLoader.load(this.audioFile.default, (buffer) => {
+    this.audioLoader.load(this.audioFile, (buffer) => {
       this.sound.setBuffer(buffer)
       this.sound.setLoop(this.props.loop)
       this.sound.setVolume(this.props.volume)

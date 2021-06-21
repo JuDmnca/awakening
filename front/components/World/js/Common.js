@@ -281,6 +281,7 @@ class Common {
   addTransitionEvent () {
     nuxt.$on('startSceneTransition', () => {
       this.pauseRender = true
+      this.currentScene.removeAllSound()
       this.removeGroup(this.currentScene)
 
       this.currentScene = new Forest({
