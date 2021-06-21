@@ -72,8 +72,9 @@ export default class Desert {
     this.exhaleSound = null
     this.ambiantFile = require('../../../../assets/sounds/intro/vent.mp3')
     this.swooshFile = require('../../../../assets/sounds/intro/swoosh.mp3')
-    this.noteFile = require('../../../../assets/sounds/desert/note.mp3')
-    this.accordFile = require('../../../../assets/sounds/desert/accord.mp3')
+    this.note1File = require('../../../../assets/sounds/desert/note-1.mp3')
+    this.note2File = require('../../../../assets/sounds/desert/note-2.mp3')
+    this.note3File = require('../../../../assets/sounds/desert/note-3.mp3')
     this.inhaleFile = require('../../../../assets/sounds/desert/inhale.mp3')
     this.exhaleFile = require('../../../../assets/sounds/desert/exhale.mp3')
     this.sporesPlayer = null
@@ -208,15 +209,16 @@ export default class Desert {
 
   async addSound (scene) {
     this.sound = new Sound({ camera: this.camera, audioFile: this.ambiantFile, loop: true, canToggle: true, volume: 0.02 })
-    this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false, volume: 0.1 })
-    this.noteSound = new Sound({ camera: this.camera, audioFile: this.noteFile, loop: false, canToggle: false, volume: 1 })
-    this.accordSound = new Sound({ camera: this.camera, audioFile: this.accordFile, loop: false, canToggle: false, volume: 1 })
-    this.inhaleSound = new Sound({ camera: this.camera, audioFile: this.inhaleFile, loop: false, volume: 1 })
-    this.exhaleSound = new Sound({ camera: this.camera, audioFile: this.exhaleFile, loop: false, volume: 1 })
+    this.swooshSound = new Sound({ camera: this.camera, audioFile: this.swooshFile, loop: false, canToggle: false, volume: 0.05 })
+    this.note1Sound = new Sound({ camera: this.camera, audioFile: this.note1File, loop: false, canToggle: false, volume: 1 })
+    this.note2Sound = new Sound({ camera: this.camera, audioFile: this.note2File, loop: false, canToggle: false, volume: 1 })
+    this.note3Sound = new Sound({ camera: this.camera, audioFile: this.note3File, loop: false, canToggle: false, volume: 1 })
+    this.inhaleSound = new Sound({ camera: this.camera, audioFile: this.inhaleFile, loop: false, volume: 0.7 })
+    this.exhaleSound = new Sound({ camera: this.camera, audioFile: this.exhaleFile, loop: false, volume: 0.7 })
 
     // Init sound spacialization
     this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
-    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true, volume: 1, refDistance: 2 })
+    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true, volume: 12, refDistance: 0.03 })
     this.soundCube.cube.add(this.crystalSound.sound)
     this.sporesSound = await new AudioPosition({ url: fairyDustSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 5, refDistance: 1 })
   }
@@ -428,10 +430,12 @@ export default class Desert {
           ease: 'power4.inOut',
           onComplete: () => {
             this.inhaleIsCompleted = true
-            if (store.state.desert.counter < 3 && store.state.desert.haveClickedOnFlower) {
-              this.noteSound.sound.play()
+            if (store.state.desert.counter === 1 && store.state.desert.haveClickedOnFlower) {
+              this.note1Sound.sound.play()
+            } else if (store.state.desert.counter === 2 && store.state.desert.haveClickedOnFlower) {
+              this.note2Sound.sound.play()
             } else if (store.state.desert.counter === 3) {
-              this.accordSound.sound.play()
+              this.note3Sound.sound.play()
             }
           }
         }
