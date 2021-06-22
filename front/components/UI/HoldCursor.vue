@@ -119,7 +119,7 @@ export default {
       )
     },
     increaseCounter () {
-      if (this.hold && this.$store.state.desert.haveClickedOnFlower) {
+      if (this.hold && this.$store.state.desert.haveClickedOnFlower && this.$store.state.desert.canInhaleOnHold) {
         if (this.$store.state.desert.counter !== 3) {
           this.$store.commit('desert/increaseCounter')
         }

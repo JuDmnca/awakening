@@ -77,7 +77,7 @@ export default {
       )
     },
     launchEffect () {
-      if (this.$store.state.desert.haveClickedOnFlower) {
+      if (this.$store.state.desert.haveClickedOnFlower && this.$store.state.desert.canInhaleOnHold) {
         switch (this.$store.state.desert.counter) {
           case 0:
             this.launchTransition(this.$refs.v_1.style, false)

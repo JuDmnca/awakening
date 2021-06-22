@@ -387,9 +387,11 @@ export default class Desert {
   }
 
   sporesOnHold () {
-    this.hold = true
-    this.sporesElevation += 1000
-    this.inhale()
+    if (store.state.desert.canInhaleOnHold) {
+      this.hold = true
+      this.sporesElevation += 1000
+      this.inhale()
+    }
 
     // If we find how to do a clean camera zoom
     // if (store.state.desert.haveClickedOnFlowers) {
@@ -404,13 +406,16 @@ export default class Desert {
     if (this.lastMouseX > -1) {
       this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY))
     }
+    if (this.sporesElevation > 10000 && !store.state.desert.canInhaleOnHold) {
+      store.commit('desert/setCanInhaleOnHold', true)
+    }
     this.lastMouseX = mouseX
     this.lastMouseY = mouseY
     this.inhale({ mousemove: true })
   }
 
   sporesOnMouseUp () {
-    if (this.inhaleIsCompleted === false) {
+    if (this.inhaleIsCompleted === false && store.state.desert.canInhaleOnHold) {
       this.exhale()
     } else {
       this.inhaleIsCompleted = false
@@ -450,6 +455,7 @@ export default class Desert {
       // Movement on hold
       gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
       gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
+      console.log('hold')
       gsap.to(
         this.spores.particles.material.uniforms.uYSpeed,
         {
@@ -457,6 +463,7 @@ export default class Desert {
           duration: store.state.durationHold,
           ease: 'power4.inOut',
           onComplete: () => {
+            console.log('hold ended')
             this.inhaleIsCompleted = true
             if (store.state.desert.counter === 1 && store.state.desert.haveClickedOnFlower) {
               this.note1Sound.sound.play()

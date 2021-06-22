@@ -9,7 +9,9 @@ const state = () => ({
   fRotation: null,
   sRotation: null,
   isMuted: false,
-  haveClickedOnFlower: false
+  haveClickedOnFlower: false,
+  // PROD : SET TO FALSE
+  canInhaleOnHold: true
 })
 
 const actions = {
@@ -33,6 +35,9 @@ const mutations = {
   },
   setHaveClickedOnFlowers (state) {
     state.haveClickedOnFlower = true
+  },
+  setCanInhaleOnHold (state, resp) {
+    state.canInhaleOnHold = resp
   }
 }
 
