@@ -33,6 +33,10 @@ export default {
     {
       path: '~/components/UI/',
       prefix: 'UI-'
+    },
+    {
+      path: '~/components/Bars/',
+      prefix: 'Bar-'
     }
   ],
 
