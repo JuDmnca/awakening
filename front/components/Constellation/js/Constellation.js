@@ -237,7 +237,6 @@ class Constellation {
       gemMesh.layers.enable(1)
       gemMesh.datas = store.state.constellation.dataUsers[i]
       // gemMesh.material.color = new THREE.Color('#29ff3e')
-      console.log(gemMesh.datas.color)
       switch (gemMesh.datas.color) {
         case 'blue':
           gemMesh.material.color = new THREE.Color('#2461ff')

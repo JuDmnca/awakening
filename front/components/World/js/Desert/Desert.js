@@ -455,7 +455,6 @@ export default class Desert {
       // Movement on hold
       gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
       gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
-      console.log('hold')
       gsap.to(
         this.spores.particles.material.uniforms.uYSpeed,
         {
@@ -463,7 +462,6 @@ export default class Desert {
           duration: store.state.durationHold,
           ease: 'power4.inOut',
           onComplete: () => {
-            console.log('hold ended')
             this.inhaleIsCompleted = true
             if (store.state.desert.counter === 1 && store.state.desert.haveClickedOnFlower) {
               this.note1Sound.sound.play()
