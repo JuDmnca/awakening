@@ -8,6 +8,7 @@
     <Nuxt />
     <World />
     <Subtitle />
+    <Bar-Progress />
   </div>
 </template>
 

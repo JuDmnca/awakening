@@ -111,6 +111,7 @@ export default class Desert {
 
     this.sporesSoundAlreadyPlayed = false
     this.intersectIsEnable = false
+    this.cuddleIsCompleted = false
   }
 
   init (scene, renderer) {
@@ -405,9 +406,14 @@ export default class Desert {
     const mouseY = e.pageY
     if (this.lastMouseX > -1) {
       this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY))
-    }
-    if (this.sporesElevation > 10000 && !store.state.desert.canInhaleOnHold) {
-      store.commit('desert/setCanInhaleOnHold', true)
+      const sporesPercentage = this.sporesElevation * 100 / 8000
+      if (sporesPercentage < 150) {
+        nuxt.$emit('sporesElevation', sporesPercentage)
+      }
+      if (sporesPercentage > 100 && !this.cuddleIsCompleted) {
+        this.note3Sound.sound.play()
+        this.cuddleIsCompleted = true
+      }
     }
     this.lastMouseX = mouseX
     this.lastMouseY = mouseY
@@ -489,6 +495,8 @@ export default class Desert {
       // Sound
       // If raycaster is empty
       if (store.state.desert.haveClickedOnFlower) {
+        // eslint-disable-next-line no-unused-expressions
+        this.inhaleSound.sound.isPlaying ? this.inhaleSound.sound.stop() : null
         this.inhaleSound.sound.play()
         if (this.exhaleSound.sound.isPlaying) {
           this.exhaleSound.sound.stop()
@@ -517,6 +525,8 @@ export default class Desert {
       if (this.inhaleSound.sound.isPlaying) {
         this.inhaleSound.sound.stop()
       }
+      // eslint-disable-next-line no-unused-expressions
+      this.exhaleSound.sound.isPlaying ? this.exhaleSound.sound.stop() : null
       this.exhaleSound.sound.play()
     }
   }
