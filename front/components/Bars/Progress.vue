@@ -1,7 +1,12 @@
 <template>
-  <transition name="fade">
-    <div v-if="show" ref="progress" class="progress" />
-  </transition>
+  <div class="container">
+    <transition name="fade">
+      <div v-if="show" class="progress progress--grey" />
+    </transition>
+    <transition name="fade">
+      <div v-if="show" ref="progressWhite" class="progress progress--white" />
+    </transition>
+  </div>
 </template>
 
 <script>
@@ -13,15 +18,17 @@ export default {
     }
   },
   mounted () {
-    this.$nuxt.$on('swoosh', () => {
-      this.$refs.progress.style.backgroundColor = this.$store.state.user.color
-    })
+    // IF WE WANT TO USE THE COLOR OF USER FOR THE PROGRESS BAR
+    // this.$nuxt.$on('swoosh', () => {
+    //   this.$refs.progressWhite.style.backgroundColor = this.$store.state.user.color
+    // })
     this.$nuxt.$on('sporesElevation', (sporesLevel) => {
       if (sporesLevel < 100) {
-        this.$refs.progress.style.width = sporesLevel + 'vw'
+        this.$refs.progressWhite.style.width = sporesLevel * 2.5 + 'px'
       } else {
-        this.$refs.progress.style.width = '100vw'
+        this.$refs.progressWhite.style.width = '250px'
         this.$store.commit('desert/setCanInhaleOnHold', true)
+        // this.show = false
       }
     })
     this.$nuxt.$on('startTransition', () => {
@@ -35,12 +42,47 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  width: 200px;
+  display: flex;
+  margin: auto;
+}
+
 .progress {
     position: absolute;
     border-radius: initial;
-    bottom: 0;
-    left: 0;
-    height: 5px;
-    width: 0vw;
+    width: 250px;
+    background: grey;
+    margin: auto;
+    bottom: 55px;
+    height: 6px;
+}
+
+.progress--grey::after {
+    position: absolute;
+    content: '';
+    width: 8px;
+    height: 8px;
+    border: solid 1px white;
+    box-sizing: border-box;
+    border-radius: 9999px;
+    left: -33px;
+    top: -1px;
+}
+
+.progress--grey::before {
+    position: absolute;
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 9999px;
+    right: -33px;
+    top: -1px;
+}
+
+.progress--white {
+  background: white;
+  width: 0%;
 }
 </style>
