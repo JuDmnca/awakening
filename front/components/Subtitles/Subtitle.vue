@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <p v-if="subtitleVisible" class="subtitle">
+    <p v-if="show" class="subtitle">
       {{ $store.state.subtitle }}
     </p>
   </transition>
@@ -12,11 +12,6 @@ export default {
   data () {
     return {
       show: false
-    }
-  },
-  computed: {
-    subtitleVisible () {
-      return this.show
     }
   },
   mounted () {
