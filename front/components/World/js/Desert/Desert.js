@@ -65,7 +65,7 @@ export default class Desert {
       z: 2
     }
     this.spores = null
-    this.sporesElevation = 0
+    this.sporesElevation = 4500
 
     this.crystal = props.crystal
 
@@ -108,7 +108,7 @@ export default class Desert {
 
     // DEV : Set true
     // PROD : Set false
-    this.canClickOnFlowers = false
+    this.canClickOnFlowers = true
 
     this.sporesSoundAlreadyPlayed = false
     this.intersectIsEnable = false
@@ -420,7 +420,7 @@ export default class Desert {
     const mouseY = e.pageY
     if (this.lastMouseX > -1 && this.enableSporesElevation) {
       this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY))
-      const sporesPercentage = this.sporesElevation * 100 / 8000
+      const sporesPercentage = this.sporesElevation * 100 / 16000
       if (sporesPercentage < 150) {
         nuxt.$emit('sporesElevation', sporesPercentage)
       }
