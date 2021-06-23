@@ -135,10 +135,9 @@ class Common {
     this.currentScene = new Forest({
       camera: this.camera,
       model: this.lands.get(1),
-      crystal: this.crystal,
-      animations: this.animations
+      crystal: this.crystal
     })
-    this.currentScene.init(this.scene, this.renderer)
+    this.currentScene.init(this.scene, this.renderer, this.mixer)
 
     this.initBloom()
   }
@@ -295,8 +294,7 @@ class Common {
       this.currentScene = new Forest({
         camera: this.camera,
         model: this.lands.get(1),
-        crystal: this.crystal,
-        animations: this.animations
+        crystal: this.crystal
       })
       this.currentScene.init(this.scene, this.renderer)
 

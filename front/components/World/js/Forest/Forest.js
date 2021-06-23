@@ -2,6 +2,9 @@
 import * as THREE from 'three'
 import Raycaster from '../../../Utils/js/Raycaster'
 
+import Grass from '../Common/Grass'
+import Butterfly from './Butterfly'
+
 let store
 let nuxt
 if (process.browser) {
@@ -34,7 +37,7 @@ export default class Forest {
     this.crystal = props.crystal
   }
 
-  init (scene, renderer) {
+  init (scene, renderer, mixer) {
     this.camera.updatePerspective()
     this.camera.camera.updateProjectionMatrix()
 
@@ -43,18 +46,40 @@ export default class Forest {
     this.forestGroup.add(this.forestModel)
     this.addColorToCrystal()
 
+    // ADD BUTTERFLY
+    this.addButterfly(scene, mixer)
+
+    // ADD GRASS
+    this.addGrass()
+
     // Raycaster
     this.raycaster.init(this.camera, renderer)
 
-    // this.animations[0].reset().play()
-    // this.animations[1].play()
-
     scene.add(this.forestGroup)
+  }
+
+  async addButterfly (scene, mixer) {
+    this.butterfly = await new Butterfly({ scene, mixer })
   }
 
   addLight (scene) {
     const light = new THREE.AmbientLight(0x404040, 0.8)
     scene.add(light)
+  }
+
+  async addGrass () {
+    const color = new THREE.Color('#242424')
+    const material = new THREE.MeshBasicMaterial({
+      color
+    })
+    this.grass = await new Grass(
+      {
+        container: this.forestGroup,
+        surface: this.forestGroup.children[0].children[0].children[7],
+        count: 300,
+        scaleFactor: 4,
+        material
+      })
   }
 
   addColorToCrystal () {
@@ -72,8 +97,6 @@ export default class Forest {
   }
 
   handleClick () {
-    // this.animations[0].play()
-    // this.animations[1].play()
   }
 
   addEvents () {

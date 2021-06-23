@@ -1,6 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import * as THREE from 'three'
+import { AnimationClip } from 'three'
 
 let store
 if (process.browser) {
@@ -23,7 +24,7 @@ export default class Loader {
     this.loader.setDRACOLoader(dracoLoader)
   }
 
-  defaultInit (index, mixer, animations) {
+  defaultInit (index) {
     const promise = new Promise((resolve) => {
       const position = this.props.position
       const materialImported = this.props.material[index]
@@ -48,26 +49,6 @@ export default class Loader {
           if (scene.children[0].name === 'Desert') {
             scene.children[0].children[0].material = materials[0]
             scene.children[0].children[1].material = materials[0]
-          } else {
-            scene.children.forEach((object) => {
-              if (object.name === 'sol') {
-                object.material = materials[0]
-              } else if (object.name === 'PAPILLONS_ALL') {
-                object.traverse(function (obj) {
-                  obj.frustumCulled = false
-                })
-              }
-            })
-          }
-
-          if (gltf.animations) {
-            mixer.push(new THREE.AnimationMixer(scene))
-            gltf.animations.forEach((clip) => {
-              // const animation = mixer[0].clipAction(clip)
-              mixer[0].clipAction(clip).play()
-              console.log(mixer[0])
-              // animations.push(animation)
-            })
           }
 
           resolve(scene)
@@ -164,6 +145,39 @@ export default class Loader {
     })
     promise.then(function () {
       store.commit('setLoading', 100)
+    })
+    return promise
+  }
+
+  initButterfly (mixer) {
+    const promise = new Promise((resolve) => {
+      const butterfly = new THREE.Object3D()
+
+      this.loader.load(
+        this.props.model,
+        function (gltf) {
+          gltf.scene.children.forEach((object) => {
+            object.traverse(function (obj) {
+              obj.frustumCulled = false
+            })
+          })
+          if (gltf.animations) {
+            mixer.mixer.push(new THREE.AnimationMixer(gltf.scene))
+            const clips = gltf.animations
+            if (clips.length > 0) {
+              const clip = AnimationClip.findByName(clips, 'ArmatureAction.002')
+              const action = mixer.mixer[0].clipAction(clip)
+
+              action.play()
+            }
+          }
+          butterfly.name = 'Butterfly'
+          butterfly.add(gltf.scene)
+          resolve(butterfly)
+        })
+    }, undefined, function (error) {
+    // eslint-disable-next-line no-console
+      console.error(error)
     })
     return promise
   }

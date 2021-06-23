@@ -23,9 +23,9 @@ import modelBlue from '../../../../assets/models/m_blue_flower.gltf'
 
 import Loader from '../../../Utils/js/Loader'
 
+import Grass from '../Common/Grass'
 import Particles from './Particles'
 import Plant from './Plant'
-import Grass from './Grass'
 import Cube from './Cube'
 
 let store, nuxt

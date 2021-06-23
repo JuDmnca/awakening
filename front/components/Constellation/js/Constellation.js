@@ -107,16 +107,7 @@ class Constellation {
 
     // Listeners
     this.addWheelEvent()
-    window.addEventListener('click', () => {
-      if (this.intersectedObject.length > 0) {
-        nuxt.$emit('onCrystalClick')
-        const currentUser = {
-          id: this.intersectedObject[0].object.userId,
-          datas: this.intersectedObject[0].object.datas
-        }
-        store.commit('constellation/setCurrentUser', currentUser)
-      }
-    })
+    this.addClickEvent()
 
     // Debug
     this.addGUI()
@@ -199,68 +190,52 @@ class Constellation {
     this.scene.add(skyboxGroup)
   }
 
+  async loadGems () {
+    const cubeMaterial = new THREE.MeshPhongMaterial({
+      color: new THREE.Color('#fff'),
+      refractionRatio: 0.98
+    })
+    const gemMeshes = []
+    for (let i = 0; i < 3; i++) {
+      const mesh = await new Loader({
+        material: cubeMaterial.clone(),
+        model: this.gemsModels[i],
+        position: { x: 0, y: 0, z: -5 }
+      }).initGems()
+      gemMeshes.push(mesh)
+    }
+
+    return gemMeshes
+  }
+
   async generateCrystals () {
+    const gemMeshes = await this.loadGems()
+
     const textureCrystals = this.texture
     textureCrystals.mapping = THREE.CubeRefractionMapping
     textureCrystals.encoding = THREE.sRGBEncoding
-    const crystalsMaterial = new THREE.MeshPhongMaterial({
-      envMap: textureCrystals,
-      side: THREE.DoubleSide,
-      // refractionRatio: 1,
-      reflectivity: 1,
-      // combine: THREE.AddOperation,
-      transparent: true,
-      opacity: 0.8,
-      // premultipliedAlpha: true,
-      depthWrite: false
-      // emissive: colorCrystals,
-      // emissiveIntensity: 0.8
-      // map: textureCrystalsTest
-    })
-
-    // Load gems geometry
-    // this.scene.add(this.gemGeometry)
 
     // Generation of this.gems
     for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
-      const cubeMaterial = new THREE.MeshPhongMaterial({
-        color: new THREE.Color('#' + Math.floor(Math.random() * 16777215).toString(16)),
-        // envMap: textureCrystals,
-        refractionRatio: 0.98
-      })
-      const gemMesh = await new Loader({ material: cubeMaterial, model: this.gemsModels[this.getRandomInt(3)], position: { x: 0, y: 0, z: -5 } }).initGems()
+      const gemMesh = gemMeshes[this.getRandomInt(3)].clone()
+      // Get random int in range [-30, -5], [15, 30] to define position
       const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
       const y = [this.getRandomArbitrary(-10, -5), this.getRandomArbitrary(5, 30)]
       const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
       const pos = new Vector3(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
       gemMesh.position.copy(pos)
+
+      // Bloom layer
       gemMesh.layers.enable(1)
-      gemMesh.datas = store.state.constellation.dataUsers[i]
-      // gemMesh.material.color = new THREE.Color('#29ff3e')
-      switch (gemMesh.datas.color) {
-        case 'blue':
-          gemMesh.material.color = new THREE.Color('#2461ff')
-          break
-        case 'purple':
-          gemMesh.material.color = new THREE.Color('#be6eff')
-          break
-        case 'lime':
-          gemMesh.material.color = new THREE.Color('#29ff3e')
-          break
-        case 'orange':
-          gemMesh.material.color = new THREE.Color('#ff9224')
-          break
-        case 'red':
-          gemMesh.material.color = new THREE.Color('#ff2424')
-          break
-        case 'yellow':
-          gemMesh.material.color = new THREE.Color('#ffff29')
-          break
-        default:
-          gemMesh.material.color = new THREE.Color('#ffff29')
-      }
-      gemMesh.Ydirection = Math.random() < 0.5 ? -1 : 1 // Random -1 or 1 direction
+
+      // Push data to each gem
+      this.addData(gemMesh, i)
+
+      // Get random int between -1 or 1 to randomize y direction
+      gemMesh.Ydirection = Math.random() < 0.5 ? -1 : 1
+
       gemMesh.userId = i
+
       this.gems.push(gemMesh)
 
       this.scene.add(this.gems[i])
@@ -269,6 +244,30 @@ class Constellation {
     // Generation of random cube speed
     for (let i = 0; i < this.gems.length; i++) {
       this.randomCubesSpeed.push(Math.random())
+    }
+  }
+
+  addData (gemMesh, i) {
+    gemMesh.datas = store.state.constellation.dataUsers[i]
+    switch (gemMesh.datas.color) {
+      case 'blue':
+        gemMesh.material.color = new THREE.Color('#2461ff')
+        break
+      case 'purple':
+        gemMesh.material.color = new THREE.Color('#be6eff')
+        break
+      case 'lime':
+        gemMesh.material.color = new THREE.Color('#29ff3e')
+        break
+      case 'orange':
+        gemMesh.material.color = new THREE.Color('#ff9224')
+        break
+      case 'red':
+        gemMesh.material.color = new THREE.Color('#ff2424')
+        break
+      case 'yellow':
+        gemMesh.material.color = new THREE.Color('#ffff29')
+        break
     }
   }
 
@@ -306,6 +305,19 @@ class Constellation {
   addWheelEvent () {
     window.addEventListener('resize', () => {
       this.resize()
+    })
+  }
+
+  addClickEvent () {
+    window.addEventListener('click', () => {
+      if (this.intersectedObject.length > 0) {
+        nuxt.$emit('onCrystalClick')
+        const currentUser = {
+          id: this.intersectedObject[0].object.userId,
+          datas: this.intersectedObject[0].object.datas
+        }
+        store.commit('constellation/setCurrentUser', currentUser)
+      }
     })
   }
 
