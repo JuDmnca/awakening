@@ -46,14 +46,14 @@ export default class Forest {
     // Raycaster
     this.raycaster.init(this.camera, renderer)
 
-    this.animations[0].play()
-    this.animations[1].play()
+    // this.animations[0].reset().play()
+    // this.animations[1].play()
 
     scene.add(this.forestGroup)
   }
 
   addLight (scene) {
-    const light = new THREE.AmbientLight(0x404040, 1)
+    const light = new THREE.AmbientLight(0x404040, 0.8)
     scene.add(light)
   }
 
@@ -72,15 +72,15 @@ export default class Forest {
   }
 
   handleClick () {
-    this.animations[0].play()
-    this.animations[1].play()
+    // this.animations[0].play()
+    // this.animations[1].play()
   }
 
   addEvents () {
-    // nuxt.$on('ColorSetted', () => {
-    //   this.crystal.getColor()
-    //   this.addColorToCrystal()
-    // })
+    nuxt.$on('ColorSetted', () => {
+      this.crystal.getColor()
+      this.addColorToCrystal()
+    })
     // window.addEventListener('click', () => {
     //   this.handleClick()
     // })
