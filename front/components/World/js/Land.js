@@ -6,6 +6,7 @@ const sandTexture = [
   require('../../../assets/textures/t_sand.png')
 ]
 const forestTexture = [
+  require('../../../assets/textures/t_forest.png')
 ]
 
 export default class Land {

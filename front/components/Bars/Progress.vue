@@ -14,7 +14,7 @@ export default {
   name: 'Progress',
   data () {
     return {
-      show: true
+      show: false
     }
   },
   mounted () {
@@ -22,13 +22,15 @@ export default {
     // this.$nuxt.$on('swoosh', () => {
     //   this.$refs.progressWhite.style.backgroundColor = this.$store.state.user.color
     // })
+
+    this.$nuxt.$on('showProgressBar', () => { this.show = true })
     this.$nuxt.$on('sporesElevation', (sporesLevel) => {
-      if (sporesLevel < 100) {
+      if (sporesLevel < 100 && this.show) {
         this.$refs.progressWhite.style.width = sporesLevel * 2.5 + 'px'
-      } else {
+      } else if (this.show) {
         this.$refs.progressWhite.style.width = '250px'
         this.$store.commit('desert/setCanInhaleOnHold', true)
-        // this.show = false
+        this.show = false
       }
     })
     this.$nuxt.$on('startTransition', () => {

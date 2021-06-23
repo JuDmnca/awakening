@@ -4,7 +4,7 @@ import Crystal from '../../Utils/js/Crystal'
 import Bloom from '../../Utils/js/Bloom'
 
 import Land from './Land'
-import Desert from './Desert/Desert'
+// import Desert from './Desert/Desert'
 import Forest from './Forest/Forest'
 
 const desertCurve = [
@@ -129,7 +129,15 @@ class Common {
     this.addEventListeners()
 
     // Load first group (desert)
-    this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
+    // this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
+    // this.currentScene.init(this.scene, this.renderer)
+
+    this.currentScene = new Forest({
+      camera: this.camera,
+      model: this.lands.get(1),
+      crystal: this.crystal,
+      animations: this.animations
+    })
     this.currentScene.init(this.scene, this.renderer)
 
     this.initBloom()
@@ -189,7 +197,7 @@ class Common {
 
     this.p1 = this.curves[0].points[0]
     this.progression = 0
-    this.curveNumber = 0
+    this.curveNumber = 1
   }
 
   moveCamera (e) {
@@ -298,6 +306,7 @@ class Common {
     })
     nuxt.$on('endSceneTransition', () => {
       this.pauseRender = false
+      this.progression = 0
     })
     nuxt.$on('pauseRender', () => {
       this.pauseRender = true

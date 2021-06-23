@@ -31,9 +31,8 @@ export default class Loader {
       this.loader.load(
         this.props.models[index],
         function (gltf) {
-          gltf.scene.position.x = position.x
-          gltf.scene.position.y = position.y
-          gltf.scene.position.z = position.z
+          const scene = gltf.scene
+          scene.position.set(position.x, position.y, position.z)
 
           const materials = []
           if (materialImported) {
@@ -46,20 +45,32 @@ export default class Loader {
             }
           }
 
-          if (gltf.scene.children[0].name === 'Desert') {
-            gltf.scene.children[0].children[0].material = materials[0]
-            gltf.scene.children[0].children[1].material = materials[0]
-          }
-
-          if (gltf.animations) {
-            mixer.push(new THREE.AnimationMixer(gltf.scene))
-            gltf.animations.forEach((clip) => {
-              const animation = mixer[0].clipAction(clip)
-              animations.push(animation)
+          if (scene.children[0].name === 'Desert') {
+            scene.children[0].children[0].material = materials[0]
+            scene.children[0].children[1].material = materials[0]
+          } else {
+            scene.children.forEach((object) => {
+              if (object.name === 'sol') {
+                object.material = materials[0]
+              } else if (object.name === 'PAPILLONS_ALL') {
+                object.traverse(function (obj) {
+                  obj.frustumCulled = false
+                })
+              }
             })
           }
 
-          resolve(gltf.scene)
+          if (gltf.animations) {
+            mixer.push(new THREE.AnimationMixer(scene))
+            gltf.animations.forEach((clip) => {
+              // const animation = mixer[0].clipAction(clip)
+              mixer[0].clipAction(clip).play()
+              console.log(mixer[0])
+              // animations.push(animation)
+            })
+          }
+
+          resolve(scene)
         }
       )
     }, undefined, function (error) {

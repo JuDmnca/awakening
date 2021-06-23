@@ -101,6 +101,7 @@ export default class Desert {
 
     this.cursorDistance = 0
     this.enableSporesElevationAt = 0.85
+    this.enableSporesElevation = false
     this.progression = 0
 
     this.inhaleIsCompleted = false
@@ -135,35 +136,48 @@ export default class Desert {
     nuxt.$on('swoosh', () => {
       this.swooshSound.sound.play()
       this.intersectIsEnable = true
+      // setTimeout(() => {
+      //   store.commit('setSubtitle', 'Notre esprit peut parfois nous sembler vide…')
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 3000)
+      // setTimeout(() => {
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 8000)
+      // setTimeout(() => {
+      //   store.commit('setSubtitle', 'Et la perception de nos sens affaiblie.')
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 8500)
+      // setTimeout(() => {
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 13500)
+      // setTimeout(() => {
+      //   store.commit('setSubtitle', 'Mais il suffit d’une stimulation singulière…')
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 14000)
+      // setTimeout(() => {
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 19000)
+      // setTimeout(() => {
+      //   store.commit('setSubtitle', 'Pour redonner vie à notre monde intérieur.')
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 19500)
+      // setTimeout(() => {
+      //   nuxt.$emit('toggleShowSubtitle')
+      //   this.canClickOnFlowers = true
+      // }, 24500)
+    })
+
+    nuxt.$on('clickOnFlowers', () => {
+      store.commit('setSubtitle', 'Et s\'il suffisait d\'une caresse ?')
+      nuxt.$emit('toggleShowSubtitle')
+
       setTimeout(() => {
-        store.commit('setSubtitle', 'Notre esprit peut parfois nous sembler vide…')
         nuxt.$emit('toggleShowSubtitle')
-      }, 3000)
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-      }, 8000)
-      setTimeout(() => {
-        store.commit('setSubtitle', 'Et la perception de nos sens affaiblie.')
-        nuxt.$emit('toggleShowSubtitle')
-      }, 8500)
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-      }, 13500)
-      setTimeout(() => {
-        store.commit('setSubtitle', 'Mais il suffit d’une stimulation singulière…')
-        nuxt.$emit('toggleShowSubtitle')
-      }, 14000)
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-      }, 19000)
-      setTimeout(() => {
-        store.commit('setSubtitle', 'Pour redonner vie à notre monde intérieur.')
-        nuxt.$emit('toggleShowSubtitle')
-      }, 19500)
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-        this.canClickOnFlowers = true
-      }, 24500)
+        setTimeout(() => {
+          nuxt.$emit('showProgressBar')
+          this.enableSporesElevation = true
+        }, 1000)
+      }, 4000)
     })
 
     // RAYCASTER
@@ -187,7 +201,7 @@ export default class Desert {
   onWheelMovement (e) {
     this.time.stationary = 0
     if (this.isStationary) {
-      nuxt.$emit('handleScrollAnimation')
+      nuxt.$emit('showCursor', 'Hold')
     }
     this.isStationary = false
   }
@@ -195,7 +209,7 @@ export default class Desert {
   onHold () {
     this.time.noHold = 0
     if (this.isHold) {
-      nuxt.$emit('handleHoldAnimation')
+      nuxt.$emit('showCursor', 'Hold')
     }
     this.isHold = false
   }
@@ -204,7 +218,7 @@ export default class Desert {
     // Disable animation if mousemove
     this.time.cursorImmobile = 0
     if (!this.isCursorImmobile) {
-      nuxt.$emit('handleHoverAnimation')
+      nuxt.$emit('showCursor', 'Caresse les fleurs')
     }
     this.isCursorImmobile = true
 
@@ -404,7 +418,7 @@ export default class Desert {
     e.preventDefault()
     const mouseX = e.pageX
     const mouseY = e.pageY
-    if (this.lastMouseX > -1) {
+    if (this.lastMouseX > -1 && this.enableSporesElevation) {
       this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY))
       const sporesPercentage = this.sporesElevation * 100 / 8000
       if (sporesPercentage < 150) {
@@ -434,6 +448,7 @@ export default class Desert {
   handleClick () {
     if (this.intersects.length > 0 && !store.state.desert.haveClickedOnFlower) {
       store.commit('desert/setHaveClickedOnFlowers')
+      nuxt.$emit('clickOnFlowers')
     }
   }
 
@@ -540,23 +555,25 @@ export default class Desert {
       this.intersects = this.raycaster.render(this.plantsGroup)
     }
     // Indications
-    this.time.stationary += timeDelta
-    this.time.cursorImmobile += timeDelta
-    this.time.noHold += timeDelta
-    this.progression = progression
+    if (store.state.desert.sceneIsStarted) {
+      this.time.stationary += timeDelta
+      this.time.cursorImmobile += timeDelta
+      this.time.noHold += timeDelta
+      this.progression = progression
+    }
 
     // stationary = time to wait to show the indication
     // progression < 0.5 : indicator just in the first part of the scene.
     // console.log('stationary : ', this.time.stationary, ' isStationary : ', this.isStationary, ' progression : ', this.progression)
     if (this.time.stationary > 10 && !this.isStationary && this.progression < 0.5) {
       this.isStationary = true
-      nuxt.$emit('handleScrollAnimation')
+      nuxt.$emit('showCursor', 'Scroll')
     } else if (this.time.cursorImmobile > 10 && this.cursorDistance < 25000 && this.progression > this.enableSporesElevationAt && this.isCursorImmobile) {
       this.isCursorImmobile = false
-      nuxt.$emit('handleHoverAnimation')
+      nuxt.$emit('showCursor', 'Caresse les fleurs')
     } else if (this.time.noHold > 10 && this.cursorDistance > 25000 && this.progression > this.enableSporesElevationAt && !this.isHold) {
       this.isHold = true
-      nuxt.$emit('handleHoldAnimation')
+      nuxt.$emit('showCursor', 'Hold')
     }
 
     if (this.intersects.length > 0 && !this.isCursorActive && nuxt) {

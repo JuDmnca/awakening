@@ -23,9 +23,6 @@ export default {
     this.$nuxt.$on('toggleShowSubtitle', () => {
       this.show = !this.show
     })
-  },
-  methods: {
-
   }
 }
 </script>
