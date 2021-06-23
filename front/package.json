@@ -6,16 +6,28 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
-    "core-js": "^3.8.3",
-    "gsap": "^3.6.0",
-    "nuxt": "^2.14.12",
-    "three": "^0.126.0"
+    "-": "0.0.1",
+    "@nuxtjs/eslint-config": "^6.0.1",
+    "@nuxtjs/eslint-module": "^3.0.2",
+    "@nuxtjs/firebase": "^7.5.0",
+    "D": "^1.0.0",
+    "babel-eslint": "^10.1.0",
+    "core-js": "^3.14.0",
+    "eslint": "^7.28.0",
+    "eslint-plugin-nuxt": "^2.0.0",
+    "firebase": "^8.6.5",
+    "gsap": "^3.6.1",
+    "heroku": "^7.54.1",
+    "nuxt": "^2.15.6",
+    "perlin-noise-3d": "^0.5.4",
+    "three": "^0.126.1"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^3.4.2",
+    "@nuxtjs/tailwindcss": "^3.4.3",
     "raw-loader": "^4.0.2"
   }
 }

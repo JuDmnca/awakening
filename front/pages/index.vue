@@ -1,14 +1,11 @@
 <template>
-  <div class="container">
-  </div>
+  <div class="container index" />
 </template>
 
 <script>
-export default {}
+export default {
+}
 </script>
 
 <style>
-body {
-  background-color: black;
-}
 </style>

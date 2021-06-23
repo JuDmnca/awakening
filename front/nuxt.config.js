@@ -24,24 +24,69 @@ export default {
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
+  components: [
+    '~/components/',
+    {
+      path: '~/components/Transition/',
+      prefix: 'Transition'
+    },
+    {
+      path: '~/components/UI/',
+      prefix: 'UI-'
+    },
+    {
+      path: '~/components/Bars/',
+      prefix: 'Bar-'
+    }
+  ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/eslint-module'
   ],
+
+  tailwindcss: {
+    cssPath: '~/assets/style/tailwind.css',
+    configPath: 'tailwind.config.js'
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: 'AIzaSyCZCKxvIEkCNEYl0kDX2yzqedG-MVBm_G8',
+          authDomain: 'awakening-55bb0.firebaseapp.com',
+          databaseURL: 'https://awakening-55bb0-default-rtdb.firebaseio.com',
+          projectId: 'awakening-55bb0',
+          storageBucket: 'awakening-55bb0.appspot.com',
+          messagingSenderId: '502680403739',
+          appId: '1:502680403739:web:a6140bb864f5c0b5da9dbe',
+          measurementId: 'G-PX3DCLFETZ'
+        },
+        services: {
+          database: true,
+          firestore: true,
+          storage: true
+        }
+      }
+    ]
   ],
-
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ['three/examples/jsm/controls/OrbitControls'],
+    transpile: ['three/examples/jsm/controls/OrbitControls', 'three/examples/jsm/loaders/GLTFLoader', 'three/examples/jsm/postprocessing/EffectComposer.js', 'three/examples/jsm/postprocessing/RenderPass.js', 'three/examples/jsm/postprocessing/UnrealBloomPass.js', 'three/examples/jsm/loaders/DRACOLoader.js'],
     extend (config, ctx) {
-      if (!!config.module) {
-        config.module.rules.push({ test: /\.(vert|frag)$/i, use: ["raw-loader"] });
+      if (config.module) {
+        config.module.rules.push({ test: /\.(vert|frag)$/i, use: ['raw-loader'] })
+        config.module.rules.push({ test: /\.(glb|gltf)$/, use: ['file-loader'] })
+        config.module.rules.push({ test: /\.(fbx|obj)$/, use: ['file-loader'] })
+        config.module.rules.push({ test: /\.(ogg|mp3|wav|mpe?g)$/i, use: ['file-loader'] })
+      }
+      config.node = {
+        fs: 'empty'
       }
     }
   }
