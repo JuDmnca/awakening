@@ -146,7 +146,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .loader__container {
   position: absolute;
   width: 100vw;
