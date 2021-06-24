@@ -4,7 +4,7 @@ import Crystal from '../../Utils/js/Crystal'
 import Bloom from '../../Utils/js/Bloom'
 
 import Land from './Land'
-// import Desert from './Desert/Desert'
+import Desert from './Desert/Desert'
 import Forest from './Forest/Forest'
 
 const desertCurve = [
@@ -21,7 +21,7 @@ const forestCurve = [
   [-15.1083, 1, 28.0624],
   [6.2926, -1.827358, 22.9185],
   [9.55505, 1.56179, 6.12564],
-  [6.74007, 3.17393, 0.254782],
+  [6.74007, 2.17393, 0.254782],
   [10.534, 2.30262, -3.18313],
   [10.7498, 1, -9.15631],
   [-5.18898, 1, -18.1431],
@@ -106,7 +106,7 @@ class Common {
   async init ($canvas) {
     // FPS
     // eslint-disable-next-line
-    (function () { const script = document.createElement('script'); script.onload = function () { const stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop () { stats.update(); requestAnimationFrame(loop) }) }; script.src = '//mrdoob.github.io/stats.js/build/stats.min.js'; document.head.appendChild(script) })()
+    // (function () { const script = document.createElement('script'); script.onload = function () { const stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop () { stats.update(); requestAnimationFrame(loop) }) }; script.src = '//mrdoob.github.io/stats.js/build/stats.min.js'; document.head.appendChild(script) })()
 
     this.setSize()
     this.scene = new THREE.Scene()
@@ -123,15 +123,15 @@ class Common {
 
     // WIP
     // Load first group (desert)
-    // this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
-    // this.currentScene.init(this.scene, this.renderer)
+    this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
+    this.currentScene.init(this.scene, this.renderer)
 
-    this.currentScene = new Forest({
-      camera: this.camera,
-      model: this.lands.get(1),
-      crystal: this.crystal
-    })
-    this.currentScene.init(this.scene, this.renderer, this.mixer)
+    // this.currentScene = new Forest({
+    //   camera: this.camera,
+    //   model: this.lands.get(1),
+    //   crystal: this.crystal
+    // })
+    // this.currentScene.init(this.scene, this.renderer, this.mixer)
 
     this.initBloom()
   }
@@ -201,10 +201,11 @@ class Common {
 
     this.p1 = this.curves[0].points[0]
     this.progression = 0
-    this.curveNumber = 1
+    this.curveNumber = 0
   }
 
   moveCamera (e) {
+    const exProgression = this.progression
     // Get wheel event value and update progression on the curve path
     if (e.deltaY <= 0) {
       this.progression >= 0.98 ? this.progression = 1 : this.progression += -e.deltaY * this.params.scrollSpeed / Math.pow(10, 5)
@@ -217,6 +218,11 @@ class Common {
     // Enable spores movement and inhale if end of path
     if (store.state.sceneIndex === 1 && this.progression >= this.enableSporesElevationAt && this.sporesCanMove === false) {
       this.sporesCanMove = true
+    }
+
+    // Stop progression on scene 2 before the interaction
+    if (store.state.sceneIndex === 2 && !store.state.forest.interaction && this.progression >= 0.59) {
+      this.progression = exProgression
     }
   }
 

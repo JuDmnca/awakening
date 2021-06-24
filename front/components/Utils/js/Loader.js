@@ -166,9 +166,7 @@ export default class Loader {
             const clips = gltf.animations
             if (clips.length > 0) {
               const clip = AnimationClip.findByName(clips, 'ArmatureAction.002')
-              const action = mixer.mixer[0].clipAction(clip)
-
-              action.play()
+              mixer.mixer[0].clipAction(clip)
             }
           }
           butterfly.name = 'Butterfly'

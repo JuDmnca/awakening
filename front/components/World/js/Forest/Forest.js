@@ -27,7 +27,9 @@ export default class Forest {
     this.intersects = []
     this.intersected = null
 
-    this.progression = null
+    this.mixer = null
+
+    this.progression = this.props.progression
     this.events = false
 
     this.forestGroup = new THREE.Group()
@@ -38,6 +40,8 @@ export default class Forest {
   }
 
   init (scene, renderer, mixer) {
+    this.mixer = mixer
+
     this.camera.updatePerspective()
     this.camera.camera.updateProjectionMatrix()
 
@@ -46,8 +50,8 @@ export default class Forest {
     this.forestGroup.add(this.forestModel)
     this.addColorToCrystal()
 
-    this.addButterfly(scene, mixer)
-    this.addGrass()
+    // this.addButterfly(scene, mixer)
+    // this.addGrass()
 
     // Raycaster
     this.raycaster.init(this.camera, renderer)
@@ -94,16 +98,19 @@ export default class Forest {
   }
 
   handleClick () {
+    if (this.progression >= 0.59) {
+      // console.log(this.mixer)
+    }
   }
 
   addEvents () {
-    nuxt.$on('ColorSetted', () => {
-      this.crystal.getColor()
-      this.addColorToCrystal()
-    })
-    // window.addEventListener('click', () => {
-    //   this.handleClick()
+    // nuxt.$on('ColorSetted', () => {
+    //   this.crystal.getColor()
+    //   this.addColorToCrystal()
     // })
+    window.addEventListener('click', () => {
+      this.handleClick()
+    })
   }
 
   render () {

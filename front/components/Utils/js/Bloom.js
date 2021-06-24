@@ -72,7 +72,7 @@ export default class Bloom {
     finalComposer.addPass(renderScene)
     finalComposer.addPass(finalPass)
 
-    this.initGUI(params, this.renderer, bloomPass)
+    // this.initGUI(params, this.renderer, bloomPass)
   }
 
   initGUI (params, renderer, bloomPass) {

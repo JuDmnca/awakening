@@ -69,9 +69,9 @@ export default class Scene {
     this.material = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 1.0 },
-        color1: { value: this.colors[1] },
-        color2: { value: this.colors[2] },
-        color3: { value: this.colors[3] },
+        color1: { value: this.colors[0] },
+        color2: { value: this.colors[1] },
+        color3: { value: this.colors[2] },
         center: { value: { x: 0.5, y: 0.5 } },
         rez: { type: 'vec2', value: [window.innerWidth, window.innerHeight] }
       },
