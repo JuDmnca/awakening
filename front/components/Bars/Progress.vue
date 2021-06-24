@@ -24,21 +24,28 @@ export default {
     // })
 
     this.$nuxt.$on('showProgressBar', () => { this.show = true })
+
     this.$nuxt.$on('sporesElevation', (sporesLevel) => {
       if (sporesLevel < 100 && this.show) {
-        this.$refs.progressWhite.style.width = sporesLevel * 2.5 + 'px'
+        this.fillProgressBar(sporesLevel)
       } else if (this.show) {
-        this.$refs.progressWhite.style.width = '250px'
-        this.$store.commit('desert/setCanInhaleOnHold', true)
-        this.show = false
+        this.onProgressBarCompleted()
       }
     })
+
     this.$nuxt.$on('startTransition', () => {
       this.show = false
     })
   },
   methods: {
-
+    fillProgressBar (sporesLevel) {
+      this.$refs.progressWhite.style.width = sporesLevel * 2.5 + 'px'
+    },
+    onProgressBarCompleted () {
+      this.$refs.progressWhite.style.width = '250px'
+      this.$store.commit('desert/setCanInhaleOnHold', true)
+      this.show = false
+    }
   }
 }
 </script>

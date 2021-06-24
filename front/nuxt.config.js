@@ -15,14 +15,6 @@ export default {
     ]
   },
 
-  // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-  ],
-
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-  ],
-
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: [
     '~/components/',
@@ -78,7 +70,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: ['three/examples/jsm/controls/OrbitControls', 'three/examples/jsm/loaders/GLTFLoader', 'three/examples/jsm/postprocessing/EffectComposer.js', 'three/examples/jsm/postprocessing/RenderPass.js', 'three/examples/jsm/postprocessing/UnrealBloomPass.js', 'three/examples/jsm/loaders/DRACOLoader.js'],
-    extend (config, ctx) {
+    extend (config) {
       if (config.module) {
         config.module.rules.push({ test: /\.(vert|frag)$/i, use: ['raw-loader'] })
         config.module.rules.push({ test: /\.(glb|gltf)$/, use: ['file-loader'] })

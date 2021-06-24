@@ -87,7 +87,8 @@ export default {
     return {
       question: '',
       input: '',
-      errorMessage: ''
+      errorMessage: '',
+      sent: false
     }
   },
   mounted () {
@@ -131,28 +132,30 @@ export default {
       }
     },
     sendValidation (e) {
-      e.preventDefault()
-      let data = this.$refs.input.value
+      if (!this.sent) {
+        e.preventDefault()
+        this.sent = !this.sent
+        let data = this.$refs.input.value
 
-      if (this.step === 1) {
-        const colors = document.getElementsByName('color')
-        for (let i = 0; i < colors.length; i++) {
-          if (colors[i].checked) { data = colors[i].id }
+        if (this.step === 1) {
+          const colors = document.getElementsByName('color')
+          for (let i = 0; i < colors.length; i++) {
+            if (colors[i].checked) { data = colors[i].id }
+          }
         }
+
+        // UNCOMMENT ON PROD
+        // if (!data && this.step === 1) {
+        //   this.errorMessage = 'Il faut choisir une couleur pour continuer le voyage'
+        // } else if (!data) {
+        //   this.errorMessage = 'Il faut répondre pour continuer le voyage'
+        // } else if (data) {
+        //   this.errorMessage = ''
+        //   this.$emit('validation', data)
+        // }
+
+        this.$emit('validation', data)
       }
-
-      // UNCOMMENT ON PROD
-      // if (!data && this.step === 1) {
-      //   this.errorMessage = 'Il faut choisir une couleur pour continuer le voyage'
-      // } else if (!data) {
-      //   this.errorMessage = 'Il faut répondre pour continuer le voyage'
-      // } else if (data) {
-      //   this.errorMessage = ''
-      //   this.$emit('validation', data)
-      // }
-
-      // COMMENT ON PROD
-      this.$emit('validation', data)
     }
   }
 }

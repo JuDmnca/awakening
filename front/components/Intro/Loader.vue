@@ -88,17 +88,15 @@ export default {
     }
   },
   mounted () {
-    // setTimeout(() => {
-    //   this.showIntroParagraph = false
-    //   setTimeout(() => { this.showIntroParagraph2 = true }, 1000)
-    // }, 3000)
     this.$nuxt.$on('loaded', () => {
       this.endLoaded = true
       this.showIntroParagraph = false
       setTimeout(() => {
-        this.loaded = true
         this.showIntroParagraph2 = true
-      }, 1000)
+      }, 2000)
+      setTimeout(() => {
+        this.loaded = true
+      }, 3000)
     })
     this.$nuxt.$on('started', () => {
       setTimeout(() => {

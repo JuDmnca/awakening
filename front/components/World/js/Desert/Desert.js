@@ -186,10 +186,7 @@ export default class Desert {
     // RAYCASTER
     this.raycaster.init(this.camera, renderer)
 
-    // FOG
     this.addFog(scene)
-
-    // SKYBOX
     this.addSkybox(scene)
 
     // MOUSE
