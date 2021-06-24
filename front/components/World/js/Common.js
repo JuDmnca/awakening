@@ -3,6 +3,7 @@ import Camera from '../../Utils/js/Camera'
 import Crystal from '../../Utils/js/Crystal'
 import Bloom from '../../Utils/js/Bloom'
 
+import Microphone from '../../Utils/js/Microphone'
 import Land from './Land'
 // import Desert from './Desert/Desert'
 import Forest from './Forest/Forest'
@@ -101,6 +102,8 @@ class Common {
     this.bloom = null
 
     this.gui = null
+
+    this.microphone = null
   }
 
   async init ($canvas) {
@@ -134,6 +137,8 @@ class Common {
     this.currentScene.init(this.scene, this.renderer, this.mixer)
 
     this.initBloom()
+
+    this.requestMicroAutorisation()
   }
 
   setSize () {
@@ -169,6 +174,14 @@ class Common {
     this.light.name = 'Pointlight'
 
     this.scene.add(this.light)
+  }
+
+  requestMicroAutorisation () {
+    this.microphone = new Microphone()
+    nuxt.$on('started', () => {
+      this.microphone.getAutorisation()
+      this.currentScene.microphone = this.microphone
+    })
   }
 
   addClock () {
@@ -278,6 +291,24 @@ class Common {
     window.addEventListener('resize', () => {
       this.resize()
     })
+
+    nuxt.$on('startExperience', () => {
+      window.addEventListener('wheel', (e) => {
+        if (this.curves[this.curveNumber] !== undefined) {
+          this.moveCamera(e)
+        }
+        this.wheelMovement(e)
+      })
+    })
+
+    nuxt.$on('swoosh', () => {
+      window.addEventListener('mousedown', () => {
+        this.mouseDown()
+
+        if (this.currentScene.name === 'Forest') {
+          this.currentScene.onClick()
+        }
+      })
 
     window.addEventListener('mousedown', () => {
       this.mouseDown()

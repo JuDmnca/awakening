@@ -11,7 +11,7 @@ const state = () => ({
   isMuted: false,
   haveClickedOnFlower: false,
   // PROD : SET TO FALSE
-  canInhaleOnHold: true
+  canInhaleOnHold: false
 })
 
 const mutations = {
