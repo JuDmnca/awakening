@@ -3,8 +3,9 @@ import Camera from '../../Utils/js/Camera'
 import Crystal from '../../Utils/js/Crystal'
 import Bloom from '../../Utils/js/Bloom'
 
+import Microphone from '../../Utils/js/Microphone'
 import Land from './Land'
-import Desert from './Desert/Desert'
+// import Desert from './Desert/Desert'
 import Forest from './Forest/Forest'
 
 const desertCurve = [
@@ -101,6 +102,8 @@ class Common {
     this.bloom = null
 
     this.gui = null
+
+    this.microphone = null
   }
 
   async init ($canvas) {
@@ -129,18 +132,20 @@ class Common {
     this.addEventListeners()
 
     // Load first group (desert)
-    this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
-    this.currentScene.init(this.scene, this.renderer)
-
-    // this.currentScene = new Forest({
-    //   camera: this.camera,
-    //   model: this.lands.get(1),
-    //   crystal: this.crystal,
-    //   animations: this.animations
-    // })
+    // this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
     // this.currentScene.init(this.scene, this.renderer)
 
+    this.currentScene = new Forest({
+      camera: this.camera,
+      model: this.lands.get(1),
+      crystal: this.crystal,
+      animations: this.animations
+    })
+    this.currentScene.init(this.scene, this.renderer)
+
     this.initBloom()
+
+    this.requestMicroAutorisation()
   }
 
   setSize () {
@@ -177,6 +182,14 @@ class Common {
     this.scene.add(this.light)
   }
 
+  requestMicroAutorisation () {
+    this.microphone = new Microphone()
+    nuxt.$on('started', () => {
+      this.microphone.getAutorisation()
+      this.currentScene.microphone = this.microphone
+    })
+  }
+
   cameraDisplacement () {
     this.curves = []
 
@@ -197,7 +210,7 @@ class Common {
 
     this.p1 = this.curves[0].points[0]
     this.progression = 0
-    this.curveNumber = 0
+    this.curveNumber = 1
   }
 
   moveCamera (e) {
@@ -277,8 +290,14 @@ class Common {
       })
     })
 
-    window.addEventListener('mousedown', () => {
-      this.mouseDown()
+    nuxt.$on('swoosh', () => {
+      window.addEventListener('mousedown', () => {
+        this.mouseDown()
+
+        if (this.currentScene.name === 'Forest') {
+          this.currentScene.onClick()
+        }
+      })
     })
 
     window.addEventListener('mouseup', () => {
@@ -301,7 +320,7 @@ class Common {
       this.currentScene.init(this.scene, this.renderer)
 
       this.curveNumber += 1
-      // this.progression = 0
+      this.progression = 0
       store.commit('increaseSceneIndex')
     })
     nuxt.$on('endSceneTransition', () => {
