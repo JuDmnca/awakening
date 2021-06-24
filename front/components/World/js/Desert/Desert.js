@@ -14,7 +14,6 @@ import note1URL from '../../../../assets/sounds/desert/note-1.mp3'
 import note2URL from '../../../../assets/sounds/desert/note-2.mp3'
 import note3URL from '../../../../assets/sounds/desert/note-3.mp3'
 import inhaleURL from '../../../../assets/sounds/desert/inhale.mp3'
-import exhaleURL from '../../../../assets/sounds/desert/exhale.mp3'
 import AudioPosition from '../../../Utils/js/AudioPosition'
 
 import modelTulip from '../../../../assets/models/m_tulip.gltf'
@@ -76,7 +75,6 @@ export default class Desert {
     // SOUND
     this.swooshSound = null
     this.inhaleSound = null
-    this.exhaleSound = null
     this.ambiantFile = null
     this.swooshFile = null
     this.note1File = null
@@ -236,7 +234,6 @@ export default class Desert {
     this.note2Sound = new Sound({ camera: this.camera, audioFile: note2URL, loop: false, canToggle: false, volume: 1 })
     this.note3Sound = new Sound({ camera: this.camera, audioFile: note3URL, loop: false, canToggle: false, volume: 1 })
     this.inhaleSound = new Sound({ camera: this.camera, audioFile: inhaleURL, loop: false, volume: 0.7 })
-    this.exhaleSound = new Sound({ camera: this.camera, audioFile: exhaleURL, loop: false, volume: 0.7 })
 
     // Init sound spacialization
     this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
@@ -250,7 +247,6 @@ export default class Desert {
     this.disconnectSoundIfSource(this.swooshSound.sound)
     this.disconnectSoundIfSource(this.note1Sound.sound)
     this.disconnectSoundIfSource(this.note2Sound.sound)
-    this.disconnectSoundIfSource(this.exhaleSound.sound)
     this.disconnectSoundIfSource(this.crystalSound.sound)
     this.disconnectSoundIfSource(this.sporesSound.sound)
     // Remove the sound after 3 seconds because the sound is playing when we remove all sounds
@@ -513,9 +509,6 @@ export default class Desert {
         // eslint-disable-next-line no-unused-expressions
         this.inhaleSound.sound.isPlaying ? this.inhaleSound.sound.stop() : null
         this.inhaleSound.sound.play()
-        if (this.exhaleSound.sound.isPlaying) {
-          this.exhaleSound.sound.stop()
-        }
       }
     }
   }
@@ -533,17 +526,6 @@ export default class Desert {
         ease: 'power3.out'
       }
     )
-
-    // Sound
-    // If raycaster is empty
-    if (store.state.desert.haveClickedOnFlower) {
-      if (this.inhaleSound.sound.isPlaying) {
-        this.inhaleSound.sound.stop()
-      }
-      // eslint-disable-next-line no-unused-expressions
-      this.exhaleSound.sound.isPlaying ? this.exhaleSound.sound.stop() : null
-      this.exhaleSound.sound.play()
-    }
   }
 
   render (elapsedTime, timeDelta, progression) {
