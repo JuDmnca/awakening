@@ -7,7 +7,7 @@ void main() {
     // For spores
     circle *= 2.0;
     circle = 1.0 - circle;
-    
+
     /*
         // For firflies
         circle = 1.0 - circle;

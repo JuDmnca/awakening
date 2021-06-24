@@ -125,10 +125,7 @@ export default {
         }
         if (this.$store.state.desert.counter === 3) {
           this.$nuxt.$emit('startTransition', 2)
-          // this.hideCursor()
           window.removeEventListener('mousedown', this.showCursor)
-          // window.removeEventListener("mouseup", this.hideCursor)
-          // this.terminate()
         }
       }
     }

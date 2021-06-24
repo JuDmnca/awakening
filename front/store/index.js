@@ -18,9 +18,6 @@ const state = () => ({
   subtitle: ''
 })
 
-const actions = {
-}
-
 const mutations = {
   setLoading (state, resp) {
     state.loading += resp
@@ -86,6 +83,5 @@ const mutations = {
 
 export default {
   state,
-  actions,
   mutations
 }

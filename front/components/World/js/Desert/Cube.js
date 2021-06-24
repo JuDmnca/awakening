@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-// import MainGui from '../Utils/MainGui'
 export default class Cube {
   constructor (props) {
     this.props = props
@@ -24,12 +23,5 @@ export default class Cube {
     this.cube.position.z = this.props.position.z
 
     scene.add(this.cube)
-
-    // Gui
-    // this.gui = new MainGui()
-    // const positions = this.gui.gui.addFolder('Position Cube')
-    // positions.add(this.cube.position, 'x', 0, 10, .1).name('x')
-    // positions.add(this.cube.position, 'y', 0, 10, .1).name('y')
-    // positions.add(this.cube.position, 'z', 0, 10, .1).name('z')
   }
 }
