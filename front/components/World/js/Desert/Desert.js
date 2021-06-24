@@ -136,6 +136,9 @@ export default class Desert {
     nuxt.$on('swoosh', () => {
       this.swooshSound.sound.play()
       this.intersectIsEnable = true
+
+      // Disable for dev
+
       // setTimeout(() => {
       //   store.commit('setSubtitle', 'Notre esprit peut parfois nous sembler vide…')
       //   nuxt.$emit('toggleShowSubtitle')

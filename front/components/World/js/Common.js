@@ -112,22 +112,16 @@ class Common {
     this.scene = new THREE.Scene()
     this.addRenderer($canvas)
 
-    this.clock = new THREE.Clock()
-    this.clock.start()
+    this.addClock()
+    await this.loadModels()
 
-    // Load Scene Models
-    this.animations = []
-    this.lands = new Land({ mixer: this.mixer, animations: this.animations })
-    this.models = await this.lands.load()
-
-    // Init camera
     this.cameraDisplacement()
-    this.vectCam = new THREE.Vector3(this.p1.x, this.p1.y, this.p1.z)
     this.initCamera()
     this.addLight()
 
     this.addEventListeners()
 
+    // WIP
     // Load first group (desert)
     // this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
     // this.currentScene.init(this.scene, this.renderer)
@@ -166,14 +160,25 @@ class Common {
       window: this.size
     })
     this.scene.add(this.camera.camera)
+    this.vectCam = new THREE.Vector3(this.p1.x, this.p1.y, this.p1.z)
   }
 
-  addLight (scene) {
+  addLight () {
     this.light = new THREE.PointLight(this.params.light.color, this.params.light.intensity, this.params.light.distance)
     this.light.position.set(162, 162, -406)
     this.light.name = 'Pointlight'
 
     this.scene.add(this.light)
+  }
+
+  addClock () {
+    this.clock = new THREE.Clock()
+    this.clock.start()
+  }
+
+  async loadModels () {
+    this.lands = new Land({ mixer: this.mixer })
+    this.models = await this.lands.load()
   }
 
   cameraDisplacement () {
@@ -200,6 +205,7 @@ class Common {
   }
 
   moveCamera (e) {
+    // Get wheel event value and update progression on the curve path
     if (e.deltaY <= 0) {
       this.progression >= 0.98 ? this.progression = 1 : this.progression += -e.deltaY * this.params.scrollSpeed / Math.pow(10, 5)
     } else {
@@ -267,15 +273,6 @@ class Common {
       this.resize()
     })
 
-    nuxt.$on('startExperience', () => {
-      window.addEventListener('wheel', (e) => {
-        if (this.curves[this.curveNumber] !== undefined) {
-          this.moveCamera(e)
-        }
-        this.wheelMovement(e)
-      })
-    })
-
     window.addEventListener('mousedown', () => {
       this.mouseDown()
     })
@@ -286,6 +283,15 @@ class Common {
   }
 
   addTransitionEvent () {
+    nuxt.$on('startExperience', () => {
+      window.addEventListener('wheel', (e) => {
+        if (this.curves[this.curveNumber] !== undefined) {
+          this.moveCamera(e)
+        }
+        this.wheelMovement(e)
+      })
+    })
+
     nuxt.$on('startSceneTransition', () => {
       this.pauseRender = true
       this.currentScene.removeAllSound()
@@ -302,10 +308,13 @@ class Common {
       this.progression = 0
       store.commit('increaseSceneIndex')
     })
+
     nuxt.$on('endSceneTransition', () => {
       this.pauseRender = false
       this.progression = 0
     })
+
+    // Pause render during transition to improve perfs
     nuxt.$on('pauseRender', () => {
       this.pauseRender = true
     })
@@ -373,9 +382,7 @@ class Common {
         this.mixer[0].update(this.time.delta)
       }
 
-      // Render
       this.bloom.render()
-      // this.renderer.render(this.scene, this.camera.camera)
     }
   }
 }

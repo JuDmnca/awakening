@@ -14,9 +14,6 @@ const state = () => ({
   canInhaleOnHold: true
 })
 
-const actions = {
-}
-
 const mutations = {
   increaseCounter (state) {
     state.counter++
@@ -43,6 +40,5 @@ const mutations = {
 
 export default {
   state,
-  actions,
   mutations
 }

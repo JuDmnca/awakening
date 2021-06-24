@@ -1,4 +1,3 @@
-// import * as THREE from 'three'
 import modelButterfly from '../../../../assets/models/m_butterfly.gltf'
 import Loader from '../../../Utils/js/Loader'
 

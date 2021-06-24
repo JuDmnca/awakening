@@ -119,6 +119,7 @@ export default {
   height: 100vh;
   z-index: -1;
 }
+
 .v_1, .v_2, .v_3 {
   position: absolute;
   top: 0;

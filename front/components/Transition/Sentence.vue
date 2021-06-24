@@ -25,7 +25,7 @@ export default {
   },
   mounted () {
     if (this.step === 2) {
-      this.text = 'Tes narines se remplissent du parfum enivrant des fleurs et une sensation de bien-être te submerge.'
+      this.text = 'Vos narines se remplissent du parfum enivrant des fleurs et une sensation de bien-être vous submerge.'
     } else {
       this.text = 'Votre mélodie à éveillé une force chez le papillon blablabla.'
     }

@@ -35,7 +35,6 @@ export default class Flower {
 
     // Petal texture
     const flowerTexture = new THREE.TextureLoader().load(flowerFrag)
-
     const flowerShaderMaterial = this.toMaterial(flowerTexture)
 
     this.flowerObject = flowerModel
@@ -58,6 +57,7 @@ export default class Flower {
     this.applyMaterial(flowerShaderMaterial)
   }
 
+  // Create a material from a texture
   toMaterial (flowerTexture) {
     const flowerVert = require('../../../../assets/textures/t_petal_s.jpg')
     const flowerSpringiness = new THREE.TextureLoader().load(flowerVert)
@@ -80,8 +80,10 @@ export default class Flower {
     }
   }
 
+  // Update flower rotation according to mouse position
   update () {
     if (store && store.state.desert.fRotation != null) {
+      // Calculate force & orientation
       const distRotation = store.state.desert.fRotation.clone().sub(this.flowerObject.rotation.toVector3())
       const distRotationMatrix = this.createRotationMatrix(distRotation)
 
@@ -116,6 +118,7 @@ export default class Flower {
     return m
   }
 
+  // Method to apply function to petal childs
   traversePetalsChilds (fct) {
     this.flowerObject.children[0].traverse((c) => {
       if (c instanceof THREE.Mesh) {

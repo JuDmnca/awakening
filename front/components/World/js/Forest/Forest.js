@@ -46,10 +46,7 @@ export default class Forest {
     this.forestGroup.add(this.forestModel)
     this.addColorToCrystal()
 
-    // ADD BUTTERFLY
     this.addButterfly(scene, mixer)
-
-    // ADD GRASS
     this.addGrass()
 
     // Raycaster
