@@ -65,7 +65,6 @@ export default class Loader {
             gltf.animations.forEach((clip) => {
               // const animation = mixer[0].clipAction(clip)
               mixer[0].clipAction(clip).play()
-              console.log(mixer[0])
               // animations.push(animation)
             })
           }
