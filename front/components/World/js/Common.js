@@ -4,7 +4,7 @@ import Crystal from '../../Utils/js/Crystal'
 import Bloom from '../../Utils/js/Bloom'
 
 import Land from './Land'
-import Desert from './Desert/Desert'
+// import Desert from './Desert/Desert'
 import Forest from './Forest/Forest'
 
 const desertCurve = [
@@ -106,7 +106,7 @@ class Common {
   async init ($canvas) {
     // FPS
     // eslint-disable-next-line
-    // (function () { const script = document.createElement('script'); script.onload = function () { const stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop () { stats.update(); requestAnimationFrame(loop) }) }; script.src = '//mrdoob.github.io/stats.js/build/stats.min.js'; document.head.appendChild(script) })()
+    (function () { const script = document.createElement('script'); script.onload = function () { const stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop () { stats.update(); requestAnimationFrame(loop) }) }; script.src = '//mrdoob.github.io/stats.js/build/stats.min.js'; document.head.appendChild(script) })()
 
     this.setSize()
     this.scene = new THREE.Scene()
@@ -123,15 +123,15 @@ class Common {
 
     // WIP
     // Load first group (desert)
-    this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
-    this.currentScene.init(this.scene, this.renderer)
+    // this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
+    // this.currentScene.init(this.scene, this.renderer)
 
-    // this.currentScene = new Forest({
-    //   camera: this.camera,
-    //   model: this.lands.get(1),
-    //   crystal: this.crystal
-    // })
-    // this.currentScene.init(this.scene, this.renderer, this.mixer)
+    this.currentScene = new Forest({
+      camera: this.camera,
+      model: this.lands.get(1),
+      crystal: this.crystal
+    })
+    this.currentScene.init(this.scene, this.renderer, this.mixer)
 
     this.initBloom()
   }
@@ -201,7 +201,7 @@ class Common {
 
     this.p1 = this.curves[0].points[0]
     this.progression = 0
-    this.curveNumber = 0
+    this.curveNumber = 1
   }
 
   moveCamera (e) {
@@ -361,12 +361,12 @@ class Common {
     this.time.total += this.time.delta
 
     // TO DO : update code so camera moves like head following the mouse BUT needs to check camera rotation before
-    // if (!this.currentScene.isFixedView()) {
-    //     this.target.x = ( 1 - this.mouse.x ) * 0.002;
-    //     this.target.y = ( 1 - this.mouse.y ) * 0.002;
+    // if (store && !store.state.desert.haveClickedOnFlower) {
+    //   this.target.x = (1 - this.mouse.x) * 0.002
+    //   this.target.y = (1 - this.mouse.y) * 0.002
 
-    //     // this.camera.camera.rotation.x += 0.01 * ( this.target.y - this.camera.camera.rotation.x )
-    //     // this.camera.camera.rotation.y += 0.2 * ( this.target.x - this.camera.camera.rotation.y )
+    //   this.camera.camera.rotation.x += 0.01 * (this.target.y - this.camera.camera.rotation.x)
+    //   this.camera.camera.rotation.y += 0.2 * (this.target.x - this.camera.camera.rotation.y)
     // }
 
     if (!this.pauseRender) {

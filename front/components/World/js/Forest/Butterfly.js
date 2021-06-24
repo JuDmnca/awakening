@@ -6,6 +6,7 @@ export default class Butterfly {
     this.props = props
     this.scene = props.scene
     this.mixer = props.mixer
+    this.animations = props.animations
 
     this.butterfly = null
 
@@ -14,7 +15,7 @@ export default class Butterfly {
 
   async loadButterfly () {
     const loader = new Loader({ model: modelButterfly })
-    this.butterfly = await loader.initButterfly({ mixer: this.mixer })
+    this.butterfly = await loader.initButterfly(this.mixer, this.animations)
 
     this.scene.add(this.butterfly)
   }

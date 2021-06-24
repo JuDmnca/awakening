@@ -34,7 +34,7 @@ export default class Forest {
 
     this.forestGroup = new THREE.Group()
     this.forestModel = this.props.model
-    this.animations = this.props.animations
+    this.animations = []
 
     this.crystal = props.crystal
   }
@@ -50,8 +50,8 @@ export default class Forest {
     this.forestGroup.add(this.forestModel)
     this.addColorToCrystal()
 
-    // this.addButterfly(scene, mixer)
-    // this.addGrass()
+    this.addButterfly(scene, mixer, this.animations)
+    this.addGrass()
 
     // Raycaster
     this.raycaster.init(this.camera, renderer)
@@ -59,8 +59,8 @@ export default class Forest {
     scene.add(this.forestGroup)
   }
 
-  async addButterfly (scene, mixer) {
-    this.butterfly = await new Butterfly({ scene, mixer })
+  async addButterfly (scene, mixer, animations) {
+    this.butterfly = await new Butterfly({ scene, mixer, animations })
   }
 
   addLight (scene) {
@@ -75,9 +75,9 @@ export default class Forest {
     })
     this.grass = await new Grass(
       {
-        container: this.forestGroup,
-        surface: this.forestGroup.children[0].children[0].children[7],
-        count: 300,
+        container: this.forestGroup.children[0],
+        surface: this.forestGroup.children[0].children[5],
+        count: 1000,
         scaleFactor: 4,
         material
       })
@@ -99,15 +99,15 @@ export default class Forest {
 
   handleClick () {
     if (this.progression >= 0.59) {
-      // console.log(this.mixer)
+      this.animations[0].play()
     }
   }
 
   addEvents () {
-    // nuxt.$on('ColorSetted', () => {
-    //   this.crystal.getColor()
-    //   this.addColorToCrystal()
-    // })
+    nuxt.$on('ColorSetted', () => {
+      this.crystal.getColor()
+      this.addColorToCrystal()
+    })
     window.addEventListener('click', () => {
       this.handleClick()
     })

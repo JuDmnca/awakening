@@ -49,6 +49,8 @@ export default class Loader {
           if (scene.children[0].name === 'Desert') {
             scene.children[0].children[0].material = materials[0]
             scene.children[0].children[1].material = materials[0]
+          } else {
+            scene.position.y -= 3
           }
 
           resolve(scene)
@@ -149,7 +151,7 @@ export default class Loader {
     return promise
   }
 
-  initButterfly (mixer) {
+  initButterfly (mixer, animations) {
     const promise = new Promise((resolve) => {
       const butterfly = new THREE.Object3D()
 
@@ -162,11 +164,11 @@ export default class Loader {
             })
           })
           if (gltf.animations) {
-            mixer.mixer.push(new THREE.AnimationMixer(gltf.scene))
+            mixer.push(new THREE.AnimationMixer(gltf.scene))
             const clips = gltf.animations
             if (clips.length > 0) {
               const clip = AnimationClip.findByName(clips, 'ArmatureAction.002')
-              mixer.mixer[0].clipAction(clip)
+              animations.push(mixer[0].clipAction(clip))
             }
           }
           butterfly.name = 'Butterfly'

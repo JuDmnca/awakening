@@ -14,10 +14,7 @@ export default class Grass {
       this.surfaceSampler = require('three/examples/jsm/math/MeshSurfaceSampler')
     }
 
-    this.loadGrass()
-    setTimeout(() => {
-      this.generate()
-    }, 5000)
+    this.generate()
   }
 
   async loadGrass () {
@@ -25,7 +22,8 @@ export default class Grass {
     this.model = await grass.initGrass()
   }
 
-  generate () {
+  async generate () {
+    await this.loadGrass()
     this.normalizeModel()
     this.createSurface()
     this.generateInstanceMesh()
