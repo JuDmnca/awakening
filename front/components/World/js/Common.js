@@ -283,6 +283,21 @@ class Common {
     this.renderer.setSize(this.size.windowW, this.size.windowH)
   }
 
+  initBloom () {
+    this.bloom = new Bloom({
+      scene: this.scene,
+      camera: this.camera.camera,
+      renderer: this.renderer,
+      size: this.size,
+      params: {
+        exposure: 1.1, // Set to one when bloom renderer actived
+        bloomStrength: 1.8,
+        bloomThreshold: 0,
+        bloomRadius: 0.8
+      }
+    })
+  }
+
   addEventListeners () {
     window.addEventListener('mousemove', (e) => {
       this.mouseMovement(e)
@@ -309,6 +324,7 @@ class Common {
           this.currentScene.onClick()
         }
       })
+    })
 
     window.addEventListener('mousedown', () => {
       this.mouseDown()
@@ -363,21 +379,6 @@ class Common {
   removeGroup (group) {
     const selectedObject = this.scene.getObjectByName(group.name)
     this.scene.remove(selectedObject)
-  }
-
-  initBloom () {
-    this.bloom = new Bloom({
-      scene: this.scene,
-      camera: this.camera.camera,
-      renderer: this.renderer,
-      size: this.size,
-      params: {
-        exposure: 1.1, // Set to one when bloom renderer actived
-        bloomStrength: 1.8,
-        bloomThreshold: 0,
-        bloomRadius: 0.8
-      }
-    })
   }
 
   render () {

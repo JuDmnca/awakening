@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 let nuxt
 if (process.browser) {
   window.onNuxtReady(({ $nuxt }) => {

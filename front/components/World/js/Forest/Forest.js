@@ -73,7 +73,7 @@ export default class Forest {
   onClick () {
     this.isClickedOnButterfly = true
   }
-  
+
   async addGrass () {
     const color = new THREE.Color('#242424')
     const material = new THREE.MeshBasicMaterial({
@@ -131,6 +131,7 @@ export default class Forest {
     if (this.isClickedOnButterfly) {
       const volume = this.microphone.listen()
       if (volume > 140) {
+        /* eslint-disable-next-line no-console */
         console.log('activer le papillon')
       }
     }
