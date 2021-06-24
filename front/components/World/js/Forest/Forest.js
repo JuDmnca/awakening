@@ -32,6 +32,8 @@ export default class Forest {
     this.animations = this.props.animations
 
     this.crystal = props.crystal
+
+    this.microphone = null
   }
 
   init (scene, renderer) {
@@ -55,6 +57,10 @@ export default class Forest {
   addLight (scene) {
     const light = new THREE.AmbientLight(0x404040, 0.8)
     scene.add(light)
+  }
+
+  onClick () {
+    this.isClickedOnButterfly = true
   }
 
   addColorToCrystal () {
@@ -94,5 +100,12 @@ export default class Forest {
     // if (this.forestGroup) {
     //   this.intersects = this.raycaster.render(this.forestGroup)
     // }
+
+    if (this.isClickedOnButterfly) {
+      const volume = this.microphone.listen()
+      if (volume > 140) {
+        console.log('activer le papillon')
+      }
+    }
   }
 }
