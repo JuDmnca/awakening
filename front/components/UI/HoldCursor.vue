@@ -1,27 +1,34 @@
 <template>
-  <section class="cursor">
-    <svg ref="circle" class="circle" viewBox="0 0 200 200">
-      <path
-        class="circle__path"
-        d="
+  <div class="hold-cursor">
+    <section class="cursor">
+      <svg ref="circle" class="circle" viewBox="0 0 200 200">
+        <path
+          class="circle__path"
+          d="
           M 100, 100
           m -75, 0
           a 75,75 0 1,0 150,0
           a 75,75 0 1,0 -150,0
           "
-      />
-    </svg>
-    <svg ref="point" class="point" width="8" height="8" viewBox="0 0 8 8">
-      <circle
-        id="Ellipse_16"
-        data-name="Ellipse 16"
-        cx="4"
-        cy="4"
-        r="4"
-        fill="#fff"
-      />
-    </svg>
-  </section>
+        />
+      </svg>
+      <svg ref="point" class="point" width="8" height="8" viewBox="0 0 8 8">
+        <circle
+          id="Ellipse_16"
+          data-name="Ellipse 16"
+          cx="4"
+          cy="4"
+          r="4"
+          fill="#fff"
+        />
+      </svg>
+    </section>
+    <transition name="fade">
+      <p v-show="indicationIsVisible" ref="indication" class="indication">
+        {{ text }}
+      </p>
+    </transition>
+  </div>
 </template>
 
 <script>
@@ -31,6 +38,9 @@ export default {
   data () {
     return {
       circle: null,
+      indication: null,
+      indicationIsVisible: false,
+      text: '',
       inner: null,
       hold: false,
       active: false
@@ -50,17 +60,25 @@ export default {
     this.$nuxt.$on('unactiveCursor', () => {
       this.unHoldCursor()
     })
+    this.$nuxt.$on('showCursor', (text) => {
+      this.text = text
+      this.indicationIsVisible = true
+    })
+    this.$nuxt.$on('hideCursor', () => {
+      this.indicationIsVisible = false
+    })
   },
   methods: {
     init () {
       this.circle = this.$refs.circle
       this.inner = this.$refs.inner
       this.point = this.$refs.point
+      this.indication = this.$refs.indication
       gsap.set(this.circle, { scale: 1.0 })
       gsap.set(this.circle, { fillOpacity: 0 })
     },
     followCursor (e) {
-      gsap.to([this.circle, this.inner, this.point], {
+      gsap.to([this.circle, this.inner, this.point, this.indication], {
         x: e.clientX - 50 / 2,
         y: e.clientY - 50 / 2,
         duration: 0
@@ -136,6 +154,16 @@ export default {
 </script>
 
 <style scoped>
+.hold-cursor {
+  display: flex;
+}
+
+.indication {
+  color: white;
+  z-index: 10;
+  margin: 12px 0 0 65px;
+}
+
 svg {
   position: absolute;
   top: 0;

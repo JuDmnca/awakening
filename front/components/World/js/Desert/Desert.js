@@ -94,7 +94,7 @@ export default class Desert {
       noHold: 0
     }
     this.isStationary = false
-    this.isCursorImmobile = true
+    this.isCursorImmobile = false
     this.isHold = false
 
     this.cursorDistance = 0
@@ -109,8 +109,10 @@ export default class Desert {
     this.canClickOnFlowers = true
 
     this.sporesSoundAlreadyPlayed = false
-    this.intersectIsEnable = false
+    this.sceneIsStarted = false
     this.cuddleIsCompleted = false
+    this.cursorIsHide = false
+    this.sporesPercentage = 0
   }
 
   init (scene, renderer) {
@@ -133,7 +135,12 @@ export default class Desert {
 
     nuxt.$on('swoosh', () => {
       this.swooshSound.sound.play()
-      this.intersectIsEnable = true
+      this.sceneIsStarted = true
+      setTimeout(() => {
+        nuxt.$emit('showCursor', 'Scroll')
+        this.time.stationary = 0
+        this.isStationary = false
+      }, 2000)
 
       // Disable for dev
       // setTimeout(() => {
@@ -197,9 +204,6 @@ export default class Desert {
 
   onWheelMovement (e) {
     this.time.stationary = 0
-    if (this.isStationary) {
-      nuxt.$emit('showCursor', 'Hold')
-    }
     this.isStationary = false
   }
 
@@ -214,10 +218,10 @@ export default class Desert {
   onCursorMovement (e) {
     // Disable animation if mousemove
     this.time.cursorImmobile = 0
-    if (!this.isCursorImmobile) {
-      nuxt.$emit('showCursor', 'Caresse les fleurs')
-    }
-    this.isCursorImmobile = true
+    // if (!this.isCursorImmobile) {
+    //   nuxt.$emit('showCursor', 'Caresse les fleurs')
+    // }
+    // this.isCursorImmobile = true
 
     // Compute distance of mousemove at the end of the path
     if (this.progression > this.enableSporesElevationAt) {
@@ -415,11 +419,11 @@ export default class Desert {
     const mouseY = e.pageY
     if (this.lastMouseX > -1 && this.enableSporesElevation) {
       this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY))
-      const sporesPercentage = this.sporesElevation * 100 / 16000
-      if (sporesPercentage < 150) {
-        nuxt.$emit('sporesElevation', sporesPercentage)
+      this.sporesPercentage = this.sporesElevation * 100 / 16000
+      if (this.sporesPercentage < 150) {
+        nuxt.$emit('sporesElevation', this.sporesPercentage)
       }
-      if (sporesPercentage > 100 && !this.cuddleIsCompleted) {
+      if (this.sporesPercentage > 100 && !this.cuddleIsCompleted) {
         this.note3Sound.sound.play()
         this.cuddleIsCompleted = true
       }
@@ -444,6 +448,9 @@ export default class Desert {
     if (this.intersects.length > 0 && !store.state.desert.haveClickedOnFlower) {
       store.commit('desert/setHaveClickedOnFlowers')
       nuxt.$emit('clickOnFlowers')
+      setTimeout(() => {
+        nuxt.$emit('showCursor', 'Caresse les fleurs')
+      }, 2000)
     }
   }
 
@@ -536,7 +543,7 @@ export default class Desert {
       this.intersects = this.raycaster.render(this.plantsGroup)
     }
     // Indications
-    if (store.state.desert.sceneIsStarted) {
+    if (this.sceneIsStarted) {
       this.time.stationary += timeDelta
       this.time.cursorImmobile += timeDelta
       this.time.noHold += timeDelta
@@ -546,16 +553,34 @@ export default class Desert {
     // stationary = time to wait to show the indication
     // progression < 0.5 : indicator just in the first part of the scene.
     // console.log('stationary : ', this.time.stationary, ' isStationary : ', this.isStationary, ' progression : ', this.progression)
-    if (this.time.stationary > 10 && !this.isStationary && this.progression < 0.5) {
+    // if (this.progression > 0.1 && !this.cursorIsHide) {
+    //   nuxt.$emit('hideCursor')
+    //   this.cursorIsHide = true
+    // }
+    if (this.time.stationary > 3 && !this.isStationary && this.progression < 0.9) {
       this.isStationary = true
       nuxt.$emit('showCursor', 'Scroll')
-    } else if (this.time.cursorImmobile > 10 && this.cursorDistance < 25000 && this.progression > this.enableSporesElevationAt && this.isCursorImmobile) {
-      this.isCursorImmobile = false
+      setTimeout(() => {
+        nuxt.$emit('hideCursor')
+        this.time.stationary = 0
+        this.isStationary = false
+      }, 2000)
+    } else if (!this.isStationary && this.progression > 0.9) {
+      nuxt.$emit('hideCursor')
+      this.isStationary = true
+    } else if (this.time.cursorImmobile > 3 && this.sporesPercentage < 100 && !this.isCursorImmobile && store.state.desert.haveClickedOnFlower) {
+      this.isCursorImmobile = true
       nuxt.$emit('showCursor', 'Caresse les fleurs')
-    } else if (this.time.noHold > 10 && this.cursorDistance > 25000 && this.progression > this.enableSporesElevationAt && !this.isHold) {
-      this.isHold = true
-      nuxt.$emit('showCursor', 'Hold')
+      setTimeout(() => {
+        nuxt.$emit('hideCursor')
+        this.time.cursorImmobile = 0
+        this.isCursorImmobile = false
+      }, 2000)
     }
+    // else if (this.time.noHold > 10 && this.cursorDistance > 25000 && this.progression > this.enableSporesElevationAt && !this.isHold) {
+    //   this.isHold = true
+    //   nuxt.$emit('showCursor', 'Hold')
+    // }
 
     if (this.intersects.length > 0 && !this.isCursorActive && nuxt && !store.state.desert.haveClickedOnFlower) {
       this.isCursorActive = true
