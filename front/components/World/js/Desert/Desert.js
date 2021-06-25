@@ -558,10 +558,10 @@ export default class Desert {
       nuxt.$emit('showCursor', 'Hold')
     }
 
-    if (this.intersects.length > 0 && !this.isCursorActive && nuxt) {
+    if (this.intersects.length > 0 && !this.isCursorActive && nuxt && !store.state.desert.haveClickedOnFlower) {
       this.isCursorActive = true
       nuxt.$emit('activeCursor')
-    } else if (this.intersects.length === 0 && nuxt && this.isCursorActive) {
+    } else if (this.intersects.length === 0 && nuxt && this.isCursorActive && !store.state.desert.haveClickedOnFlower) {
       this.isCursorActive = false
       nuxt.$emit('unactiveCursor')
     }

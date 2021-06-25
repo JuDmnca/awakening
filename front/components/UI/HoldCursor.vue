@@ -45,10 +45,10 @@ export default {
       window.addEventListener('mouseup', this.unHoldCursor)
     })
     this.$nuxt.$on('activeCursor', () => {
-      this.activeCursor()
+      this.holdCursor()
     })
     this.$nuxt.$on('unactiveCursor', () => {
-      this.unActiveCursor()
+      this.unHoldCursor()
     })
   },
   methods: {
@@ -71,7 +71,7 @@ export default {
       gsap.to(
         this.circle,
         {
-          scale: 0.4,
+          scale: 0.6,
           strokeOpacity: 0,
           fillOpacity: 0.4,
           duration: this.$store.state.durationHold,
@@ -100,6 +100,7 @@ export default {
         this.circle,
         {
           scale: 0.6,
+          strokeWidth: 10,
           // - 0.2 because we have the impression that the hold ends at the right time
           duration: this.$store.state.durationHold - 1,
           ease: 'power.out'
@@ -113,6 +114,7 @@ export default {
         this.circle,
         {
           scale: 1,
+          strokeWidth: 10,
           duration: 1,
           ease: 'power3.out'
         }
@@ -151,7 +153,7 @@ svg {
 
 .circle {
   opacity: 1;
-  stroke-width: 2px;
+  stroke-width: 7px;
 }
 
 .circle__path {
