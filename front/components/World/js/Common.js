@@ -126,20 +126,8 @@ class Common {
 
     // WIP
     // Load first group (desert)
-<<<<<<< HEAD
     this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
     this.currentScene.init(this.scene, this.renderer)
-=======
-    // this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
-    // this.currentScene.init(this.scene, this.renderer)
-
-    this.currentScene = new Forest({
-      camera: this.camera,
-      model: this.lands.get(1),
-      crystal: this.crystal
-    })
-    this.currentScene.init(this.scene, this.renderer, this.mixer)
->>>>>>> aaa530f4c9747d1fe4292aa572efe9dfe029c6b3
 
     // this.currentScene = new Forest({
     //   camera: this.camera,
@@ -322,6 +310,7 @@ class Common {
           this.currentScene.onClick()
         }
       })
+    })
 
     window.addEventListener('mousedown', () => {
       this.mouseDown()
