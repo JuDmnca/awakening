@@ -45,6 +45,13 @@ export default {
       this.$refs.progressWhite.style.width = '250px'
       this.$store.commit('desert/setCanInhaleOnHold', true)
       this.show = false
+      setTimeout(() => {
+        this.$store.commit('setSubtitle', 'Et s\'il suffisait d\'une inspiration ?')
+        this.$nuxt.$emit('toggleShowSubtitle')
+        setTimeout(() => {
+          this.$nuxt.$emit('toggleShowSubtitle')
+        }, 4000)
+      }, 1000)
     }
   }
 }
