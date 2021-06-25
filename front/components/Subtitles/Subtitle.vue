@@ -24,13 +24,13 @@ export default {
 
 <style scoped>
 .subtitle {
-    font-family: 'ButlerLight';
-    font-size: 30px;
-    position: absolute;
-    color: white;
-    bottom: 50px;
-    display: flex;
-    justify-content: center;
-    width: 100vw;
+  font-family: 'ButlerLight';
+  font-size: 30px;
+  position: absolute;
+  color: white;
+  bottom: 50px;
+  display: flex;
+  justify-content: center;
+  width: 100vw;
 }
 </style>

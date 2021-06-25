@@ -3,14 +3,6 @@ import particlesFragmentShader from '../../../../assets/shaders/particles/partic
 import particlesVertexShader from '../../../../assets/shaders/particles/particles.vert'
 import noise2D from '../../../Utils/js/Noise2D'
 
-// eslint-disable-next-line no-unused-vars
-let store
-if (process.browser) {
-  window.onNuxtReady(({ $store }) => {
-    store = $store
-  })
-}
-
 class Particles {
   constructor (props) {
     this.props = props
@@ -19,65 +11,98 @@ class Particles {
     this.particles = null
     this.count = 20000
     this.colors = this.props.color
+
     this.init()
   }
 
   init () {
-    // Geometry
-    this.particlesGeometry = new THREE.BufferGeometry()
+    this.createGeometry()
+    this.setVariables()
+    this.generateParticles()
+    this.setAttributes()
+    this.createMaterial()
+    this.createMesh()
+  }
 
-    const NormalizedColors = []
+  hexToRGB (hexColor) {
+    return {
+      x: ((hexColor >> 16) & 0xFF) / 255,
+      y: ((hexColor >> 8) & 0xFF) / 255,
+      z: (hexColor & 0xFF) / 255
+    }
+  }
+
+  createGeometry () {
+    this.particlesGeometry = new THREE.BufferGeometry()
+  }
+
+  setVariables () {
+    // Normalize colors to use them in shader
+    this.NormalizedColors = []
     for (let i = 0; i < this.colors.length; i++) {
-      NormalizedColors[i] = this.hexToRGB(`0x${this.colors[i]}`)
+      this.NormalizedColors[i] = this.hexToRGB(`0x${this.colors[i]}`)
     }
 
-    const positions = new Float32Array(this.count * 3)
-    const scales = new Float32Array(this.count)
-    const colors = new Float32Array(this.count * 3)
-    const randomSpeed = new Float32Array(this.count)
-    const directionNoised = new Float32Array(this.count)
+    this.positions = new Float32Array(this.count * 3)
+    this.scales = new Float32Array(this.count)
+    this.colors = new Float32Array(this.count * 3)
+    this.randomSpeed = new Float32Array(this.count)
+    this.directionNoised = new Float32Array(this.count)
+  }
+
+  generateParticles () {
     let xOff = 0
     let yOff = 0
+
     for (let i = 0; i < this.count * 3; i++) {
       const i3 = i * 3
-      // Position
-      positions[i3 + 0] = (Math.random() - 0.5) * 10 * Math.random()
-      positions[i3 + 1] = (Math.random() - 0.5) * 75 * Math.random() - 38
-      positions[i3 + 2] = (Math.random() - 0.5) * 10 * Math.random()
+      // Position (x, y, z)
+      this.positions[i3 + 0] = (Math.random() - 0.5) * 10 * Math.random()
+      this.positions[i3 + 1] = (Math.random() - 0.5) * 75 * Math.random() - 38
+      this.positions[i3 + 2] = (Math.random() - 0.5) * 10 * Math.random()
 
       // Scale
-      scales[i] = Math.random() + 0.2
+      this.scales[i] = Math.random() + 0.2
 
       // Colors
-      colors[i3 + 0] = NormalizedColors[1].x
-      colors[i3 + 1] = NormalizedColors[1].y
-      colors[i3 + 2] = NormalizedColors[1].z
+      this.colors[i3 + 0] = this.NormalizedColors[1].x
+      this.colors[i3 + 1] = this.NormalizedColors[1].y
+      this.colors[i3 + 2] = this.NormalizedColors[1].z
 
       // Random Speed
-      randomSpeed[i] = Math.pow(noise2D(xOff, yOff), 2)
+      this.randomSpeed[i] = Math.pow(noise2D(xOff, yOff), 2)
 
       // Noise
-      directionNoised[i] = noise2D(xOff, yOff) * 2
+      this.directionNoised[i] = noise2D(xOff, yOff) * 2
       xOff += 0.001
       yOff += 0.001
     }
+  }
 
+  setAttributes () {
     this.particlesGeometry.setAttribute(
       'position',
-      new THREE.BufferAttribute(positions, 3)
+      new THREE.BufferAttribute(this.positions, 3)
     )
-
     this.particlesGeometry.setAttribute(
       'randomSpeed',
-      new THREE.BufferAttribute(randomSpeed, 1)
+      new THREE.BufferAttribute(this.randomSpeed, 1)
     )
+    this.particlesGeometry.setAttribute(
+      'directionNoised',
+      new THREE.BufferAttribute(this.directionNoised, 1)
+    )
+    this.particlesGeometry.setAttribute(
+      'aScale',
+      new THREE.BufferAttribute(this.scales, 1)
+    )
+    this.particlesGeometry.setAttribute(
+      'color',
+      new THREE.BufferAttribute(this.colors, 3)
+    )
+  }
 
-    this.particlesGeometry.setAttribute('directionNoised', new THREE.BufferAttribute(directionNoised, 1))
-    this.particlesGeometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1))
-    this.particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-    // this.particlesGeometry.attributes.color = new THREE.Vector3(1.0, 1.0, 0.0)
-
-    // Material
+  createMaterial () {
     this.particlesMaterial = new THREE.ShaderMaterial({
       depthWrite: true,
       transparent: true,
@@ -95,21 +120,10 @@ class Particles {
     })
 
     this.particlesMaterial.fragmentShader = particlesFragmentShader
-
-    // Particles mesh
-    this.particles = new THREE.Points(this.particlesGeometry, this.particlesMaterial)
-    // this.particles.rotateX(-Math.PI / 8)
-    // this.particles.position.x += 5
-    // this.particles.position.z -= 60
-    // this.particles.position.y += 10
   }
 
-  hexToRGB (hexColor) {
-    return {
-      x: ((hexColor >> 16) & 0xFF) / 255,
-      y: ((hexColor >> 8) & 0xFF) / 255,
-      z: (hexColor & 0xFF) / 255
-    }
+  createMesh () {
+    this.particles = new THREE.Points(this.particlesGeometry, this.particlesMaterial)
   }
 
   render (elapsedTime) {

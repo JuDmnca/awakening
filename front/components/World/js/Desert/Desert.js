@@ -22,9 +22,9 @@ import modelBlue from '../../../../assets/models/m_blue_flower.gltf'
 
 import Loader from '../../../Utils/js/Loader'
 
+import Grass from '../Common/Grass'
 import Particles from './Particles'
 import Plant from './Plant'
-import Grass from './Grass'
 import Cube from './Cube'
 
 let store, nuxt
@@ -134,35 +134,37 @@ export default class Desert {
     nuxt.$on('swoosh', () => {
       this.swooshSound.sound.play()
       this.intersectIsEnable = true
-      setTimeout(() => {
-        store.commit('setSubtitle', 'Notre esprit peut parfois nous sembler vide…')
-        nuxt.$emit('toggleShowSubtitle')
-      }, 3000)
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-      }, 8000)
-      setTimeout(() => {
-        store.commit('setSubtitle', 'Et la perception de nos sens affaiblie.')
-        nuxt.$emit('toggleShowSubtitle')
-      }, 8500)
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-      }, 13500)
-      setTimeout(() => {
-        store.commit('setSubtitle', 'Mais il suffit d’une stimulation singulière…')
-        nuxt.$emit('toggleShowSubtitle')
-      }, 14000)
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-      }, 19000)
-      setTimeout(() => {
-        store.commit('setSubtitle', 'Pour redonner vie à notre monde intérieur.')
-        nuxt.$emit('toggleShowSubtitle')
-      }, 19500)
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-        this.canClickOnFlowers = true
-      }, 24500)
+
+      // Disable for dev
+      // setTimeout(() => {
+      //   store.commit('setSubtitle', 'Notre esprit peut parfois nous sembler vide…')
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 3000)
+      // setTimeout(() => {
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 8000)
+      // setTimeout(() => {
+      //   store.commit('setSubtitle', 'Et la perception de nos sens affaiblie.')
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 8500)
+      // setTimeout(() => {
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 13500)
+      // setTimeout(() => {
+      //   store.commit('setSubtitle', 'Mais il suffit d’une stimulation singulière…')
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 14000)
+      // setTimeout(() => {
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 19000)
+      // setTimeout(() => {
+      //   store.commit('setSubtitle', 'Pour redonner vie à notre monde intérieur.')
+      //   nuxt.$emit('toggleShowSubtitle')
+      // }, 19500)
+      // setTimeout(() => {
+      //   nuxt.$emit('toggleShowSubtitle')
+      //   this.canClickOnFlowers = true
+      // }, 24500)
     })
 
     nuxt.$on('clickOnFlowers', () => {
@@ -181,10 +183,7 @@ export default class Desert {
     // RAYCASTER
     this.raycaster.init(this.camera, renderer)
 
-    // FOG
     this.addFog(scene)
-
-    // SKYBOX
     this.addSkybox(scene)
 
     // MOUSE

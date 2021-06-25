@@ -2,6 +2,9 @@
 import * as THREE from 'three'
 import Raycaster from '../../../Utils/js/Raycaster'
 
+import Grass from '../Common/Grass'
+import Butterfly from './Butterfly'
+
 let store
 let nuxt
 if (process.browser) {
@@ -24,19 +27,23 @@ export default class Forest {
     this.intersects = []
     this.intersected = null
 
-    this.progression = null
+    this.mixer = null
+
+    this.progression = this.props.progression
     this.events = false
 
     this.forestGroup = new THREE.Group()
     this.forestModel = this.props.model
-    this.animations = this.props.animations
+    this.animations = []
 
     this.crystal = props.crystal
 
     this.microphone = null
   }
 
-  init (scene, renderer) {
+  init (scene, renderer, mixer) {
+    this.mixer = mixer
+
     this.camera.updatePerspective()
     this.camera.camera.updateProjectionMatrix()
 
@@ -45,13 +52,17 @@ export default class Forest {
     this.forestGroup.add(this.forestModel)
     this.addColorToCrystal()
 
+    this.addButterfly(scene, mixer, this.animations)
+    this.addGrass()
+
     // Raycaster
     this.raycaster.init(this.camera, renderer)
 
-    // this.animations[0].reset().play()
-    // this.animations[1].play()
-
     scene.add(this.forestGroup)
+  }
+
+  async addButterfly (scene, mixer, animations) {
+    this.butterfly = await new Butterfly({ scene, mixer, animations })
   }
 
   addLight (scene) {
@@ -61,6 +72,21 @@ export default class Forest {
 
   onClick () {
     this.isClickedOnButterfly = true
+  }
+  
+  async addGrass () {
+    const color = new THREE.Color('#242424')
+    const material = new THREE.MeshBasicMaterial({
+      color
+    })
+    this.grass = await new Grass(
+      {
+        container: this.forestGroup.children[0],
+        surface: this.forestGroup.children[0].children[5],
+        count: 1000,
+        scaleFactor: 4,
+        material
+      })
   }
 
   addColorToCrystal () {
@@ -78,8 +104,9 @@ export default class Forest {
   }
 
   handleClick () {
-    // this.animations[0].play()
-    // this.animations[1].play()
+    if (this.progression >= 0.59) {
+      this.animations[0].play()
+    }
   }
 
   addEvents () {
@@ -87,9 +114,9 @@ export default class Forest {
       this.crystal.getColor()
       this.addColorToCrystal()
     })
-    // window.addEventListener('click', () => {
-    //   this.handleClick()
-    // })
+    window.addEventListener('click', () => {
+      this.handleClick()
+    })
   }
 
   render () {

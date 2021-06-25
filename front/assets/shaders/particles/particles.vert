@@ -41,16 +41,10 @@ void main() {
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
     float distanceToCenter = length(modelPosition.xz);
-    // float yOffset = (1.0 / distanceToCenter) * uTime * 0.2;
-    // float angle = rand(vec2(gl_VertexID, gl_VertexID)) + 0.5;
-    // float speed = rand(vec2(gl_VertexID * 2, gl_VertexID * 2));
-    // modelPosition.x = cos(angle) * uTime * speed;
     float deplacement = distanceToCenter * uTime * 0.001;
     modelPosition.x += noise1D(deplacement * 0.1);
     modelPosition.z += randomSpeed * uTime * noise;
-    // modelPosition.y = pow(randomSpeed * uTime * noise * 10.0, 2.0) * uZSpeed + 10.0;
     modelPosition.y += randomSpeed * uTime + uZSpeed;
-    // modelPosition = rotateX(PI) * modelPosition;
     vec4 viewPosition = viewMatrix * modelPosition;
     vec4 projectedPosition = projectionMatrix * viewPosition;
     gl_Position = projectedPosition;
@@ -62,7 +56,7 @@ void main() {
     gl_PointSize = uSize * aScale;
     gl_PointSize *= (1.0 / -viewPosition.z);
     vColor = color;
-    
+
     // acceleration.add(vec3(0.0, 0.5, 0.0));
     // velocity.add(acceleration);
 

@@ -27,13 +27,13 @@ export default {
 </script>
 
 <style>
-  .about {
-    position: absolute;
-    bottom: 30px;
-    left: 30px;
-    z-index: 10;
-  }
-  .about a {
-    color: white;
-  }
+.about {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  z-index: 10;
+}
+.about a {
+  color: white;
+}
 </style>

@@ -14,10 +14,7 @@ export default class Grass {
       this.surfaceSampler = require('three/examples/jsm/math/MeshSurfaceSampler')
     }
 
-    this.loadGrass()
-    setTimeout(() => {
-      this.generate()
-    }, 5000)
+    this.generate()
   }
 
   async loadGrass () {
@@ -25,27 +22,34 @@ export default class Grass {
     this.model = await grass.initGrass()
   }
 
-  generate () {
+  async generate () {
+    await this.loadGrass()
+    this.normalizeModel()
+    this.createSurface()
+    this.generateInstanceMesh()
+  }
+
+  normalizeModel () {
     this.model.geometry.computeVertexNormals()
     this.model.geometry.scale(this.scaleFactor, this.scaleFactor, this.scaleFactor)
+  }
 
+  createSurface () {
     this.surface.updateMatrixWorld()
     const groundGeometry = this.surface.geometry.toNonIndexed()
 
-    const groundMesh = new Mesh(groundGeometry, this.material)
+    this.groundMesh = new Mesh(groundGeometry, this.material)
+  }
+
+  generateInstanceMesh () {
     const dummy = new Object3D()
-    const sampler = new this.surfaceSampler.MeshSurfaceSampler(groundMesh).setWeightAttribute()
-    this.mesh = new InstancedMesh(this.model.geometry, this.material, this.count)
-    const _position = new Vector3()
-    const _normal = new Vector3()
-    this.mesh.name = 'Grass'
-    sampler.build()
+    this.createMesh()
+    this.buildSampler()
 
     for (let i = 0; i < this.count; i++) {
-      sampler.sample(_position, _normal)
-      _normal.add(_position)
-      dummy.position.copy(_position)
-      // dummy.lookAt(_normal)
+      this.sampler.sample(this._position, this._normal)
+      this._normal.add(this._position)
+      dummy.position.copy(this._position)
       dummy.updateMatrix()
       dummy.rotation.y += i
       dummy.position.y += 1
@@ -55,6 +59,18 @@ export default class Grass {
     this.mesh.instanceMatrix.needsUpdate = true
 
     this.container.add(this.mesh)
+  }
+
+  createMesh () {
+    this.mesh = new InstancedMesh(this.model.geometry, this.material, this.count)
+    this._position = new Vector3()
+    this._normal = new Vector3()
+    this.mesh.name = 'Grass'
+  }
+
+  buildSampler () {
+    this.sampler = new this.surfaceSampler.MeshSurfaceSampler(this.groundMesh).setWeightAttribute()
+    this.sampler.build()
   }
 
   destroy () {
