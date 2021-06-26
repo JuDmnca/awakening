@@ -26,12 +26,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .about {
   position: absolute;
   bottom: 30px;
   left: 30px;
-  z-index: 10;
+  z-index: 9999;
 }
 .about a {
   color: white;

@@ -100,6 +100,7 @@ class Constellation {
     this.addRenderer($canvas)
     this.initCamera()
     this.initLight()
+    this.initAbout()
 
     // Skybox
     this.loadTexture()
@@ -122,6 +123,10 @@ class Constellation {
 
     // Debug
     this.addGUI()
+  }
+
+  initAbout () {
+    nuxt.$emit('started')
   }
 
   addSounds () {
