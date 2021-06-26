@@ -56,7 +56,7 @@ class Constellation {
       light: {
         angle: Math.PI / 2,
         color: '#ffffff',
-        intensity: 0.3,
+        intensity: 0.1,
         distance: 1000
       }
     }
@@ -78,6 +78,9 @@ class Constellation {
 
     // Post Processing
     this.bloom = null
+
+    // Speed gems
+    this.connectedUserSpeed = null
   }
 
   init ($canvas) {
@@ -211,6 +214,20 @@ class Constellation {
   async generateCrystals () {
     const gemMeshes = await this.loadGems()
 
+    // Big gem for current user
+    if (store.state.user.name) {
+      this.connectedUserMesh = gemMeshes[this.getRandomInt(3)].clone()
+      const pos = new Vector3(0, 0, -3)
+      this.connectedUserMesh.position.copy(pos)
+      this.connectedUserMesh.layers.enable(1)
+      this.connectedUserMesh.userId = -1
+      this.addDataToCurrentUser(this.connectedUserMesh)
+      this.connectedUserMesh.Ydirection = Math.random() < 0.5 ? -1 : 1
+      this.scene.add(this.connectedUserMesh)
+
+      this.connectedUserSpeed = Math.random()
+    }
+
     const textureCrystals = this.texture
     textureCrystals.mapping = THREE.CubeRefractionMapping
     textureCrystals.encoding = THREE.sRGBEncoding
@@ -249,6 +266,19 @@ class Constellation {
 
   addData (gemMesh, i) {
     gemMesh.datas = store.state.constellation.dataUsers[i]
+    this.switchColors(gemMesh)
+  }
+
+  addDataToCurrentUser (gemMesh) {
+    gemMesh.datas = {}
+    gemMesh.datas.color = store.state.user.color
+    gemMesh.datas.sound = store.state.user.sound
+    gemMesh.datas.odeur = store.state.user.smell
+    gemMesh.datas.nom = store.state.user.name
+    this.switchColors(gemMesh)
+  }
+
+  switchColors (gemMesh) {
     switch (gemMesh.datas.color) {
       case 'blue':
         gemMesh.material.color = new THREE.Color('#2461ff')
@@ -316,6 +346,7 @@ class Constellation {
           id: this.intersectedObject[0].object.userId,
           datas: this.intersectedObject[0].object.datas
         }
+        console.log(currentUser)
         store.commit('constellation/setCurrentUser', currentUser)
       }
     })
@@ -349,35 +380,68 @@ class Constellation {
         this.gems[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
         this.gems[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150) * this.gems[i].Ydirection
       }
+
+      if (this.connectedUserMesh) {
+        this.connectedUserMesh.rotation.y = this.time.total * (this.connectedUserSpeed + 0.1)
+        this.connectedUserMesh.position.y += Math.cos(this.time.total) / ((this.connectedUserSpeed + 0.2) * 150) * this.connectedUserMesh.Ydirection
+      }
     }
 
     this.intersectedObject = this.raycaster.render(this.scene)
     if (this.intersectedObject.length > 0 && this.isIntersected === false) {
       this.lastIntersectedObject = this.intersectedObject[0]
-      gsap.killTweensOf(this.lastIntersectedObject.object.scale)
-      gsap.to(
-        this.lastIntersectedObject.object.scale,
-        {
-          x: this.cristalScale,
-          y: this.cristalScale,
-          z: this.cristalScale,
-          duration: 1,
-          ease: 'power3.out'
-        }
-      )
+      if (this.intersectedObject[0].object.datas.nom === store.state.user.name) {
+        gsap.killTweensOf(this.lastIntersectedObject.object.scale)
+        gsap.to(
+          this.lastIntersectedObject.object.scale,
+          {
+            x: 1.2,
+            y: 1.2,
+            z: 1.2,
+            duration: 1,
+            ease: 'power3.out'
+          }
+        )
+      } else {
+        gsap.killTweensOf(this.lastIntersectedObject.object.scale)
+        gsap.to(
+          this.lastIntersectedObject.object.scale,
+          {
+            x: this.cristalScale,
+            y: this.cristalScale,
+            z: this.cristalScale,
+            duration: 1,
+            ease: 'power3.out'
+          }
+        )
+      }
       this.isIntersected = true
     } else if (!this.intersectedObject.length > 0 && this.isIntersected === true) {
-      gsap.killTweensOf(this.lastIntersectedObject.object.scale)
-      gsap.to(
-        this.lastIntersectedObject.object.scale,
-        {
-          x: 1 / this.cristalScale,
-          y: 1 / this.cristalScale,
-          z: 1 / this.cristalScale,
-          duration: 1,
-          ease: 'power3.out'
-        }
-      )
+      if (this.lastIntersectedObject.object.datas.nom === store.state.user.name) {
+        gsap.killTweensOf(this.lastIntersectedObject.object.scale)
+        gsap.to(
+          this.lastIntersectedObject.object.scale,
+          {
+            x: 1 / 1.2,
+            y: 1 / 1.2,
+            z: 1 / 1.2,
+            duration: 1,
+            ease: 'power3.out'
+          }
+        )
+      } else {
+        gsap.killTweensOf(this.lastIntersectedObject.object.scale)
+        gsap.to(
+          this.lastIntersectedObject.object.scale,
+          {
+            x: 1 / this.cristalScale,
+            y: 1 / this.cristalScale,
+            z: 1 / this.cristalScale,
+            duration: 1,
+            ease: 'power3.out'
+          }
+        )
+      }
       this.lastIntersectedObject = null
       this.isIntersected = false
     }

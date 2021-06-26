@@ -1,13 +1,14 @@
 const state = () => ({
   loading: 0,
+  // PROD : Remove user test for constellation
   user: {
-    id: '',
-    name: '',
+    id: null,
+    name: null,
     mic: false,
-    color: '',
-    colorName: '',
-    smell: '',
-    sound: ''
+    color: null,
+    colorName: null,
+    smell: null,
+    sound: null
   },
   colorPalette: null,
   transition: false,
