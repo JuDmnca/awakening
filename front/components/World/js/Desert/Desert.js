@@ -177,14 +177,6 @@ export default class Desert {
     nuxt.$on('clickOnFlowers', () => {
       store.commit('setSubtitle', 'Et s\'il suffisait d\'une caresse ?')
       nuxt.$emit('toggleShowSubtitle')
-
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-        setTimeout(() => {
-          nuxt.$emit('showProgressBar')
-          this.enableSporesElevation = true
-        }, 1000)
-      }, 4000)
     })
 
     // RAYCASTER
@@ -447,6 +439,13 @@ export default class Desert {
     this.lastMouseX = mouseX
     this.lastMouseY = mouseY
     this.inhale({ mousemove: true })
+    if (this.isCursorImmobile) {
+      setTimeout(() => {
+        nuxt.$emit('hideCursor')
+        this.time.cursorImmobile = 0
+        this.isCursorImmobile = false
+      }, 1000)
+    }
   }
 
   sporesOnMouseUp () {
@@ -466,17 +465,12 @@ export default class Desert {
       nuxt.$emit('clickOnFlowers')
       setTimeout(() => {
         nuxt.$emit('showCursor', 'Caresse les fleurs')
-        setTimeout(() => {
-          nuxt.$emit('hideCursor')
-          this.time.cursorImmobile = 0
-          this.isCursorImmobile = false
-        }, 6000)
+        this.isCursorImmobile = true
       }, 2000)
     }
   }
 
   inhale (mousemove = false) {
-    const volume = { x: 0 }
     gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
     gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
     // Movement on mousemove
@@ -494,6 +488,13 @@ export default class Desert {
       if (store.state.desert.haveClickedOnFlower && !this.sporesSoundAlreadyPlayed) {
         this.sporesSound.sound.play()
         this.sporesSoundAlreadyPlayed = true
+        this.enableSporesElevation = true
+        setTimeout(() => {
+          nuxt.$emit('toggleShowSubtitle')
+          setTimeout(() => {
+            nuxt.$emit('showProgressBar')
+          }, 1000)
+        }, 2000)
       }
     } else {
       // Movement on hold
