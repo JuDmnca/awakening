@@ -4,7 +4,7 @@ const state = () => ({
     id: null,
     name: null,
     smell: null,
-    img: null,
+    sound: null,
     color: null
   },
   dataUsers: []
@@ -21,7 +21,7 @@ const mutations = {
     state.currentUser.id = resp.id
     state.currentUser.name = resp.datas.nom
     state.currentUser.smell = resp.datas.odeur
-    state.currentUser.img = resp.datas.img
+    state.currentUser.sound = resp.datas.sound
     state.currentUser.color = resp.datas.color
   },
   getRandomUser (state) {
@@ -29,8 +29,8 @@ const mutations = {
     const randomProfile = state.dataUsers[randomId]
     state.currentUser.name = randomProfile.nom
     state.currentUser.smell = randomProfile.odeur
-    state.currentUser.img = randomProfile.img
     state.currentUser.color = randomProfile.color
+    state.currentUser.sound = randomProfile.sound
     state.currentUser.id = randomProfile.id
   }
 }

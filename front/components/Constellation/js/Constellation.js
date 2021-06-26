@@ -191,14 +191,15 @@ class Constellation {
   }
 
   async loadGems () {
-    const cubeMaterial = new THREE.MeshPhongMaterial({
+    this.cubeMaterial = new THREE.MeshPhongMaterial({
       color: new THREE.Color('#fff'),
       refractionRatio: 0.98
     })
+    const normalMaterial = new THREE.MeshNormalMaterial()
     const gemMeshes = []
     for (let i = 0; i < 3; i++) {
       const mesh = await new Loader({
-        material: cubeMaterial.clone(),
+        material: normalMaterial,
         model: this.gemsModels[i],
         position: { x: 0, y: 0, z: -5 }
       }).initGems()
@@ -218,6 +219,8 @@ class Constellation {
     // Generation of this.gems
     for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
       const gemMesh = gemMeshes[this.getRandomInt(3)].clone()
+      gemMesh.material = this.cubeMaterial.clone()
+
       // Get random int in range [-30, -5], [15, 30] to define position
       const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
       const y = [this.getRandomArbitrary(-10, -5), this.getRandomArbitrary(5, 30)]
@@ -256,7 +259,7 @@ class Constellation {
       case 'purple':
         gemMesh.material.color = new THREE.Color('#be6eff')
         break
-      case 'lime':
+      case 'green':
         gemMesh.material.color = new THREE.Color('#29ff3e')
         break
       case 'orange':
@@ -294,7 +297,7 @@ class Constellation {
       renderer: this.renderer,
       size: this.size,
       params: {
-        exposure: 2.5,
+        exposure: 1.6,
         bloomStrength: 2.5,
         bloomThreshold: 0,
         bloomRadius: 1
