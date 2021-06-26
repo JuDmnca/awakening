@@ -113,6 +113,7 @@ export default class Desert {
     this.cuddleIsCompleted = false
     this.cursorIsHide = false
     this.allInteractionsAreCompleted = false
+    this.isInhalingOnHold = false
     this.sporesPercentage = 0
   }
 
@@ -439,7 +440,7 @@ export default class Desert {
     }
     this.lastMouseX = mouseX
     this.lastMouseY = mouseY
-    if (!this.allInteractionsAreCompleted) {
+    if (!this.allInteractionsAreCompleted && !this.isInhalingOnHold) {
       this.inhale({ mousemove: true })
     }
     if (this.isCursorImmobile) {
@@ -501,6 +502,7 @@ export default class Desert {
       }
     } else {
       // Movement on hold
+      this.isInhalingOnHold = true
       gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
       gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
       gsap.to(
@@ -510,7 +512,6 @@ export default class Desert {
           duration: store.state.durationHold,
           ease: 'power4.inOut',
           onComplete: () => {
-            this.inhaleIsCompleted = true
             if (store.state.desert.counter === 1 && store.state.desert.haveClickedOnFlower) {
               this.note1Sound.sound.play()
             } else if (store.state.desert.counter === 2 && store.state.desert.haveClickedOnFlower) {
@@ -519,6 +520,8 @@ export default class Desert {
               this.note3Sound.sound.play()
               this.allInteractionsAreCompleted = true
             }
+            this.inhaleIsCompleted = true
+            this.isInhalingOnHold = false
           }
         }
       )
