@@ -11,7 +11,7 @@
         <span>{{ $store.state.constellation.currentUser.name }} </span>
       </h2>
       <p class="profile__description small">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ultrices quam sed neque placerat, non laoreet magna viverra.
+        {{ colorMeaning }}
       </p>
     </div>
     <div class="profile__responses flex">
@@ -59,6 +59,32 @@ export default {
   data () {
     return {
       errorMessage: null
+    }
+  },
+  computed: {
+    colorMeaning () {
+      let meaning
+      switch (this.$store.state.constellation.currentUser.color) {
+        case 'blue':
+          meaning = 'Votre couleur est le bleu, celle du ciel ou de la mer, faisant écho au voyage et aux découvertes.'
+          break
+        case 'purple':
+          meaning = 'Votre couleur est le violet, celle des rêveurs, des personnes spirituelles plutôt que matérielles.'
+          break
+        case 'green':
+          meaning = 'Votre couleur est le vert, celle du monde végétal, apaisante, rafraîchissante et même tonifiante.'
+          break
+        case 'orange':
+          meaning = 'Votre couleur est le orange, celle de la créativité et de la communication, porteuse d’optimisme et d’ouverture d’esprit.'
+          break
+        case 'red':
+          meaning = 'Votre couleur est le rouge, celle des passions, remuant les sentiments, qu’ils soient positifs ou négatifs.'
+          break
+        case 'yellow':
+          meaning = 'Votre couleur est le jaune, celle de la vie et du mouvement, mais aussi de l’ouverture et du contact social.'
+          break
+      }
+      return meaning
     }
   },
   methods: {
