@@ -11,6 +11,9 @@ import gemModel2 from '@/assets/models/gems_constellation/gem-2-compressed.gltf'
 import gemModel3 from '@/assets/models/gems_constellation/gem-3-compressed.gltf'
 import gemModel4 from '@/assets/models/gems_constellation/gem-4-compressed.gltf'
 
+import Sound from '../../Utils/js/SoundLoader'
+import musicURL from '../../../assets/sounds/constellation/music.mp3'
+
 import Camera from '../../Utils/js/Camera'
 import Loader from '../../Utils/js/Loader'
 import Raycaster from '../../Utils/js/Raycaster'
@@ -109,12 +112,20 @@ class Constellation {
     this.addRaycaster()
     this.addBloom()
 
+    // Sounds
+    this.addSounds()
+
     // Listeners
     this.addWheelEvent()
     this.addClickEvent()
+    this.addMouseMoveEvent()
 
     // Debug
     this.addGUI()
+  }
+
+  addSounds () {
+    this.music = new Sound({ camera: this.camera, audioFile: musicURL, loop: true, canToggle: true, volume: 0.02 * 3 })
   }
 
   setSize () {
@@ -358,8 +369,17 @@ class Constellation {
           id: this.intersectedObject[0].object.userId,
           datas: this.intersectedObject[0].object.datas
         }
-        console.log(currentUser)
         store.commit('constellation/setCurrentUser', currentUser)
+      }
+    })
+  }
+
+  addMouseMoveEvent () {
+    window.addEventListener('mousemove', () => {
+      console.log(this.music.sound.isPlaying)
+      if (!this.music.sound.isPlaying) {
+        console.log('playyy')
+        this.music.sound.play()
       }
     })
   }
