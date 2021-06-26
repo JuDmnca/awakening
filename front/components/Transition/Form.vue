@@ -180,6 +180,7 @@ form {
 
 label {
   font-size: 40px;
+  will-change: transform;
 }
 
 input {
@@ -191,6 +192,7 @@ input {
   padding-bottom: 10px;
   border-bottom: 1px #fff solid;
   z-index: 10;
+  will-change: transform;
 }
 
 input::placeholder {

@@ -9,8 +9,6 @@
         />
       </transition>
       <TransitionVignettage v-if="vignettageVisible" @onscreen="updateScene" />
-      <!-- Just to test icons -->
-      <!-- <UI-IconsSound width="40" height="40" iconColor="#fff"/> -->
     </section>
   </transition>
 </template>

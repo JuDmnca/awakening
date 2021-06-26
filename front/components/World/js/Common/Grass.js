@@ -57,6 +57,8 @@ export default class Grass {
       this.mesh.setMatrixAt(i, dummy.matrix)
     }
     this.mesh.instanceMatrix.needsUpdate = true
+    /* eslint-disable no-unused-expressions */
+    this.mesh.layers.enable(0)
 
     this.container.add(this.mesh)
   }

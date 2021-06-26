@@ -27,7 +27,7 @@ export default {
     if (this.step === 2) {
       this.text = 'Vos narines se remplissent du parfum enivrant des fleurs et une sensation de bien-être vous submerge.'
     } else {
-      this.text = 'Votre mélodie à éveillé une force chez le papillon blablabla.'
+      this.text = 'Les sons que vous avez émis ont fini par réanimer le papillon, maintenant plein de force et de vitalité.'
     }
   }
 }

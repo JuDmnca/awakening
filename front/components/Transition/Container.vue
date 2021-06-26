@@ -49,10 +49,10 @@ export default {
       this.label = 'Quelle odeur vous a déjà procuré une telle sensation ?'
       this.placeholder = 'La vanille'
     } else {
-      this.label = 'Quel son vous a déjà procuré une telle sensation ?'
+      this.label = 'Existe-t-il une mélodie qui ferait renaitre en vous un souvenir particulier ?'
       this.placeholder = 'Le bruit des vagues'
     }
-    this.confirmation = 'Confirmer'
+    this.confirmation = 'Valider mon souvenir'
     setTimeout(() => {
       this.showQuestion()
     }, 7000)
