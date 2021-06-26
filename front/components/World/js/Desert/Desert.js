@@ -233,31 +233,45 @@ export default class Desert {
   }
 
   async addSound (scene) {
-    this.wind = new Sound({ camera: this.camera, audioFile: windURL, loop: true, canToggle: true, volume: 0.02 })
-    this.swooshSound = new Sound({ camera: this.camera, audioFile: swooshURL, loop: false, canToggle: false, volume: 0.05 })
-    this.note1Sound = new Sound({ camera: this.camera, audioFile: note1URL, loop: false, canToggle: false, volume: 1 })
-    this.note2Sound = new Sound({ camera: this.camera, audioFile: note2URL, loop: false, canToggle: false, volume: 1 })
-    this.note3Sound = new Sound({ camera: this.camera, audioFile: note3URL, loop: false, canToggle: false, volume: 1 })
-    this.inhaleSound = new Sound({ camera: this.camera, audioFile: inhaleURL, loop: false, volume: 0.7 })
+    this.wind = new Sound({ camera: this.camera, audioFile: windURL, loop: true, canToggle: true, volume: 0.02 * 3 })
+    this.swooshSound = new Sound({ camera: this.camera, audioFile: swooshURL, loop: false, canToggle: false, volume: 0.05 * 3 })
+    this.note1Sound = new Sound({ camera: this.camera, audioFile: note1URL, loop: false, canToggle: false, volume: 1 * 3 })
+    this.note2Sound = new Sound({ camera: this.camera, audioFile: note2URL, loop: false, canToggle: false, volume: 1 * 3 })
+    this.note3Sound = new Sound({ camera: this.camera, audioFile: note3URL, loop: false, canToggle: false, volume: 1 * 3 })
+    this.inhaleSound = new Sound({ camera: this.camera, audioFile: inhaleURL, loop: false, volume: 0.7 * 3 })
 
     // Init sound spacialization
     this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
-    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true, volume: 25, refDistance: 0.03 })
+    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true, volume: 25 * 3, refDistance: 0.03 })
     this.soundCube.cube.add(this.crystalSound.sound)
-    this.sporesSound = await new AudioPosition({ url: fairyDustSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 5, refDistance: 1 })
+    this.sporesSound = await new AudioPosition({ url: fairyDustSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 5 * 3, refDistance: 1 })
   }
 
   removeAllSound () {
-    this.disconnectSoundIfSource(this.wind.sound)
-    this.disconnectSoundIfSource(this.swooshSound.sound)
-    this.disconnectSoundIfSource(this.note1Sound.sound)
-    this.disconnectSoundIfSource(this.note2Sound.sound)
-    this.disconnectSoundIfSource(this.crystalSound.sound)
-    this.disconnectSoundIfSource(this.sporesSound.sound)
+    this.disconnectSoundIfSource(this.wind.sound * 3)
+    this.disconnectSoundIfSource(this.swooshSound.sound * 3)
+    this.disconnectSoundIfSource(this.note1Sound.sound * 3)
+    this.disconnectSoundIfSource(this.note2Sound.sound * 3)
+    this.disconnectSoundIfSource(this.crystalSound.sound * 3)
+    this.disconnectSoundIfSource(this.sporesSound.sound * 3)
     // Remove the sound after 3 seconds because the sound is playing when we remove all sounds
     setTimeout(() => {
-      this.disconnectSoundIfSource(this.note3Sound.sound)
-      this.disconnectSoundIfSource(this.inhaleSound.sound)
+      this.disconnectSoundIfSource(this.note3Sound.sound * 3)
+      this.disconnectSoundIfSource(this.inhaleSound.sound * 3)
+    }, 3000)
+  }
+
+  stifleSounds () {
+    this.wind.sound.setVolume(0.005)
+    this.swooshSound.sound.setVolume(0.01)
+    this.note1Sound.sound.setVolume(0.2)
+    this.note2Sound.sound.setVolume(0.2)
+    this.crystalSound.sound.setVolume(5)
+    this.sporesSound.sound.setVolume(1)
+    // Remove the sound after 3 seconds because the sound is playing when we stifle all sounds
+    setTimeout(() => {
+      this.note3Sound.sound.setVolume(0.2)
+      this.inhaleSound.sound.setVolume(0.1)
     }, 3000)
   }
 
