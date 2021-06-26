@@ -9,6 +9,7 @@ import gsap from 'gsap'
 import gemModel from '@/assets/models/gems_constellation/gem-1-compressed.gltf'
 import gemModel2 from '@/assets/models/gems_constellation/gem-2-compressed.gltf'
 import gemModel3 from '@/assets/models/gems_constellation/gem-3-compressed.gltf'
+import gemModel4 from '@/assets/models/gems_constellation/gem-4-compressed.gltf'
 
 import Camera from '../../Utils/js/Camera'
 import Loader from '../../Utils/js/Loader'
@@ -49,7 +50,7 @@ class Constellation {
       delta: null
     }
 
-    this.gemsModels = [gemModel, gemModel2, gemModel3]
+    this.gemsModels = [gemModel, gemModel2, gemModel3, gemModel4]
 
     // General Params
     this.params = {
@@ -199,7 +200,7 @@ class Constellation {
       refractionRatio: 0.98
     })
     const gemMeshes = []
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
       const mesh = await new Loader({
         material: cubeMaterial.clone(),
         model: this.gemsModels[i],
@@ -216,7 +217,7 @@ class Constellation {
 
     // Big gem for current user
     if (store.state.user.name) {
-      this.connectedUserMesh = gemMeshes[this.getRandomInt(3)].clone()
+      this.connectedUserMesh = gemMeshes[this.getRandomInt(4)].clone()
       const pos = new Vector3(0, 0, -3)
       this.connectedUserMesh.position.copy(pos)
       this.connectedUserMesh.layers.enable(1)
@@ -234,7 +235,7 @@ class Constellation {
 
     // Generation of this.gems
     for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
-      const gemMesh = gemMeshes[this.getRandomInt(3)].clone()
+      const gemMesh = gemMeshes[this.getRandomInt(4)].clone()
       // Get random int in range [-30, -5], [15, 30] to define position
       const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
       const y = [this.getRandomArbitrary(-10, -5), this.getRandomArbitrary(5, 30)]
@@ -318,18 +319,29 @@ class Constellation {
   }
 
   addBloom () {
+    this.bloomParams = {
+      exposure: 1.5,
+      bloomStrength: 2.5,
+      bloomThreshold: 0,
+      bloomRadius: 1
+    }
     this.bloom = new Bloom({
       scene: this.scene,
       camera: this.camera.camera,
       renderer: this.renderer,
       size: this.size,
-      params: {
-        exposure: 2.5,
-        bloomStrength: 2.5,
-        bloomThreshold: 0,
-        bloomRadius: 1
-      }
+      params: this.bloomParams
     })
+    let unrealBloomPass
+    if (process.client) {
+      unrealBloomPass = require('three/examples/jsm/postprocessing/UnrealBloomPass.js')
+    }
+    const bloomPass = new unrealBloomPass.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85)
+    bloomPass.threshold = this.bloomParams.bloomThreshold
+    bloomPass.strength = this.bloomParams.bloomStrength
+    bloomPass.radius = this.bloomParams.bloomRadius
+
+    this.bloom.initGUI(this.bloomParams, this.renderer, bloomPass)
   }
 
   addWheelEvent () {
