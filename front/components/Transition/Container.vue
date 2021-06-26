@@ -1,7 +1,7 @@
 <template>
   <section class="transition-container">
     <transition name="fadeCanvas">
-      <TransitionBackground />
+      <TransitionBackground v-if="!background" />
     </transition>
     <transition name="fade">
       <TransitionSentence
@@ -42,6 +42,9 @@ export default {
   computed: {
     showText () {
       return this.text
+    },
+    background () {
+      return this.end
     }
   },
   mounted () {
@@ -56,6 +59,7 @@ export default {
     setTimeout(() => {
       this.showQuestion()
     }, 7000)
+    this.$nuxt.$on('startTransition', () => { this.end = false })
   },
   methods: {
     endTransition () {

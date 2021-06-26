@@ -1,7 +1,6 @@
 const state = () => ({
   loading: 0,
   user: {
-    id: '',
     name: '',
     mic: false,
     color: '',
@@ -21,9 +20,6 @@ const state = () => ({
 const mutations = {
   setLoading (state, resp) {
     state.loading += resp
-  },
-  setUserId (state, resp) {
-    state.user.id = resp
   },
   setUserName (state, resp) {
     state.user.name = resp

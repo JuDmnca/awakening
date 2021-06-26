@@ -1,12 +1,13 @@
 import Desert from '../../../assets/models/m_desert.glb'
-import Forest from '../../../assets/models/m_forest.gltf'
+import Forest from '../../../assets/models/m_foret.gltf'
 import Loader from '../../Utils/js/Loader'
 
 const sandTexture = [
   require('../../../assets/textures/t_sand.png')
 ]
 const forestTexture = [
-  require('../../../assets/textures/t_forest.png')
+  require('../../../assets/textures/t_forest.png'),
+  require('../../../assets/textures/t_white.png')
 ]
 
 export default class Land {

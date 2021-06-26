@@ -123,18 +123,9 @@ class Common {
     this.addLight()
 
     this.addEventListeners()
+    // this.loadDesert()
 
-    // WIP
-    // Load first group (desert)
-    // this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
-    // this.currentScene.init(this.scene, this.renderer)
-
-    this.currentScene = new Forest({
-      camera: this.camera,
-      model: this.lands.get(1),
-      crystal: this.crystal
-    })
-    this.currentScene.init(this.scene, this.renderer, this.mixer)
+    this.loadForest()
 
     this.initBloom()
 
@@ -174,6 +165,16 @@ class Common {
     this.light.name = 'Pointlight'
 
     this.scene.add(this.light)
+  }
+
+  // loadDesert () {
+  //   this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
+  //   this.currentScene.init(this.scene, this.renderer)
+  // }
+
+  loadForest () {
+    this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
+    this.currentScene.init(this.scene, this.renderer, this.mixer)
   }
 
   requestMicroAutorisation () {
@@ -319,10 +320,6 @@ class Common {
     nuxt.$on('swoosh', () => {
       window.addEventListener('mousedown', () => {
         this.mouseDown()
-
-        if (this.currentScene.name === 'Forest' && store.state.sceneIndex === 2) {
-          this.currentScene.handleClick()
-        }
       })
     })
 
@@ -357,12 +354,14 @@ class Common {
           model: this.lands.get(1),
           crystal: this.crystal
         })
-        this.currentScene.init(this.scene, this.renderer)
+        this.currentScene.init(this.scene, this.renderer, this.mixer)
+        this.currentScene.microphone = this.microphone
 
         this.curveNumber += 1
       }
 
       this.progression = 0
+      this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
       store.commit('increaseSceneIndex')
     })
 

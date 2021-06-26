@@ -79,9 +79,6 @@ export default {
           this.$store.commit('setUserSmell', data)
           break
         case 3:
-          this.$store.commit('setUserTaste', data)
-          break
-        case 4:
           this.$store.commit('setUserSound', data)
           break
       }

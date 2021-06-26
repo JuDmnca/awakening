@@ -51,6 +51,27 @@ export default class Loader {
             scene.children[0].children[1].material = materials[0]
           } else {
             scene.position.y -= 3
+            // console.log(scene.children)
+            scene.children.forEach((child) => {
+              if (child.name === 'sol') {
+                child.material = materials[0]
+              }
+              // if (child.name === 'arbre_ZELDO') {
+              //   child.material = materials[1]
+              // }
+              // if (child.name === 'troncs') {
+              //   child.children[0].material = materials[1]
+              // }
+              // if (child.name === 'bouleaux') {
+              //   child.material = materials[1]
+              // }
+              // if (child.name === 'arbres_nus') {
+              //   child.material = materials[1]
+              // }
+              // if (child.name === 'arbre_1ere_rangee' || child.name === 'arbre_2eme_rangee') {
+              //   child.material = materials[1]
+              // }
+            })
           }
 
           resolve(scene)

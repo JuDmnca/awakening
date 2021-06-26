@@ -145,7 +145,7 @@ export default {
         }
 
         // UNCOMMENT ON PROD
-        // if (!data && this.step === 1) {
+        // if (!data) {
         //   this.errorMessage = 'Il faut choisir une couleur pour continuer le voyage'
         // } else if (!data) {
         //   this.errorMessage = 'Il faut répondre pour continuer le voyage'

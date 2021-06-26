@@ -23,6 +23,9 @@ export default {
       $canvas: this.$refs.background,
       color: this.colorPalette
     })
+  },
+  destroyed () {
+    this.$nuxt.$emit('destroy')
   }
 }
 </script>

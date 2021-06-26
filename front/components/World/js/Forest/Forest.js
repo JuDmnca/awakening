@@ -58,7 +58,12 @@ export default class Forest {
     this.addColorToCrystal()
 
     this.addButterfly(scene, mixer, this.animations)
-    this.addGrass()
+
+    // this.crystal.getColor()
+    // this.addColorToCrystal()
+
+    // this.updateBuissonMaterial()
+    // this.addGrass()
 
     // Raycaster
     this.raycaster.init(this.camera, renderer)
@@ -71,12 +76,12 @@ export default class Forest {
   }
 
   addLight (scene) {
-    const light = new THREE.AmbientLight(0x404040, 0.8)
+    const light = new THREE.AmbientLight(0x404040, 1)
     scene.add(light)
   }
 
   async addGrass () {
-    const color = new THREE.Color('#242424')
+    const color = new THREE.Color('#2E3618')
     const material = new THREE.MeshBasicMaterial({
       color
     })
@@ -134,7 +139,7 @@ export default class Forest {
       this.animations[0].timeScale = step * 1.5
       setTimeout(() => {
         this.enable = true
-      }, 2000)
+      }, 1000)
     } else {
       this.moveButterfly()
     }
@@ -151,7 +156,7 @@ export default class Forest {
   }
 
   endScene () {
-    nuxt.$emit('startTransition')
+    nuxt.$emit('startTransition', 3)
     nuxt.$emit('startSceneTransition')
   }
 
