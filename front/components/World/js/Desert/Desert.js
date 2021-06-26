@@ -254,16 +254,16 @@ export default class Desert {
   }
 
   stifleSounds () {
-    this.wind.sound.setVolume(0.005)
-    this.swooshSound.sound.setVolume(0.01)
-    this.note1Sound.sound.setVolume(0.2)
-    this.note2Sound.sound.setVolume(0.2)
-    this.crystalSound.sound.setVolume(5)
-    this.sporesSound.sound.setVolume(1)
+    this.wind.sound.setVolume(0.005 * 3)
+    this.swooshSound.sound.setVolume(0.01 * 3)
+    this.note1Sound.sound.setVolume(0.2 * 3)
+    this.note2Sound.sound.setVolume(0.2 * 3)
+    this.crystalSound.sound.setVolume(5 * 3)
+    this.sporesSound.sound.setVolume(1 * 3)
     // Remove the sound after 3 seconds because the sound is playing when we stifle all sounds
     setTimeout(() => {
-      this.note3Sound.sound.setVolume(0.2)
-      this.inhaleSound.sound.setVolume(0.1)
+      this.note3Sound.sound.setVolume(0.2 * 3)
+      this.inhaleSound.sound.setVolume(0.1 * 3)
     }, 3000)
   }
 
