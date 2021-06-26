@@ -1,0 +1,138 @@
+{
+  "asset": {
+    "generator": "Khronos glTF Blender I/O v1.6.16",
+    "version": "2.0"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "Cube.001",
+      "scale": [
+        0.8364701271057129,
+        1.3413194417953491,
+        0.7731477618217468
+      ],
+      "translation": [
+        5.321329116821289,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        1,
+        0.9251049757003784,
+        0.98095703125
+      ],
+      "name": "gem-violet",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "metallicFactor": 1,
+        "roughnessFactor": 1
+      },
+      "alphaMode": "OPAQUE"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube.002",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1,
+            "NORMAL": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4,
+          "extensions": {
+            "KHR_draco_mesh_compression": {
+              "bufferView": 0,
+              "attributes": {
+                "POSITION": 0,
+                "NORMAL": 1,
+                "TEXCOORD_0": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accessors": [
+    {
+      "componentType": 5123,
+      "count": 492,
+      "type": "SCALAR"
+    },
+    {
+      "componentType": 5126,
+      "count": 252,
+      "max": [
+        1.2173934357307226,
+        1.1057255666431827,
+        1.4133321838840138
+      ],
+      "min": [
+        -1.2880839901431689,
+        -1.1795993643268237,
+        -1.496941764877666
+      ],
+      "type": "VEC3"
+    },
+    {
+      "componentType": 5126,
+      "count": 252,
+      "type": "VEC3"
+    },
+    {
+      "componentType": 5126,
+      "count": 252,
+      "type": "VEC2"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 1258
+    }
+  ],
+  "buffers": [
+    {
+      "name": "gem-4-compressed",
+      "byteLength": 1260,
+      "uri": "data:application/octet-stream;base64,RFJBQ08CAgEBAAAAVKQBAqMBDQApbx/VR3lKPV2rrwaqa+td0Ad9qBalbRVatPTBqgrelEdRSosWD1Y8SgEBARB9IRoqYefft2C/qmNG+nHucgBDePu1r03ZDRdp1JL+Vz2Bg74bCJFV3U0NdJtsKyqd8BiURpRtH+ohqXUjDqVyA/8AAAABAAEBAAEACQMAAAIBAQkDAAEDAQMJAgACAgEBAQAMG8QNA8UQ0ROdFxbUMSFIpR5Xos52TiHw+sdd0x+5yCyCiwdA1Kl4WAmiAfkLDgBQfgYp6NvOIdARQGGGyEZ4r1+G4aTtCB91zYQOB9sHe2kgjU4TJJjjgij2KzFZtjp/kXgNQp++3hCtaoEKeJ70R5RLCaaYvT9LBvl52pX228pwEpjP46dV5x4lAORvL0qcMVylsKyMojPS0DjSMmIhfwwR7KBhOQbbmsE7kwnU9X1klCaYAB68z9LaE9YMUdAREkmhVwTUSXwiiIKLzumxykE2FN9vAD4kMahZGnEvaGUeIjtw3coYi5rVJx6wfVtELCdz8QLw5iNSR1KMfYFK6UjWxuedLIZpYJ3jw9OnpkEm1UCGCRXqoV54/Iu6xe6JVHGUKdI5necBMj+ySIQTGJ//kh93ZolHKbVhHi0qWLJ0AZSGpRWV4ZnG/eNYkPg9RyaoRDLTXcfbFgwBAAAAAP8HAABlsaS/ks6Wvz9tv79jEzpACwYDAQEG/wEFD80K2QWNAiUBpCUBYCBghIQgYEAgF0AgGyCEICADIBcgXyBHIH8g/zMgOyAgQA8gHyBAIAcgICAghEBAICDEQMSkQEUBiQEFAQUBkQMhCP4BdAIQ5YTu/1V2Mt0se+WH4B6fgHmsJ1Mo6iTKxrgrkWwwtdpvxrEpAZoSA5uFx8jgE+5VQj39E7G9jWBRhiYb+7orY0IUmF6Tt5HfPWWEmnwlX5QfcWlZ1VHuH04l2zUPKBSukzPExh2BKky4fCUkr6zjvEEb3yJVBL31af2JhFCaavjdKDg//3KBFmTx8meW+w3VoMyXRTNbCskBdu2an+R/YcnqqpyINe80DbRo6iJKmnKc863rrYzPuWtb2RWFplz65WqkUG4qTE3ty22R/J4N/swmbklh/hxw3x+uQBW4rKlAr2dSdZja0AqYCemrSE5fbnpPczomyufPboD/AAAAfwAAAP8D3mpaCAUBAQALA3BNAeUDDQaFCdEKrQv1CQ0GVQQ6PcVWcfDHpXOm7w7juaM1KfMV/HwB0dq5WcH4jCo/pQypOkH1o+McO4P9yEfwAiFFGEVNa/vCTUgvm344T6CWy+nCFZ6ugQDT6SaBd7Bl2yeEA2GLwInpov6EJG4oi7DWScZYrZA9wfBktFnxWCf9hIIqx0bXU/g5USWEAu5hl+rj4w006YfG3yotdic77LLxCeVGHJzt8TItuvPSa+2Zbu3N2Fz9JUuotZFqymWaAMYzIIKf7cSaXfR7Mm7+A5yoyDT5Jj2V9LSafOnC9yO2h2JbIGI0fa5aMMF5M6vmYIse6CoA83UYS7oVocPSQr4TGooqPlWBAQr1jUq6JjW8Qpp4aZR5DSzo0qIJFmFuyCb8DoCffgT4d2MuIiM8x/dwwSaRCnPixgKIAAAAMQ5RL1vR9WwNrnVV5Cg2jQAAAAD/AwAA4kywPnDlCj35SDA/CgAA"
+    }
+  ],
+  "extensionsRequired": [
+    "KHR_draco_mesh_compression"
+  ],
+  "extensionsUsed": [
+    "KHR_draco_mesh_compression"
+  ]
+}
