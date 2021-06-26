@@ -312,6 +312,22 @@ class Common {
       })
     })
 
+    nuxt.$on('endDesertScene', () => {
+      this.currentScene.removeAllSound()
+      this.removeGroup(this.currentScene)
+
+      this.currentScene = new Forest({
+        camera: this.camera,
+        model: this.lands.get(1),
+        crystal: this.crystal
+      })
+      this.currentScene.init(this.scene, this.renderer)
+
+      this.curveNumber += 1
+      this.progression = 0
+      store.commit('increaseSceneIndex')
+    })
+
     window.addEventListener('mousedown', () => {
       this.mouseDown()
     })
@@ -334,18 +350,6 @@ class Common {
     nuxt.$on('startSceneTransition', () => {
       this.pauseRender = true
       this.currentScene.stifleSounds()
-      this.removeGroup(this.currentScene)
-
-      this.currentScene = new Forest({
-        camera: this.camera,
-        model: this.lands.get(1),
-        crystal: this.crystal
-      })
-      this.currentScene.init(this.scene, this.renderer)
-
-      this.curveNumber += 1
-      this.progression = 0
-      store.commit('increaseSceneIndex')
     })
 
     nuxt.$on('endSceneTransition', () => {

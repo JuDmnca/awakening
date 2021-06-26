@@ -112,6 +112,7 @@ export default class Desert {
     this.sceneIsStarted = false
     this.cuddleIsCompleted = false
     this.cursorIsHide = false
+    this.allInteractionsAreCompleted = false
     this.sporesPercentage = 0
   }
 
@@ -240,16 +241,16 @@ export default class Desert {
   }
 
   removeAllSound () {
-    this.disconnectSoundIfSource(this.wind.sound * 3)
-    this.disconnectSoundIfSource(this.swooshSound.sound * 3)
-    this.disconnectSoundIfSource(this.note1Sound.sound * 3)
-    this.disconnectSoundIfSource(this.note2Sound.sound * 3)
-    this.disconnectSoundIfSource(this.crystalSound.sound * 3)
-    this.disconnectSoundIfSource(this.sporesSound.sound * 3)
+    this.disconnectSoundIfSource(this.wind.sound)
+    this.disconnectSoundIfSource(this.swooshSound.sound)
+    this.disconnectSoundIfSource(this.note1Sound.sound)
+    this.disconnectSoundIfSource(this.note2Sound.sound)
+    this.disconnectSoundIfSource(this.crystalSound.sound)
+    this.disconnectSoundIfSource(this.sporesSound.sound)
     // Remove the sound after 3 seconds because the sound is playing when we remove all sounds
     setTimeout(() => {
-      this.disconnectSoundIfSource(this.note3Sound.sound * 3)
-      this.disconnectSoundIfSource(this.inhaleSound.sound * 3)
+      this.disconnectSoundIfSource(this.note3Sound.sound)
+      this.disconnectSoundIfSource(this.inhaleSound.sound)
     }, 3000)
   }
 
@@ -409,7 +410,7 @@ export default class Desert {
   }
 
   sporesOnHold () {
-    if (store.state.desert.canInhaleOnHold) {
+    if (store.state.desert.canInhaleOnHold && !this.allInteractionsAreCompleted) {
       this.hold = true
       this.sporesElevation += 1000
       this.inhale()
@@ -425,7 +426,7 @@ export default class Desert {
     e.preventDefault()
     const mouseX = e.pageX
     const mouseY = e.pageY
-    if (this.lastMouseX > -1 && this.enableSporesElevation) {
+    if (this.lastMouseX > -1 && this.enableSporesElevation && !this.allInteractionsAreCompleted) {
       this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY))
       this.sporesPercentage = this.sporesElevation * 100 / 16000
       if (this.sporesPercentage < 150) {
@@ -438,7 +439,9 @@ export default class Desert {
     }
     this.lastMouseX = mouseX
     this.lastMouseY = mouseY
-    this.inhale({ mousemove: true })
+    if (!this.allInteractionsAreCompleted) {
+      this.inhale({ mousemove: true })
+    }
     if (this.isCursorImmobile) {
       setTimeout(() => {
         nuxt.$emit('hideCursor')
@@ -514,6 +517,7 @@ export default class Desert {
               this.note2Sound.sound.play()
             } else if (store.state.desert.counter === 3) {
               this.note3Sound.sound.play()
+              this.allInteractionsAreCompleted = true
             }
           }
         }
