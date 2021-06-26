@@ -376,9 +376,7 @@ class Constellation {
 
   addMouseMoveEvent () {
     window.addEventListener('mousemove', () => {
-      console.log(this.music.sound.isPlaying)
       if (!this.music.sound.isPlaying) {
-        console.log('playyy')
         this.music.sound.play()
       }
     })
