@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import gsap from 'gsap'
 import Camera from '../../Utils/js/Camera'
 import Crystal from '../../Utils/js/Crystal'
 import Bloom from '../../Utils/js/Bloom'
@@ -306,7 +307,7 @@ class Common {
       size: this.size,
       params: {
         exposure: 1.1, // Set to one when bloom renderer actived
-        bloomStrength: 1.6,
+        bloomStrength: 0.5,
         bloomThreshold: 0,
         bloomRadius: 0.8
       }
@@ -363,6 +364,20 @@ class Common {
     nuxt.$on('endForestScene', () => {
       this.removeGroup(this.currentScene)
       this.currentScene.removeAllSound()
+    })
+
+    nuxt.$on('butterflyIsAwake', () => {
+      setTimeout(() => {
+        gsap.killTweensOf(this.bloom.bloomPass)
+        gsap.to(
+          this.bloom.bloomPass,
+          {
+            strength: 30,
+            duration: 2,
+            ease: 'power3.out'
+          }
+        )
+      }, 2000)
     })
 
     window.addEventListener('mousedown', () => {
@@ -468,8 +483,8 @@ class Common {
         this.mixer[0].update(this.time.delta)
       }
 
-      if (this.currentScene.volume) {
-        this.bloom.bloomPass.strength = this.map(this.currentScene.volume, 128, 134, 1, 5)
+      if (this.currentScene.volume && this.currentScene.volume > 130) {
+        this.bloom.bloomPass.strength += 0.05
       }
 
       this.bloom.render()

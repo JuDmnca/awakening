@@ -85,11 +85,21 @@ export default class Forest {
     this.raycaster.init(this.camera, renderer)
 
     this.forestGroup.name = this.name
+
     scene.add(this.forestGroup)
   }
 
   async addButterfly (scene, mixer, animations) {
     this.butterfly = await new Butterfly({ scene, mixer, animations })
+    nuxt.$on('swoosh', () => {
+      const butterflyMaterial = new THREE.MeshPhongMaterial({
+        color: new THREE.Color(store.state.user.color)
+      })
+      setTimeout(() => {
+        this.butterfly.butterfly.material = butterflyMaterial
+        console.log(this.butterfly.butterfly.material)
+      }, 3000)
+    })
   }
 
   addLight (scene) {
@@ -212,7 +222,7 @@ export default class Forest {
     const step = store.state.forest.step
     if (step < 3) {
       const step = store.state.forest.step
-      this.animations[0].timeScale = step * 1.5
+      this.animations[0].timeScale = Math.exp(step * 2)
       if (step === 0) {
         this.note1Sound.sound.play()
         nuxt.$emit('toggleShowSubtitle')
@@ -236,6 +246,7 @@ export default class Forest {
           this.moveButterfly()
           store.commit('setSubtitle', 'Bravo !')
           nuxt.$emit('toggleShowSubtitle')
+          nuxt.$emit('butterflyIsAwake')
         }, 1000)
       } else {
         this.enable = false
@@ -260,7 +271,14 @@ export default class Forest {
         butterfly = children
       }
     })
-    gsap.to(butterfly.position, { y: 10, duration: 3, ease: 'power3.inOut', onComplete: this.endScene })
+    gsap.to(butterfly.position, {
+      x: 14,
+      y: 3,
+      z: -1,
+      duration: 3,
+      ease: 'power3.inOut',
+      onComplete: this.endScene
+    })
   }
 
   endScene () {
@@ -307,7 +325,7 @@ export default class Forest {
 
     if (this.isClickedOnButterfly && this.microphone.analyzer) {
       this.volume = this.microphone.listen()
-      if (this.volume > 132 && this.enable) {
+      if (this.volume > 131 && this.enable) {
         this.enable = false
         this.updateButterflySpeed()
       }
