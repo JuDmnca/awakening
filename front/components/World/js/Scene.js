@@ -2,6 +2,7 @@ import Common from './Common'
 export default class Scene {
   constructor (props) {
     this.props = props
+    this.requestAnim = null
     this.init()
   }
 
@@ -17,7 +18,13 @@ export default class Scene {
 
   loop () {
     this.render()
-    requestAnimationFrame(this.loop.bind(this))
+    this.requestAnim = window.requestAnimationFrame(this.loop.bind(this))
+  }
+
+  clean () {
+    window.cancelAnimationFrame(this.requestAnim)
+    this.requestAnim = undefined
+    Common.clean()
   }
 
   render () {

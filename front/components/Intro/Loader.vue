@@ -9,7 +9,7 @@
         </transition>
         <transition name="fade">
           <p v-if="showIntroParagraph2" class="container__inner container__inner--top title-big">
-            Ce lien peut être retrouvé à travers l'éveil de nos sens.
+            Ce lien peut être retrouvé <br>à travers l'éveil de nos sens.
           </p>
         </transition>
         <transition name="fade">

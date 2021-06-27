@@ -123,19 +123,9 @@ class Common {
     this.addLight()
 
     this.addEventListeners()
+    // this.loadDesert()
 
-    // WIP
-    // Load first group (desert)
-    this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
-    this.currentScene.init(this.scene, this.renderer)
-
-    // this.currentScene = new Forest({
-    //   camera: this.camera,
-    //   model: this.lands.get(1),
-    //   crystal: this.crystal,
-    //   animations: this.animations
-    // })
-    // this.currentScene.init(this.scene, this.renderer)
+    this.loadForest()
 
     this.initBloom()
 
@@ -175,6 +165,16 @@ class Common {
     this.light.name = 'Pointlight'
 
     this.scene.add(this.light)
+  }
+
+  // loadDesert () {
+  //   this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
+  //   this.currentScene.init(this.scene, this.renderer)
+  // }
+
+  loadForest () {
+    this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
+    this.currentScene.init(this.scene, this.renderer, this.mixer)
   }
 
   requestMicroAutorisation () {
@@ -275,6 +275,13 @@ class Common {
     if (store.state.desert.haveClickedOnFlower && this.currentScene.name === 'Desert') {
       this.currentScene.sporesOnMouseUp()
     }
+
+    // FOREST
+    if (this.currentScene.name === 'Forest' && this.progression > 0.45) {
+      if (!this.currentScene.microphone.audioCtx && this.currentScene.isClickedOnButterfly) {
+        this.currentScene.onClickIfMicrophoneIsDisabled()
+      }
+    }
   }
 
   resize () {
@@ -282,6 +289,21 @@ class Common {
     this.camera.camera.aspect = this.size.windowW / this.size.windowH
     this.camera.camera.updateProjectionMatrix()
     this.renderer.setSize(this.size.windowW, this.size.windowH)
+  }
+
+  initBloom () {
+    this.bloom = new Bloom({
+      scene: this.scene,
+      camera: this.camera.camera,
+      renderer: this.renderer,
+      size: this.size,
+      params: {
+        exposure: 1.1, // Set to one when bloom renderer actived
+        bloomStrength: 1.8,
+        bloomThreshold: 0,
+        bloomRadius: 0.8
+      }
+    })
   }
 
   addEventListeners () {
@@ -299,16 +321,17 @@ class Common {
           this.moveCamera(e)
         }
         this.wheelMovement(e)
+
+        if (this.currentScene.name === 'Forest') {
+          this.currentScene.noScroll = 0
+          this.currentScene.indicationIsVisible = false
+        }
       })
     })
 
     nuxt.$on('swoosh', () => {
       window.addEventListener('mousedown', () => {
         this.mouseDown()
-
-        if (this.currentScene.name === 'Forest') {
-          this.currentScene.onClick()
-        }
       })
     })
 
@@ -321,11 +344,11 @@ class Common {
         model: this.lands.get(1),
         crystal: this.crystal
       })
-      this.currentScene.init(this.scene, this.renderer)
+      this.currentScene.microphone = this.microphone
 
       this.curveNumber += 1
       this.progression = 0
-      store.commit('increaseSceneIndex')
+      this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
     })
 
     window.addEventListener('mousedown', () => {
@@ -350,6 +373,7 @@ class Common {
     nuxt.$on('startSceneTransition', () => {
       this.pauseRender = true
       this.currentScene.stifleSounds()
+      store.commit('increaseSceneIndex')
     })
 
     nuxt.$on('endSceneTransition', () => {
@@ -371,19 +395,8 @@ class Common {
     this.scene.remove(selectedObject)
   }
 
-  initBloom () {
-    this.bloom = new Bloom({
-      scene: this.scene,
-      camera: this.camera.camera,
-      renderer: this.renderer,
-      size: this.size,
-      params: {
-        exposure: 1.1, // Set to one when bloom renderer actived
-        bloomStrength: 1.8,
-        bloomThreshold: 0,
-        bloomRadius: 0.8
-      }
-    })
+  clean () {
+    this.renderer.dispose()
   }
 
   render () {

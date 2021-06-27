@@ -1,7 +1,7 @@
 <template>
   <section class="transition-container">
     <transition name="fadeCanvas">
-      <TransitionBackground />
+      <TransitionBackground v-if="!background" />
     </transition>
     <transition name="fade">
       <TransitionSentence
@@ -42,6 +42,9 @@ export default {
   computed: {
     showText () {
       return this.text
+    },
+    background () {
+      return this.end
     }
   },
   mounted () {
@@ -49,13 +52,14 @@ export default {
       this.label = 'Quelle odeur vous a déjà procuré une telle sensation ?'
       this.placeholder = 'La vanille'
     } else {
-      this.label = 'Quel son vous a déjà procuré une telle sensation ?'
+      this.label = 'Existe-t-il une mélodie qui ferait renaitre en vous un souvenir particulier ?'
       this.placeholder = 'Le bruit des vagues'
     }
-    this.confirmation = 'Confirmer'
+    this.confirmation = 'Valider mon souvenir'
     setTimeout(() => {
       this.showQuestion()
     }, 7000)
+    this.$nuxt.$on('startTransition', () => { this.end = false })
   },
   methods: {
     endTransition () {

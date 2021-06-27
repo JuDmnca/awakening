@@ -1,7 +1,7 @@
 <template>
-  <section style="color: white;" class="profile flex">
-    <div class="profile__left flex flex-col items-center">
-      <!-- <img ref="userImg" class="profile__img" src=""> -->
+  <section class="profile flex">
+    <div class="profile__content flex flex-col items-center">
+      <h1>Votre profil de quête</h1>
       <h2
         class="profile__name"
         :style="{
@@ -11,46 +11,29 @@
         <span>{{ $store.state.constellation.currentUser.name }} </span>
       </h2>
       <p class="profile__description small">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ultrices quam sed neque placerat, non laoreet magna viverra. Sed maximus eros non dui cursus condimentum. Vestibulum libero nisl, feugiat quis magna id, iaculis pretium ante. Duis sem felis, accumsan ut quam et, tincidunt sagittis odio.
+        {{ colorMeaning }}
       </p>
-      <div class="profile__responses flex flex-col w-1/2">
-        <div class="responses flex flex-col">
-          <p class="small">
-            Votre odeur
-          </p>
-          <h2 class="responses__title">
-            {{ $store.state.constellation.currentUser.smell }}
-          </h2>
-        </div>
-        <div class="responses flex flex-col">
-          <p class="small">
-            Votre son
-          </p>
-          <h2 class="responses__title">
-            Les klaxons
-          </h2>
-        </div>
+    </div>
+    <div class="profile__responses flex">
+      <div class="profile__response">
+        <p class="small">
+          Votre odeur
+        </p>
+        <h2 class="responses__title">
+          {{ $store.state.constellation.currentUser.smell }}
+        </h2>
+      </div>
+      <div class="profile__response">
+        <p class="small">
+          Votre son
+        </p>
+        <h2 class="responses__title">
+          {{ $store.state.constellation.currentUser.sound }}
+        </h2>
       </div>
     </div>
-    <!-- <h3 ref="previous">
-      Previous
-    </h3>
-    <h3 ref="next">
-      Next
-    </h3> -->
-    <!-- <button @click="getRandomProfile">
-      Random profile
-    </button> -->
-    <!-- Just testing upload here -->
-    <!-- <form @submit.prevent="sendDatasUserToFirebase">
-      <input id="input" ref="input" type="file">
-      <button type="submit">
-        Envoyer
-      </button>
-      <span v-if="errorMessage" style="color:red">{{ errorMessage }}</span>
-    </form> -->
-    <div class="profile__right flex flex-col">
-      <div class="profile__icon profile__icon--close border border-white rounded-full flex" @click.prevent="$nuxt.$emit('onCrystalClick', false)">
+    <div class="profile__buttons flex">
+      <div class="profile__icon profile__icon--close border border-white rounded-full flex" @click.prevent="$nuxt.$emit('onCrystalClick')">
         <UI-Icons-Cross
           class="m-auto"
           :width="16"
@@ -67,6 +50,7 @@
         />
       </div>
     </div>
+    <div class="profile__underlay" />
   </section>
 </template>
 
@@ -74,69 +58,43 @@
 export default {
   data () {
     return {
-      errorMessage: null,
-      fileCompressed: null
+      errorMessage: null
     }
   },
-  mounted () {
-    this.getProfilePicture()
-    // this.$refs.previous.addEventListener('click', () => {
-    //   this.$store.commit('constellation/switchUser', 'Previous')
-    // })
-    // this.$refs.next.addEventListener('click', () => {
-    //   this.$store.commit('constellation/switchUser', 'Next')
-    // })
-  },
-  updated () {
-    this.$nextTick(function () {
-      this.getProfilePicture()
-    })
+  computed: {
+    colorMeaning () {
+      let meaning
+      switch (this.$store.state.constellation.currentUser.color) {
+        case 'blue':
+          meaning = 'Votre couleur est le bleu, celle du ciel ou de la mer, faisant écho au voyage et aux découvertes.'
+          break
+        case 'purple':
+          meaning = 'Votre couleur est le violet, celle des rêveurs, des personnes spirituelles plutôt que matérielles.'
+          break
+        case 'green':
+          meaning = 'Votre couleur est le vert, celle du monde végétal, apaisante, rafraîchissante et même tonifiante.'
+          break
+        case 'orange':
+          meaning = 'Votre couleur est le orange, celle de la créativité et de la communication, porteuse d’optimisme et d’ouverture d’esprit.'
+          break
+        case 'red':
+          meaning = 'Votre couleur est le rouge, celle des passions, remuant les sentiments, qu’ils soient positifs ou négatifs.'
+          break
+        case 'yellow':
+          meaning = 'Votre couleur est le jaune, celle de la vie et du mouvement, mais aussi de l’ouverture et du contact social.'
+          break
+      }
+      return meaning
+    }
   },
   methods: {
-    // TO DO : Put this function on where we want to upload datas user
     async sendDatasUserToFirebase () {
-      let fileName = this.$refs.input.files[0].name
-      // Quick verification of the type of the image
-      if (fileName.includes('.jpg') || fileName.includes('.jpeg') || fileName.includes('.png') || fileName.includes('.svg')) {
-        // I put the id of the user at the beginning of the name of his picture to link the pic to the user
-        fileName = parseInt(this.$store.state.constellation.dataUsers.length + 1) + fileName
-        // Image's user pushed in the firebase storage
-        const ppStorageRef = await this.$fire.storage.ref().child('pp/' + fileName)
-        ppStorageRef.put(this.$refs.input.files[0]).then((snapshot) => {
-          console.log('Uploaded a blob or file!', fileName)
-        })
-
-        // Profiles info pushed in the firestore db
-        const profilesRef = await this.$fire.firestore.collection('profiles')
-        await profilesRef.doc().set({
-          nom: this.$store.state.user.name,
-          odeur: this.$store.state.user.smell,
-          img: 'pp/' + fileName
-        })
-        this.errorMessage = null
-      } else {
-        this.errorMessage = 'Le format du fichier n\'est pas accepté'
-      }
-    },
-    async getProfilePicture () {
-      const storageRef = await this.$fire.storage.ref()
-      if (this.$store.state.constellation.currentUser.img) {
-        storageRef.child(this.$store.state.constellation.currentUser.img).getDownloadURL()
-          .then((url) => {
-            const xhr = new XMLHttpRequest()
-            xhr.responseType = 'blob'
-
-            xhr.open('GET', url)
-            xhr.send()
-
-            const img = this.$refs.userImg
-            img.setAttribute('src', url)
-          })
-          .catch((error) => {
-            // Handle any errors
-            console.log(error)
-          })
-      }
+      const profilesRef = await this.$fire.firestore.collection('profiles')
+      await profilesRef.doc().set({
+        nom: this.$store.state.user.name,
+        odeur: this.$store.state.user.smell,
+        sound: this.$store.state.user.sound
+      })
     },
     getRandomProfile () {
       this.$store.commit('constellation/getRandomUser')
@@ -146,22 +104,41 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  font-family: 'Sofia Pro';
+  font-size: 20px;
+  color: white;
+  text-transform: uppercase;
+}
+
 .profile {
+  color: white;
   font-family: 'ButlerLight';
   font-weight: 300;
   position: relative;
   z-index: 10;
-  padding: 100px 100px 100px 100px;
+  width: 100vw;
+  height: 100vh;
   font-size: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile__content {
+  width: calc(100vw - 120px);
+  padding-top: 60px;
 }
 
 .profile__name {
   font-family: 'Butler';
-  /* margin: 74px 0 74px 0; */
   position: relative;
   background: radial-gradient(circle, green 0%, rgba(252,70,107,0) 61%);
   height: 198px;
+  font-size: 100px;
   width: 100%;
+  margin: 15px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -172,15 +149,49 @@ export default {
 
 .profile__description {
   width: 40%;
-  margin: auto;
+  text-align: center;
 }
 
 .profile__responses {
-  margin-top: 74px;
+  width: 75%;
+  display: flex;
+  justify-content: space-between;
 }
 
-.responses:nth-child(2n) {
-  align-items: flex-end;
+.profile__response {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+.profile__response p {
+  text-align: center;
+  text-transform: uppercase;
+  padding-bottom: 2.5rem;
+}
+
+.profile__response h2 {
+  text-align: center;
+}
+
+.profile__buttons {
+  width: calc(100% - 120px);
+  display: flex;
+  justify-content: center;
+  padding-bottom: 60px;
+}
+
+.profile__underlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  opacity: 0.6;
 }
 
 .small {
@@ -189,20 +200,12 @@ export default {
   line-height: 24px;
 }
 
-.profile__img {
-  height: 10vh;
-}
-
 .profile__icon {
   cursor: pointer;
+  margin: 0 15px;
 }
 
-.profile__icon--close {
-  width: 75px;
-  height: 75px;
-  margin-bottom: 50px;
-}
-
+.profile__icon--close,
 .profile__icon--random {
   width: 60px;
   height: 60px;

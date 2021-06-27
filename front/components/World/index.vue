@@ -9,8 +9,6 @@
         />
       </transition>
       <TransitionVignettage v-if="vignettageVisible" @onscreen="updateScene" />
-      <!-- Just to test icons -->
-      <!-- <UI-IconsSound width="40" height="40" iconColor="#fff"/> -->
     </section>
   </transition>
 </template>
@@ -39,8 +37,7 @@ export default {
     }
   },
   mounted () {
-    // eslint-disable-next-line no-new
-    new Scene({
+    this.scene = new Scene({
       $canvas: this.$refs.canvas
     })
     this.$nuxt.$on('startTransition', (step) => {
@@ -53,6 +50,9 @@ export default {
     this.$nuxt.$on('endTransition', () => {
       this.transition = false
     })
+  },
+  beforeDestroy () {
+    this.scene.clean()
   },
   methods: {
     updateScene () {

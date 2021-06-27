@@ -78,12 +78,14 @@ export default {
         case 2:
           this.$store.commit('setUserSmell', data)
           this.$nuxt.$emit('endDesertScene')
+          this.$nuxt.$emit('smellSetted')
           break
         case 3:
-          this.$store.commit('setUserTaste', data)
-          break
-        case 4:
           this.$store.commit('setUserSound', data)
+          console.log(this)
+          setTimeout(() => {
+            this.$router.push('constellation')
+          }, 3000)
           break
       }
       if (this.step > 1) {

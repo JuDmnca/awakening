@@ -20,9 +20,13 @@ import Raycaster from '../../Utils/js/Raycaster'
 import Bloom from '../../Utils/js/Bloom'
 import MainGui from '../../Utils/js/MainGui'
 
-let store
 let nuxt
+let store
 if (process.browser) {
+  if (window.$nuxt) {
+    store = window.$nuxt.$store
+    nuxt = window.$nuxt
+  }
   window.onNuxtReady(({ $nuxt, $store }) => {
     nuxt = $nuxt
     store = $store
@@ -76,6 +80,7 @@ class Constellation {
     this.isIntersected = false
 
     // Crystals
+    this.addgems = false
     this.cristalScale = 1.5
     this.gems = []
     this.randomCubesSpeed = []
@@ -112,9 +117,6 @@ class Constellation {
     this.loadTexture()
     this.addSkybox()
 
-    // Crystals
-    this.generateCrystals()
-
     this.addControls()
     this.addRaycaster()
     this.addBloom()
@@ -123,13 +125,13 @@ class Constellation {
     this.addSounds()
 
     // Listeners
-    this.addWheelEvent()
+    this.addResizeEvent()
     this.addClickEvent()
     this.addMouseMoveEvent()
     this.addOpenProfileListener()
 
     // Debug
-    this.addGUI()
+    // this.addGUI()
   }
 
   initAbout () {
@@ -218,14 +220,15 @@ class Constellation {
   }
 
   async loadGems () {
-    const cubeMaterial = new THREE.MeshPhongMaterial({
+    this.cubeMaterial = new THREE.MeshPhongMaterial({
       color: new THREE.Color('#fff'),
       refractionRatio: 0.98
     })
+    const normalMaterial = new THREE.MeshNormalMaterial()
     const gemMeshes = []
     for (let i = 0; i < 4; i++) {
       const mesh = await new Loader({
-        material: cubeMaterial.clone(),
+        material: normalMaterial,
         model: this.gemsModels[i],
         position: { x: 0, y: 0, z: -5 }
       }).initGems()
@@ -259,6 +262,8 @@ class Constellation {
     // Generation of this.gems
     for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
       const gemMesh = gemMeshes[this.getRandomInt(4)].clone()
+      gemMesh.material = this.cubeMaterial.clone()
+
       // Get random int in range [-30, -5], [15, 30] to define position
       const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
       const y = [this.getRandomArbitrary(-10, -5), this.getRandomArbitrary(5, 30)]
@@ -310,7 +315,7 @@ class Constellation {
       case 'purple':
         gemMesh.material.color = new THREE.Color('#be6eff')
         break
-      case 'lime':
+      case 'green':
         gemMesh.material.color = new THREE.Color('#29ff3e')
         break
       case 'orange':
@@ -367,7 +372,7 @@ class Constellation {
     this.bloom.initGUI(this.bloomParams, this.renderer, bloomPass)
   }
 
-  addWheelEvent () {
+  addResizeEvent () {
     window.addEventListener('resize', () => {
       this.resize()
     })
@@ -441,7 +446,12 @@ class Constellation {
       nuxt.$emit('showCursor', 'Click & drag')
     }
 
-    if (this.gems.length === store.state.constellation.dataUsers.length) {
+    if (store && !this.addgems) {
+      this.generateCrystals()
+      this.addgems = true
+    }
+
+    if (store && this.gems.length === store.state.constellation.dataUsers.length) {
       for (let i = 0; i < this.gems.length; i++) {
         this.gems[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
         this.gems[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150) * this.gems[i].Ydirection
