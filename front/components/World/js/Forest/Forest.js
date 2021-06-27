@@ -253,7 +253,7 @@ export default class Forest {
   render (timeTotal, timeDelta) {
     this.noScroll += timeDelta
 
-    if (this.noScroll > 2 && !this.indicationIsVisible) {
+    if (this.noScroll > 2 && !this.indicationIsVisible && this.progression < 0.5) {
       nuxt.$emit('showCursor', 'Scroll')
       this.indicationIsVisible = true
     }
