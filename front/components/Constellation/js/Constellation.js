@@ -390,12 +390,10 @@ class Constellation {
         this.profileIsOpen = true
       }
 
-      setTimeout(() => {
-        // Hide Indication
-        nuxt.$emit('hideCursor')
-        this.time.noDrag = 0
-        this.indicationIsVisible = false
-      }, 1000)
+      // Hide Indication
+      nuxt.$emit('hideCursor')
+      this.time.noDrag = 0
+      this.indicationIsVisible = false
     })
   }
 
@@ -443,7 +441,7 @@ class Constellation {
     if (this.time.noDrag > 2 && !this.indicationIsVisible && !this.profileIsOpen) {
       // Display indication
       this.indicationIsVisible = true
-      nuxt.$emit('showCursor', 'Click & drag')
+      nuxt.$emit('showCursor', 'Cliquez & Glissez')
     }
 
     if (store && !this.addgems) {
