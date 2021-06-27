@@ -80,6 +80,10 @@ export default {
           break
         case 3:
           this.$store.commit('setUserSound', data)
+          console.log(this)
+          setTimeout(() => {
+            this.$router.push('constellation')
+          }, 3000)
           break
       }
       if (this.step > 1) {

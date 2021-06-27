@@ -37,8 +37,7 @@ export default {
     }
   },
   mounted () {
-    // eslint-disable-next-line no-new
-    new Scene({
+    this.scene = new Scene({
       $canvas: this.$refs.canvas
     })
     this.$nuxt.$on('startTransition', (step) => {
@@ -51,6 +50,9 @@ export default {
     this.$nuxt.$on('endTransition', () => {
       this.transition = false
     })
+  },
+  beforeDestroy () {
+    this.scene.clean()
   },
   methods: {
     updateScene () {

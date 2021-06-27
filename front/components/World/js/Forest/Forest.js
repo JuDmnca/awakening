@@ -57,7 +57,7 @@ export default class Forest {
     this.forestGroup.add(this.forestModel)
     this.addColorToCrystal()
 
-    this.addButterfly(scene, mixer, this.animations)
+    this.addButterfly(this.forestGroup, mixer, this.animations)
 
     // this.crystal.getColor()
     // this.addColorToCrystal()
@@ -68,6 +68,7 @@ export default class Forest {
     // Raycaster
     this.raycaster.init(this.camera, renderer)
 
+    this.forestGroup.name = this.name
     scene.add(this.forestGroup)
   }
 
@@ -133,21 +134,26 @@ export default class Forest {
   }
 
   updateButterflySpeed () {
-    if (store.state.forest.step < 3) {
+    const step = store.state.forest.step
+    if (step < 3) {
       store.commit('forest/increaseStep')
       const step = store.state.forest.step
       this.animations[0].timeScale = step * 1.5
-      setTimeout(() => {
-        this.enable = true
-      }, 1000)
-    } else {
-      this.moveButterfly()
+      if (step === 2) {
+        setTimeout(() => {
+          this.moveButterfly()
+        }, 1000)
+      } else {
+        setTimeout(() => {
+          this.enable = true
+        }, 1000)
+      }
     }
   }
 
   moveButterfly () {
     let butterfly
-    this.scene.children.forEach((children) => {
+    this.forestGroup.children.forEach((children) => {
       if (children.name === 'Butterfly') {
         butterfly = children
       }

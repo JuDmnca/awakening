@@ -16,9 +16,13 @@ import Raycaster from '../../Utils/js/Raycaster'
 import Bloom from '../../Utils/js/Bloom'
 import MainGui from '../../Utils/js/MainGui'
 
-let store
 let nuxt
+let store
 if (process.browser) {
+  if (window.$nuxt) {
+    store = window.$nuxt.$store
+    nuxt = window.$nuxt
+  }
   window.onNuxtReady(({ $nuxt, $store }) => {
     nuxt = $nuxt
     store = $store
@@ -71,6 +75,7 @@ class Constellation {
     this.isIntersected = false
 
     // Crystals
+    this.addgems = false
     this.cristalScale = 1.5
     this.gems = []
     this.randomCubesSpeed = []
@@ -98,19 +103,16 @@ class Constellation {
     this.loadTexture()
     this.addSkybox()
 
-    // Crystals
-    this.generateCrystals()
-
     this.addControls()
     this.addRaycaster()
     this.addBloom()
 
     // Listeners
-    this.addWheelEvent()
+    this.addResizeEvent()
     this.addClickEvent()
 
     // Debug
-    this.addGUI()
+    // this.addGUI()
   }
 
   setSize () {
@@ -297,7 +299,7 @@ class Constellation {
       renderer: this.renderer,
       size: this.size,
       params: {
-        exposure: 1.6,
+        exposure: 1.5,
         bloomStrength: 2.5,
         bloomThreshold: 0,
         bloomRadius: 1
@@ -305,7 +307,7 @@ class Constellation {
     })
   }
 
-  addWheelEvent () {
+  addResizeEvent () {
     window.addEventListener('resize', () => {
       this.resize()
     })
@@ -347,7 +349,12 @@ class Constellation {
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
 
-    if (this.gems.length === store.state.constellation.dataUsers.length) {
+    if (store && !this.addgems) {
+      this.generateCrystals()
+      this.addgems = true
+    }
+
+    if (store && this.gems.length === store.state.constellation.dataUsers.length) {
       for (let i = 0; i < this.gems.length; i++) {
         this.gems[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
         this.gems[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150) * this.gems[i].Ydirection

@@ -358,10 +358,10 @@ class Common {
         this.currentScene.microphone = this.microphone
 
         this.curveNumber += 1
+        this.progression = 0
+        this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
       }
 
-      this.progression = 0
-      this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
       store.commit('increaseSceneIndex')
     })
 
@@ -382,6 +382,10 @@ class Common {
   removeGroup (group) {
     const selectedObject = this.scene.getObjectByName(group.name)
     this.scene.remove(selectedObject)
+  }
+
+  clean () {
+    this.renderer.dispose()
   }
 
   render () {
