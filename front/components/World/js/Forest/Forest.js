@@ -236,6 +236,7 @@ export default class Forest {
   }
 
   endScene () {
+    nuxt.$emit('hideCursor')
     nuxt.$emit('startTransition', 3)
     nuxt.$emit('startSceneTransition')
   }
@@ -256,6 +257,13 @@ export default class Forest {
     if (this.noScroll > 2 && !this.indicationIsVisible && this.progression < 0.5) {
       nuxt.$emit('showCursor', 'Scroll')
       this.indicationIsVisible = true
+    }
+
+    if (!this.indicationIsVisible && this.progression > 0.5 && this.subTitlesAreCompleted) {
+      setTimeout(() => {
+        nuxt.$emit('showCursor', 'RÉVEILLEZ LE PAPILLON')
+        this.indicationIsVisible = true
+      }, 1000)
     }
 
     if (nuxt && store && !this.events) {
