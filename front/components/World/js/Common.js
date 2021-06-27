@@ -311,6 +311,7 @@ class Common {
         bloomRadius: 0.8
       }
     })
+    this.bloom.currentScene = 1
   }
 
   addEventListeners () {
@@ -343,6 +344,7 @@ class Common {
     })
 
     nuxt.$on('endDesertScene', () => {
+      this.currentScene.removeAllSound()
       this.removeGroup(this.currentScene)
 
       this.currentScene = new Forest({
@@ -355,6 +357,7 @@ class Common {
       this.curveNumber += 1
       this.progression = 0
       this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
+      this.bloom.currentScene = 2
     })
 
     nuxt.$on('endForestScene', () => {
