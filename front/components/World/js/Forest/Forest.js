@@ -51,6 +51,7 @@ export default class Forest {
 
     this.enable = true
     this.microphone = null
+    this.volume = null
   }
 
   init (scene, renderer, mixer) {
@@ -305,8 +306,8 @@ export default class Forest {
     }
 
     if (this.isClickedOnButterfly && this.microphone.analyzer) {
-      const volume = this.microphone.listen()
-      if (volume > 132 && this.enable) {
+      this.volume = this.microphone.listen()
+      if (this.volume > 132 && this.enable) {
         this.enable = false
         this.updateButterflySpeed()
       }
