@@ -55,9 +55,11 @@ export default class Forest {
     this.addLight(scene)
 
     this.forestGroup.add(this.forestModel)
-    // this.addColorToCrystal()
 
     this.addButterfly(this.forestGroup, mixer, this.animations)
+
+    this.addFog(scene)
+    this.addSkybox(scene)
 
     // nuxt.$on('smellSetted', () => {
     //   this.addSubtitles()
@@ -81,8 +83,47 @@ export default class Forest {
   }
 
   addLight (scene) {
-    const light = new THREE.AmbientLight(0x404040, 1)
+    const light = new THREE.AmbientLight(0xFFFFFF, 0.8)
     scene.add(light)
+  }
+
+  addFog (scene) {
+    const colorBG = new THREE.Color('#040408')
+    scene.fog = new THREE.Fog(colorBG, 10, 300)
+  }
+
+  addSkybox (scene) {
+    const loader = new THREE.CubeTextureLoader()
+    loader.premultiplyAlpha = true
+    const SkyboxTexture = loader.load([
+      require('../../../../assets/textures/png/forest/px.jpg'),
+      require('../../../../assets/textures/png/forest/nx.jpg'),
+      require('../../../../assets/textures/png/forest/py.jpg'),
+      require('../../../../assets/textures/png/forest/ny.jpg'),
+      require('../../../../assets/textures/png/forest/pz.jpg'),
+      require('../../../../assets/textures/png/forest/nz.jpg')
+    ])
+    SkyboxTexture.encoding = THREE.sRGBEncoding
+
+    const skybox = new THREE.Mesh(
+      new THREE.BoxBufferGeometry(20000, 20000, 20000),
+      new THREE.ShaderMaterial({
+        uniforms: THREE.UniformsUtils.clone(THREE.ShaderLib.cube.uniforms),
+        vertexShader: THREE.ShaderLib.cube.vertexShader,
+        fragmentShader: THREE.ShaderLib.cube.fragmentShader,
+        depthWrite: false,
+        side: THREE.BackSide
+      })
+    )
+
+    skybox.material.uniforms.envMap.value = SkyboxTexture
+    Object.defineProperty(skybox.material, 'envMap', {
+      get () {
+        return this.uniforms.envMap.value
+      }
+    })
+
+    scene.add(skybox)
   }
 
   addSubtitles () {

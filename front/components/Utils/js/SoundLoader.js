@@ -2,6 +2,9 @@ import * as THREE from 'three'
 
 let nuxt
 if (process.browser) {
+  if (window.$nuxt) {
+    nuxt = window.$nuxt
+  }
   window.onNuxtReady(({ $nuxt }) => {
     nuxt = $nuxt
   })

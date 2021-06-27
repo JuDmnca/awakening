@@ -285,7 +285,7 @@ export default class Desert {
 
   async addFlowers () {
     let index = -1
-    for (let nbPlants = 0; nbPlants <= 60; nbPlants++) {
+    for (let nbPlants = 0; nbPlants <= 50; nbPlants++) {
       index++
       if (index >= 3) {
         index = 0

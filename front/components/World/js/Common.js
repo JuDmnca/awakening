@@ -145,7 +145,8 @@ class Common {
     this.renderer = new THREE.WebGLRenderer({
       canvas: $canvas,
       antialias: true,
-      alpha: true
+      alpha: true,
+      powerPreference: 'high-performance'
     })
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(this.size.windowW, this.size.windowH)
