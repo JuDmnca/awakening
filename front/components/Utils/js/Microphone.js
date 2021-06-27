@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
-let nuxt
-if (process.browser) {
-  window.onNuxtReady(({ $nuxt }) => {
-    nuxt = $nuxt
-  })
-}
+// let nuxt
+// if (process.browser) {
+//   window.onNuxtReady(({ $nuxt }) => {
+//     nuxt = $nuxt
+//   })
+// }
 
 export default class Microphone {
   constructor () {
@@ -49,35 +49,35 @@ export default class Microphone {
   }
 
   onSuccess (stream, chunks) {
-    const mediaRecorder = new MediaRecorder(stream)
+    // const mediaRecorder = new MediaRecorder(stream)
 
     this.analyze(stream)
 
-    nuxt.$on('startRecord', () => {
-      mediaRecorder.start()
-      console.log(mediaRecorder.state)
-      console.log('recorder started')
-    })
+    // nuxt.$on('startRecord', () => {
+    //   mediaRecorder.start()
+    //   console.log(mediaRecorder.state)
+    //   console.log('recorder started')
+    // })
 
-    nuxt.$on('stopRecord', () => {
-      mediaRecorder.stop()
-      console.log(mediaRecorder.state)
-      console.log('recorder stopped')
-    })
+    // nuxt.$on('stopRecord', () => {
+    //   mediaRecorder.stop()
+    //   console.log(mediaRecorder.state)
+    //   console.log('recorder stopped')
+    // })
 
-    mediaRecorder.onstop = (e) => {
-      console.log('data available after MediaRecorder.stop() called.')
-    }
+    // mediaRecorder.onstop = (e) => {
+    //   console.log('data available after MediaRecorder.stop() called.')
+    // }
 
-    mediaRecorder.ondataavailable = (e) => {
-      chunks.push(e.data)
-    }
+    // mediaRecorder.ondataavailable = (e) => {
+    //   chunks.push(e.data)
+    // }
   }
 
   analyze (stream) {
     if (!this.audioCtx) {
       this.audioCtx = new AudioContext()
-      this.gainNode = this.audioCtx.createGain()
+      // this.gainNode = this.audioCtx.createGain()
     }
     const source = this.audioCtx.createMediaStreamSource(stream)
 
@@ -88,7 +88,7 @@ export default class Microphone {
 
     source.connect(this.analyzer)
     source.connect(this.gainNode)
-    this.gainNode.connect(this.audioCtx.destination)
+    // this.gainNode.connect(this.audioCtx.destination)
   }
 
   listen () {
