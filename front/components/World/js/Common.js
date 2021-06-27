@@ -5,7 +5,7 @@ import Bloom from '../../Utils/js/Bloom'
 
 import Microphone from '../../Utils/js/Microphone'
 import Land from './Land'
-import Desert from './Desert/Desert'
+// import Desert from './Desert/Desert'
 import Forest from './Forest/Forest'
 
 const desertCurve = [
@@ -215,7 +215,7 @@ class Common {
 
     this.p1 = this.curves[0].points[0]
     this.progression = 0
-    this.curveNumber = 0
+    this.curveNumber = 1
   }
 
   moveCamera (e) {
@@ -336,7 +336,6 @@ class Common {
     })
 
     nuxt.$on('endDesertScene', () => {
-      this.currentScene.removeAllSound()
       this.removeGroup(this.currentScene)
 
       this.currentScene = new Forest({
@@ -349,6 +348,10 @@ class Common {
       this.curveNumber += 1
       this.progression = 0
       this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
+    })
+
+    nuxt.$on('endForestScene', () => {
+      this.removeGroup(this.currentScene)
     })
 
     window.addEventListener('mousedown', () => {
@@ -372,7 +375,9 @@ class Common {
 
     nuxt.$on('startSceneTransition', () => {
       this.pauseRender = true
-      this.currentScene.stifleSounds()
+      if (store.state.sceneIndex === 1) {
+        this.currentScene.stifleSounds()
+      }
       store.commit('increaseSceneIndex')
     })
 

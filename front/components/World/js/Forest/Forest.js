@@ -55,13 +55,13 @@ export default class Forest {
     this.addLight(scene)
 
     this.forestGroup.add(this.forestModel)
-    this.addColorToCrystal()
+    // this.addColorToCrystal()
 
     this.addButterfly(this.forestGroup, mixer, this.animations)
 
-    nuxt.$on('smellSetted', () => {
-      this.addSubtitles()
-    })
+    // nuxt.$on('smellSetted', () => {
+    //   this.addSubtitles()
+    // })
 
     // this.crystal.getColor()
     // this.addColorToCrystal()
@@ -205,16 +205,12 @@ export default class Forest {
       this.addColorToCrystal()
       this.updateBuissonMaterial()
       this.setAnimations()
+      this.addSubtitles()
     })
   }
 
   render (timeTotal, timeDelta) {
     this.noScroll += timeDelta
-
-    if (this.noScroll > 2 && !this.indicationIsVisible) {
-      nuxt.$emit('showCursor', 'Scroll')
-      this.indicationIsVisible = true
-    }
 
     if (this.noScroll > 2 && !this.indicationIsVisible) {
       nuxt.$emit('showCursor', 'Scroll')
