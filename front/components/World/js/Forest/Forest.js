@@ -145,6 +145,11 @@ export default class Forest {
     }
   }
 
+  onClickIfMicrophoneIsDisabled () {
+    this.enable = false
+    this.updateButterflySpeed()
+  }
+
   moveButterfly () {
     let butterfly
     this.scene.children.forEach((children) => {
@@ -178,7 +183,7 @@ export default class Forest {
       this.isClickedOnButterfly = true
     }
 
-    if (this.isClickedOnButterfly) {
+    if (this.isClickedOnButterfly && this.microphone.analyzer) {
       const volume = this.microphone.listen()
       if (volume > 132 && this.enable) {
         this.enable = false
