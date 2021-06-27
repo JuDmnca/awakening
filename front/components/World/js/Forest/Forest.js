@@ -214,19 +214,32 @@ export default class Forest {
       this.animations[0].timeScale = step * 1.5
       if (step === 0) {
         this.note1Sound.sound.play()
+        nuxt.$emit('toggleShowSubtitle')
+        setTimeout(() => {
+          store.commit('setSubtitle', 'Continues')
+          nuxt.$emit('toggleShowSubtitle')
+        }, 1000)
       }
       if (step === 1) {
         this.note2Sound.sound.play()
+        nuxt.$emit('toggleShowSubtitle')
+        setTimeout(() => {
+          store.commit('setSubtitle', 'Tu y es presque !')
+          nuxt.$emit('toggleShowSubtitle')
+        }, 1000)
       }
       if (step === 2) {
         this.note3Sound.sound.play()
+        nuxt.$emit('toggleShowSubtitle')
         setTimeout(() => {
           this.moveButterfly()
+          store.commit('setSubtitle', 'Bravo !')
+          nuxt.$emit('toggleShowSubtitle')
         }, 1000)
       } else {
         setTimeout(() => {
           this.enable = true
-        }, 1000)
+        }, 3000)
       }
       store.commit('forest/increaseStep')
     }
@@ -251,6 +264,7 @@ export default class Forest {
     nuxt.$emit('hideCursor')
     nuxt.$emit('startTransition', 3)
     nuxt.$emit('startSceneTransition')
+    nuxt.$emit('toggleShowSubtitle')
   }
 
   addEvents () {
@@ -286,9 +300,6 @@ export default class Forest {
 
     if (this.progression >= 0.58 && !this.isClickedOnButterfly && this.subTitlesAreCompleted) {
       this.isClickedOnButterfly = true
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-      }, 3000)
     }
 
     if (this.isClickedOnButterfly && this.microphone.analyzer) {
