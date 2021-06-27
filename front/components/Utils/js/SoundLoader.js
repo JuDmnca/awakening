@@ -36,6 +36,12 @@ export default class SoundLoader {
       nuxt.$on('unMute', () => {
         this.sound.setVolume(this.props.volume)
       })
+
+      if (this.props.onEnded) {
+        this.sound.onEnded = () => {
+          this.props.soundCallBack.sound.play()
+        }
+      }
     })
   }
 }

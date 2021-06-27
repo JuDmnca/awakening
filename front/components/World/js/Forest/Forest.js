@@ -3,6 +3,11 @@ import * as THREE from 'three'
 import gsap from 'gsap'
 import Raycaster from '../../../Utils/js/Raycaster'
 
+import Sound from '../../../Utils/js/SoundLoader'
+import birdsURL from '../../../../assets/sounds/forest/birds.mp3'
+import introURL from '../../../../assets/sounds/forest/intro.mp3'
+import introLoopURL from '../../../../assets/sounds/forest/intro-loop.mp3'
+
 import Grass from '../Common/Grass'
 import Butterfly from './Butterfly'
 
@@ -60,6 +65,8 @@ export default class Forest {
 
     this.addFog(scene)
     this.addSkybox(scene)
+
+    this.addSounds()
 
     // nuxt.$on('smellSetted', () => {
     //   this.addSubtitles()
@@ -126,6 +133,17 @@ export default class Forest {
     scene.add(skybox)
   }
 
+  addSounds () {
+    this.birdsSound = new Sound({ camera: this.camera, audioFile: birdsURL, loop: true, canToggle: true, volume: 0.01 * 3 })
+    this.introLoopSound = new Sound({ camera: this.camera, audioFile: introLoopURL, loop: true, canToggle: false, volume: 0.02 * 3 })
+    this.introSound = new Sound({ camera: this.camera, audioFile: introURL, loop: false, canToggle: false, volume: 0.02 * 3, onEnded: true, soundCallBack: this.introLoopSound })
+  }
+
+  playSounds () {
+    this.birdsSound.sound.play()
+    this.introSound.sound.play()
+  }
+
   addSubtitles () {
     setTimeout(() => {
       store.commit('setSubtitle', 'Nos sens sont intimement liés à nos souvenirs.')
@@ -148,6 +166,24 @@ export default class Forest {
       nuxt.$emit('toggleShowSubtitle')
       this.subTitlesAreCompleted = true
     }, 15000)
+  }
+
+  stifleSounds () {
+    this.birdsSound.sound.setVolume(0.003 * 3)
+    this.introLoopSound.sound.setVolume(0.006 * 3)
+    this.introSound.sound.setVolume(0.006 * 3)
+  }
+
+  removeAllSound () {
+    this.disconnectSoundIfSource(this.birdsSound.sound)
+    this.disconnectSoundIfSource(this.introLoopSound.sound)
+    this.disconnectSoundIfSource(this.introSound.sound)
+  }
+
+  disconnectSoundIfSource (sound) {
+    if (sound.source) {
+      sound.disconnect()
+    }
   }
 
   async addGrass () {
@@ -248,6 +284,7 @@ export default class Forest {
       this.updateBuissonMaterial()
       this.setAnimations()
       this.addSubtitles()
+      this.playSounds()
     })
   }
 
