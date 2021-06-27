@@ -50,7 +50,8 @@ class Constellation {
 
     this.time = {
       total: null,
-      delta: null
+      delta: null,
+      noDrag: null
     }
 
     this.gemsModels = [gemModel, gemModel2, gemModel3, gemModel4]
@@ -85,6 +86,11 @@ class Constellation {
 
     // Speed gems
     this.connectedUserSpeed = null
+
+    // Indications
+    this.indicationIsVisible = false
+    // TO DO : SET TO TRUE WHEN PROFILE WILL BE DISPLAYED IN FIRST
+    this.profileIsOpen = false
   }
 
   init ($canvas) {
@@ -120,6 +126,7 @@ class Constellation {
     this.addWheelEvent()
     this.addClickEvent()
     this.addMouseMoveEvent()
+    this.addOpenProfileListener()
 
     // Debug
     this.addGUI()
@@ -253,9 +260,9 @@ class Constellation {
     for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
       const gemMesh = gemMeshes[this.getRandomInt(4)].clone()
       // Get random int in range [-30, -5], [15, 30] to define position
-      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
+      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
       const y = [this.getRandomArbitrary(-10, -5), this.getRandomArbitrary(5, 30)]
-      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
+      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
       const pos = new Vector3(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
       gemMesh.position.copy(pos)
 
@@ -369,12 +376,29 @@ class Constellation {
   addClickEvent () {
     window.addEventListener('click', () => {
       if (this.intersectedObject.length > 0) {
-        nuxt.$emit('onCrystalClick')
+        nuxt.$emit('onCrystalClick', true)
         const currentUser = {
           id: this.intersectedObject[0].object.userId,
           datas: this.intersectedObject[0].object.datas
         }
         store.commit('constellation/setCurrentUser', currentUser)
+        this.profileIsOpen = true
+      }
+
+      setTimeout(() => {
+        // Hide Indication
+        nuxt.$emit('hideCursor')
+        this.time.noDrag = 0
+        this.indicationIsVisible = false
+      }, 1000)
+    })
+  }
+
+  addOpenProfileListener () {
+    nuxt.$on('onCrystalClick', (resp) => {
+      if (resp === false) {
+        this.profileIsOpen = false
+        this.time.noDrag = 0
       }
     })
   }
@@ -409,6 +433,13 @@ class Constellation {
   render () {
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
+    this.time.noDrag += this.time.delta
+
+    if (this.time.noDrag > 2 && !this.indicationIsVisible && !this.profileIsOpen) {
+      // Display indication
+      this.indicationIsVisible = true
+      nuxt.$emit('showCursor', 'Click & drag')
+    }
 
     if (this.gems.length === store.state.constellation.dataUsers.length) {
       for (let i = 0; i < this.gems.length; i++) {

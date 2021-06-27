@@ -50,7 +50,7 @@
       <span v-if="errorMessage" style="color:red">{{ errorMessage }}</span>
     </form> -->
     <div class="profile__right flex flex-col">
-      <div class="profile__icon profile__icon--close border border-white rounded-full flex" @click.prevent="$nuxt.$emit('onCrystalClick')">
+      <div class="profile__icon profile__icon--close border border-white rounded-full flex" @click.prevent="$nuxt.$emit('onCrystalClick', false)">
         <UI-Icons-Cross
           class="m-auto"
           :width="16"
