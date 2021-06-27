@@ -6,10 +6,9 @@ import Stats from 'three/examples/jsm/libs/stats.module'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap'
 
-import gemModel from '@/assets/models/gems_constellation/gem-1-compressed.gltf'
-import gemModel2 from '@/assets/models/gems_constellation/gem-2-compressed.gltf'
-import gemModel3 from '@/assets/models/gems_constellation/gem-3-compressed.gltf'
-import gemModel4 from '@/assets/models/gems_constellation/gem-4-compressed.gltf'
+import gemModel from '@/assets/models/gems_constellation/old/gem-1-compressed.gltf'
+import gemModel2 from '@/assets/models/gems_constellation/old/gem-2-compressed.gltf'
+import gemModel3 from '@/assets/models/gems_constellation/old/gem-3-compressed.gltf'
 
 import Sound from '../../Utils/js/SoundLoader'
 import musicURL from '../../../assets/sounds/constellation/music.mp3'
@@ -58,7 +57,7 @@ class Constellation {
       noDrag: null
     }
 
-    this.gemsModels = [gemModel, gemModel2, gemModel3, gemModel4]
+    this.gemsModels = [gemModel, gemModel2, gemModel3]
 
     // General Params
     this.params = {
@@ -226,7 +225,7 @@ class Constellation {
     })
     const normalMaterial = new THREE.MeshNormalMaterial()
     const gemMeshes = []
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
       const mesh = await new Loader({
         material: normalMaterial,
         model: this.gemsModels[i],
@@ -243,7 +242,7 @@ class Constellation {
 
     // Big gem for current user
     if (store.state.user.name) {
-      this.connectedUserMesh = gemMeshes[this.getRandomInt(4)].clone()
+      this.connectedUserMesh = gemMeshes[this.getRandomInt(3)].clone()
       const pos = new Vector3(0, 0, -3)
       this.connectedUserMesh.position.copy(pos)
       this.connectedUserMesh.layers.enable(1)
@@ -261,7 +260,7 @@ class Constellation {
 
     // Generation of this.gems
     for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
-      const gemMesh = gemMeshes[this.getRandomInt(4)].clone()
+      const gemMesh = gemMeshes[this.getRandomInt(3)].clone()
       gemMesh.material = this.cubeMaterial.clone()
 
       // Get random int in range [-30, -5], [15, 30] to define position
