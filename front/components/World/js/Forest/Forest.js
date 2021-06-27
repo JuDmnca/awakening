@@ -88,6 +88,8 @@ export default class Forest {
     setTimeout(() => {
       store.commit('setSubtitle', 'Nos sens sont intimement liés à nos souvenirs.')
       nuxt.$emit('toggleShowSubtitle')
+      nuxt.$emit('showCursor', 'Scroll')
+      this.indicationIsVisible = true
     }, 3000)
     setTimeout(() => {
       nuxt.$emit('toggleShowSubtitle')
@@ -200,11 +202,19 @@ export default class Forest {
     })
   }
 
-  render () {
+  render (timeTotal, timeDelta) {
+    this.noScroll += timeDelta
+
+    if (this.noScroll > 2 && !this.indicationIsVisible) {
+      nuxt.$emit('showCursor', 'Scroll')
+      this.indicationIsVisible = true
+    }
+
     if (nuxt && store && !this.events) {
       this.addEvents()
       this.events = true
     }
+
     if (this.progression >= 0.59 && !this.isClickedOnButterfly && this.subTitlesAreCompleted) {
       this.isClickedOnButterfly = true
       setTimeout(() => {

@@ -321,6 +321,11 @@ class Common {
           this.moveCamera(e)
         }
         this.wheelMovement(e)
+
+        if (this.currentScene.name === 'Forest') {
+          this.currentScene.noScroll = 0
+          this.currentScene.indicationIsVisible = false
+        }
       })
     })
 
