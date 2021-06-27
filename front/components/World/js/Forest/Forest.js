@@ -59,6 +59,10 @@ export default class Forest {
 
     this.addButterfly(this.forestGroup, mixer, this.animations)
 
+    nuxt.$on('smellSetted', () => {
+      this.addSubtitles()
+    })
+
     // this.crystal.getColor()
     // this.addColorToCrystal()
 
@@ -79,6 +83,30 @@ export default class Forest {
   addLight (scene) {
     const light = new THREE.AmbientLight(0x404040, 1)
     scene.add(light)
+  }
+
+  addSubtitles () {
+    setTimeout(() => {
+      store.commit('setSubtitle', 'Nos sens sont intimement liés à nos souvenirs.')
+      nuxt.$emit('toggleShowSubtitle')
+      nuxt.$emit('showCursor', 'Scroll')
+      this.indicationIsVisible = true
+    }, 3000)
+    setTimeout(() => {
+      nuxt.$emit('toggleShowSubtitle')
+    }, 8000)
+    setTimeout(() => {
+      store.commit('setSubtitle', 'Votre esprit est sur le point de s’éveiller à nouveau.')
+      nuxt.$emit('toggleShowSubtitle')
+    }, 9000)
+    setTimeout(() => {
+      nuxt.$emit('toggleShowSubtitle')
+    }, 14000)
+    setTimeout(() => {
+      store.commit('setSubtitle', 'Saurez-vous lui redonner sa voix ?')
+      nuxt.$emit('toggleShowSubtitle')
+      this.subTitlesAreCompleted = true
+    }, 15000)
   }
 
   async addGrass () {
@@ -151,6 +179,11 @@ export default class Forest {
     }
   }
 
+  onClickIfMicrophoneIsDisabled () {
+    this.enable = false
+    this.updateButterflySpeed()
+  }
+
   moveButterfly () {
     let butterfly
     this.forestGroup.children.forEach((children) => {
@@ -175,16 +208,27 @@ export default class Forest {
     })
   }
 
-  render () {
+  render (timeTotal, timeDelta) {
+    this.noScroll += timeDelta
+
+    if (this.noScroll > 2 && !this.indicationIsVisible) {
+      nuxt.$emit('showCursor', 'Scroll')
+      this.indicationIsVisible = true
+    }
+
     if (nuxt && store && !this.events) {
       this.addEvents()
       this.events = true
     }
-    if (this.progression >= 0.59) {
+
+    if (this.progression >= 0.59 && !this.isClickedOnButterfly && this.subTitlesAreCompleted) {
       this.isClickedOnButterfly = true
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 3000)
     }
 
-    if (this.isClickedOnButterfly) {
+    if (this.isClickedOnButterfly && this.microphone.analyzer) {
       const volume = this.microphone.listen()
       if (volume > 132 && this.enable) {
         this.enable = false

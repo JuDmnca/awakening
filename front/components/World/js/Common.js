@@ -275,6 +275,13 @@ class Common {
     if (store.state.desert.haveClickedOnFlower && this.currentScene.name === 'Desert') {
       this.currentScene.sporesOnMouseUp()
     }
+
+    // FOREST
+    if (this.currentScene.name === 'Forest' && this.progression > 0.45) {
+      if (!this.currentScene.microphone.audioCtx && this.currentScene.isClickedOnButterfly) {
+        this.currentScene.onClickIfMicrophoneIsDisabled()
+      }
+    }
   }
 
   resize () {
@@ -314,6 +321,11 @@ class Common {
           this.moveCamera(e)
         }
         this.wheelMovement(e)
+
+        if (this.currentScene.name === 'Forest') {
+          this.currentScene.noScroll = 0
+          this.currentScene.indicationIsVisible = false
+        }
       })
     })
 
