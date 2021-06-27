@@ -162,6 +162,8 @@ export default {
   color: white;
   z-index: 10;
   margin: 12px 0 0 65px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 svg {

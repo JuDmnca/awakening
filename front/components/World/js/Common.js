@@ -259,6 +259,12 @@ class Common {
     if (this.currentScene.name === 'Desert') {
       this.currentScene.onWheelMovement(e)
     }
+
+    if (this.currentScene.name === 'Forest') {
+      this.currentScene.noScroll = 0
+      this.currentScene.indicationIsVisible = false
+      nuxt.$emit('hideCursor')
+    }
   }
 
   mouseDown () {
