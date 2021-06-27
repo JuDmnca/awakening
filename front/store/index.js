@@ -33,28 +33,28 @@ const mutations = {
     let colorPalette = []
     switch (resp) {
       case 'red':
-        hexacode = '#E83100'
-        colorPalette = ['FBB1C6', 'DC0B47', 'E8721F', '7B4EA3']
+        hexacode = '#EB2101'
+        colorPalette = ['FA9D9C', 'DC0B47', 'E8721F']
         break
       case 'orange':
         hexacode = '#e8721f'
-        colorPalette = ['F7D1B6', 'E8721F', 'DC0B47', 'EDC52C']
+        colorPalette = ['F7D1B6', 'E8721F', 'DC0B47']
         break
       case 'yellow':
         hexacode = '#edc52c'
-        colorPalette = ['F7E6A1', 'EDC52C', 'E8721F', '7BBD21']
+        colorPalette = ['FAE58D', 'EDC52C', 'E8721F']
         break
       case 'green':
         hexacode = '#7bbd22'
-        colorPalette = ['C0EA86', '7BBD21', '0F7B33', '18A4DB']
+        colorPalette = ['C0EA86', '7BBD21', '0F7B33']
         break
       case 'blue':
         hexacode = '#1281ab'
-        colorPalette = ['A3DEF5', '18A4DB', '1F6CAD', '7B4EA3']
+        colorPalette = ['A3DEF5', '18A4DB', '1F6CAD']
         break
       case 'purple':
         hexacode = '#7b4ea3'
-        colorPalette = ['C3ACD7', '7B4EA3', 'DC0B47', '7B4EA3']
+        colorPalette = ['C3ACD7', '7B4EA3', 'DC0B47']
         break
     }
     state.user.color = hexacode

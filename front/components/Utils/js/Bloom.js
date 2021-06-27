@@ -26,6 +26,7 @@ export default class Bloom {
 
     this.renderer = props.renderer
     this.size = props.size
+    this.currentScene = 0
 
     this.camera = props.camera
     this.scene = props.scene
@@ -106,8 +107,10 @@ export default class Bloom {
   renderBloom (mask) {
     if (mask === true) {
       this.scene.traverse(this.darkenNonBloomed)
+      this.scene.background = new THREE.Color('#000000')
       bloomComposer.render()
       this.scene.traverse(this.restoreMaterial)
+      this.scene.background = new THREE.Color('#89C7D9')
     } else {
       this.camera.layers.set(BLOOM_SCENE)
       bloomComposer.render()
@@ -132,7 +135,11 @@ export default class Bloom {
   render () {
     this.renderer.setClearColor(0x000000)
     this.renderBloom(true)
-    this.renderer.setClearColor(0x13171C)
+    if (this.currentScene === 1) {
+      this.renderer.setClearColor(0x13171C)
+    } else {
+      this.renderer.setClearColor(0x89C7D9)
+    }
     finalComposer.render()
   }
 }

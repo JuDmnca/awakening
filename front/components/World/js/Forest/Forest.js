@@ -59,7 +59,6 @@ export default class Forest {
     this.addButterfly(this.forestGroup, mixer, this.animations)
 
     this.addFog(scene)
-    this.addSkybox(scene)
 
     // nuxt.$on('smellSetted', () => {
     //   this.addSubtitles()
@@ -68,7 +67,7 @@ export default class Forest {
     // this.crystal.getColor()
     // this.addColorToCrystal()
 
-    // this.updateBuissonMaterial()
+    // this.updateMaterials()
     // this.addGrass()
 
     // Raycaster
@@ -88,42 +87,8 @@ export default class Forest {
   }
 
   addFog (scene) {
-    const colorBG = new THREE.Color('#040408')
-    scene.fog = new THREE.Fog(colorBG, 10, 300)
-  }
-
-  addSkybox (scene) {
-    const loader = new THREE.CubeTextureLoader()
-    loader.premultiplyAlpha = true
-    const SkyboxTexture = loader.load([
-      require('../../../../assets/textures/png/forest/px.jpg'),
-      require('../../../../assets/textures/png/forest/nx.jpg'),
-      require('../../../../assets/textures/png/forest/py.jpg'),
-      require('../../../../assets/textures/png/forest/ny.jpg'),
-      require('../../../../assets/textures/png/forest/pz.jpg'),
-      require('../../../../assets/textures/png/forest/nz.jpg')
-    ])
-    SkyboxTexture.encoding = THREE.sRGBEncoding
-
-    const skybox = new THREE.Mesh(
-      new THREE.BoxBufferGeometry(20000, 20000, 20000),
-      new THREE.ShaderMaterial({
-        uniforms: THREE.UniformsUtils.clone(THREE.ShaderLib.cube.uniforms),
-        vertexShader: THREE.ShaderLib.cube.vertexShader,
-        fragmentShader: THREE.ShaderLib.cube.fragmentShader,
-        depthWrite: false,
-        side: THREE.BackSide
-      })
-    )
-
-    skybox.material.uniforms.envMap.value = SkyboxTexture
-    Object.defineProperty(skybox.material, 'envMap', {
-      get () {
-        return this.uniforms.envMap.value
-      }
-    })
-
-    scene.add(skybox)
+    const colorBG = new THREE.Color('#89C7D9')
+    scene.fog = new THREE.Fog(colorBG, 40, 300)
   }
 
   addSubtitles () {
@@ -185,15 +150,13 @@ export default class Forest {
     }
   }
 
-  updateBuissonMaterial () {
-    let buissons
+  updateMaterials () {
     this.forestGroup.children[0].children.forEach((children) => {
       if (children.name === 'buissons') {
-        buissons = children
+        children.material.depthWrite = true
+        children.position.y -= 3
       }
     })
-    buissons.material.depthWrite = true
-    buissons.position.y -= 3
   }
 
   setAnimations () {
@@ -244,7 +207,7 @@ export default class Forest {
     nuxt.$on('ColorSetted', () => {
       this.crystal.getColor()
       this.addColorToCrystal()
-      this.updateBuissonMaterial()
+      this.updateMaterials()
       this.setAnimations()
       this.addSubtitles()
     })
