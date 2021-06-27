@@ -216,6 +216,11 @@ export default class Forest {
       this.indicationIsVisible = true
     }
 
+    if (this.noScroll > 2 && !this.indicationIsVisible) {
+      nuxt.$emit('showCursor', 'Scroll')
+      this.indicationIsVisible = true
+    }
+
     if (nuxt && store && !this.events) {
       this.addEvents()
       this.events = true
