@@ -82,11 +82,10 @@ export default {
           break
         case 3:
           this.$store.commit('setUserSound', data)
-          console.log(this)
+          this.$nuxt.$emit('endForestScene')
           setTimeout(() => {
             this.$router.push('constellation')
           }, 3000)
-          this.$nuxt.$emit('endForestScene')
           break
       }
       if (this.step > 1) {

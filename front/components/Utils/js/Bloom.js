@@ -135,7 +135,9 @@ export default class Bloom {
   render () {
     this.renderer.setClearColor(0x000000)
     this.renderBloom(true)
-    if (this.currentScene === 1) {
+    if (this.currentScene === 0) {
+      this.renderer.setClearColor(0x000000)
+    } else if (this.currentScene === 1) {
       this.renderer.setClearColor(0x13171C)
     } else {
       this.renderer.setClearColor(0x89C7D9)

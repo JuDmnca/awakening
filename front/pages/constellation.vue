@@ -57,8 +57,12 @@ body {
 }
 
 canvas {
-    z-index: 0;
-    position: absolute;
-    top: 0;
+  z-index: 0;
+  position: absolute;
+  top: 0;
+}
+
+.constellation {
+  z-index: 10;
 }
 </style>

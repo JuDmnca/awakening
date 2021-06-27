@@ -29,6 +29,10 @@
   font-style: normal;
 }
 
+html {
+  background-color: black;
+}
+
 body {
   height: 100vh;
   overflow: hidden;
@@ -37,6 +41,7 @@ body {
   margin: 0;
   padding: 0;
   cursor: none !important;
+  background-color: black;
 }
 
 .container {

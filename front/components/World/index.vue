@@ -50,6 +50,9 @@ export default {
     this.$nuxt.$on('endTransition', () => {
       this.transition = false
     })
+    this.$nuxt.$on('endForestScene', () => {
+      this.$refs.canvas.style.opacity = 0
+    })
   },
   beforeDestroy () {
     this.scene.clean()
