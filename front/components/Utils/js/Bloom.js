@@ -46,15 +46,15 @@ export default class Bloom {
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(this.size.windowW, this.size.windowH)
 
-    const bloomPass = new unrealBloomPass.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85)
-    bloomPass.threshold = params.bloomThreshold
-    bloomPass.strength = params.bloomStrength
-    bloomPass.radius = params.bloomRadius
+    this.bloomPass = new unrealBloomPass.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85)
+    this.bloomPass.threshold = params.bloomThreshold
+    this.bloomPass.strength = params.bloomStrength
+    this.bloomPass.radius = params.bloomRadius
 
     bloomComposer = new effectComposer.EffectComposer(this.renderer)
     bloomComposer.renderToScreen = false
     bloomComposer.addPass(renderScene)
-    bloomComposer.addPass(bloomPass)
+    bloomComposer.addPass(this.bloomPass)
 
     const finalPass = new shaderPass.ShaderPass(
       new THREE.ShaderMaterial({

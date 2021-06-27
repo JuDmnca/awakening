@@ -413,6 +413,22 @@ class Common {
     this.renderer.dispose()
   }
 
+  map (n, start1, stop1, start2, stop2, withinBounds) {
+    const newval = (n - start1) / (stop1 - start1) * (stop2 - start2) + start2
+    if (!withinBounds) {
+      return newval
+    }
+    if (start2 < stop2) {
+      return this.constrain(newval, start2, stop2)
+    } else {
+      return this.constrain(newval, stop2, start2)
+    }
+  }
+
+  constrain (n, low, high) {
+    return Math.max(Math.min(n, high), low)
+  };
+
   render () {
     if (nuxt && store && !this.events) {
       this.addTransitionEvent()
@@ -450,6 +466,10 @@ class Common {
 
       if (this.mixer.length > 0 && store.state.sceneIndex === 2) {
         this.mixer[0].update(this.time.delta)
+      }
+
+      if (this.currentScene.volume) {
+        this.bloom.bloomPass.strength = this.map(this.currentScene.volume, 128, 134, 1, 5)
       }
 
       this.bloom.render()
