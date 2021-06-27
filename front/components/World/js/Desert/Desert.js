@@ -94,7 +94,7 @@ export default class Desert {
       noHold: 0
     }
     this.isStationary = false
-    this.isCursorImmobile = true
+    this.isCursorImmobile = false
     this.isHold = false
 
     this.cursorDistance = 0
@@ -109,8 +109,12 @@ export default class Desert {
     this.canClickOnFlowers = true
 
     this.sporesSoundAlreadyPlayed = false
-    this.intersectIsEnable = false
+    this.sceneIsStarted = false
     this.cuddleIsCompleted = false
+    this.cursorIsHide = false
+    this.allInteractionsAreCompleted = false
+    this.isInhalingOnHold = false
+    this.sporesPercentage = 0
   }
 
   init (scene, renderer) {
@@ -133,7 +137,12 @@ export default class Desert {
 
     nuxt.$on('swoosh', () => {
       this.swooshSound.sound.play()
-      this.intersectIsEnable = true
+      this.sceneIsStarted = true
+      setTimeout(() => {
+        nuxt.$emit('showCursor', 'Scroll')
+        this.time.stationary = 0
+        this.isStationary = false
+      }, 2000)
 
       // Disable for dev
       // setTimeout(() => {
@@ -170,14 +179,6 @@ export default class Desert {
     nuxt.$on('clickOnFlowers', () => {
       store.commit('setSubtitle', 'Et s\'il suffisait d\'une caresse ?')
       nuxt.$emit('toggleShowSubtitle')
-
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-        setTimeout(() => {
-          nuxt.$emit('showProgressBar')
-          this.enableSporesElevation = true
-        }, 1000)
-      }, 4000)
     })
 
     // RAYCASTER
@@ -197,16 +198,13 @@ export default class Desert {
 
   onWheelMovement (e) {
     this.time.stationary = 0
-    if (this.isStationary) {
-      nuxt.$emit('showCursor', 'Hold')
-    }
     this.isStationary = false
   }
 
   onHold () {
     this.time.noHold = 0
     if (this.isHold) {
-      nuxt.$emit('showCursor', 'Hold')
+      nuxt.$emit('hideCursor')
     }
     this.isHold = false
   }
@@ -214,10 +212,12 @@ export default class Desert {
   onCursorMovement (e) {
     // Disable animation if mousemove
     this.time.cursorImmobile = 0
-    if (!this.isCursorImmobile) {
-      nuxt.$emit('showCursor', 'Caresse les fleurs')
+    if (this.isCursorImmobile) {
+      setTimeout(() => {
+        nuxt.$emit('hideCursor')
+      }, 1000)
     }
-    this.isCursorImmobile = true
+    this.isCursorImmobile = false
 
     // Compute distance of mousemove at the end of the path
     if (this.progression > this.enableSporesElevationAt) {
@@ -227,18 +227,18 @@ export default class Desert {
   }
 
   async addSound (scene) {
-    this.wind = new Sound({ camera: this.camera, audioFile: windURL, loop: true, canToggle: true, volume: 0.02 })
-    this.swooshSound = new Sound({ camera: this.camera, audioFile: swooshURL, loop: false, canToggle: false, volume: 0.05 })
-    this.note1Sound = new Sound({ camera: this.camera, audioFile: note1URL, loop: false, canToggle: false, volume: 1 })
-    this.note2Sound = new Sound({ camera: this.camera, audioFile: note2URL, loop: false, canToggle: false, volume: 1 })
-    this.note3Sound = new Sound({ camera: this.camera, audioFile: note3URL, loop: false, canToggle: false, volume: 1 })
-    this.inhaleSound = new Sound({ camera: this.camera, audioFile: inhaleURL, loop: false, volume: 0.7 })
+    this.wind = new Sound({ camera: this.camera, audioFile: windURL, loop: true, canToggle: true, volume: 0.02 * 3 })
+    this.swooshSound = new Sound({ camera: this.camera, audioFile: swooshURL, loop: false, canToggle: false, volume: 0.05 * 3 })
+    this.note1Sound = new Sound({ camera: this.camera, audioFile: note1URL, loop: false, canToggle: false, volume: 1 * 3 })
+    this.note2Sound = new Sound({ camera: this.camera, audioFile: note2URL, loop: false, canToggle: false, volume: 1 * 3 })
+    this.note3Sound = new Sound({ camera: this.camera, audioFile: note3URL, loop: false, canToggle: false, volume: 1 * 3 })
+    this.inhaleSound = new Sound({ camera: this.camera, audioFile: inhaleURL, loop: false, volume: 0.7 * 3 })
 
     // Init sound spacialization
     this.soundCube = new Cube({ scene, position: { x: 72, y: 10, z: 62 } })
-    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true, volume: 12, refDistance: 0.03 })
+    this.crystalSound = new AudioPosition({ url: crystalSoundURL, camera: this.camera.camera, mesh: this.soundCube.cube, loop: true, volume: 25 * 3, refDistance: 0.03 })
     this.soundCube.cube.add(this.crystalSound.sound)
-    this.sporesSound = await new AudioPosition({ url: fairyDustSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 5, refDistance: 1 })
+    this.sporesSound = await new AudioPosition({ url: fairyDustSoundURL, camera: this.camera.camera, mesh: this.plantsGroup, loop: false, volume: 5 * 3, refDistance: 1 })
   }
 
   removeAllSound () {
@@ -252,6 +252,20 @@ export default class Desert {
     setTimeout(() => {
       this.disconnectSoundIfSource(this.note3Sound.sound)
       this.disconnectSoundIfSource(this.inhaleSound.sound)
+    }, 3000)
+  }
+
+  stifleSounds () {
+    this.wind.sound.setVolume(0.005 * 3)
+    this.swooshSound.sound.setVolume(0.01 * 3)
+    this.note1Sound.sound.setVolume(0.2 * 3)
+    this.note2Sound.sound.setVolume(0.2 * 3)
+    this.crystalSound.sound.setVolume(5 * 3)
+    this.sporesSound.sound.setVolume(1 * 3)
+    // Remove the sound after 3 seconds because the sound is playing when we stifle all sounds
+    setTimeout(() => {
+      this.note3Sound.sound.setVolume(0.2 * 3)
+      this.inhaleSound.sound.setVolume(0.1 * 3)
     }, 3000)
   }
 
@@ -397,7 +411,7 @@ export default class Desert {
   }
 
   sporesOnHold () {
-    if (store.state.desert.canInhaleOnHold) {
+    if (store.state.desert.canInhaleOnHold && !this.allInteractionsAreCompleted) {
       this.hold = true
       this.sporesElevation += 1000
       this.inhale()
@@ -413,20 +427,29 @@ export default class Desert {
     e.preventDefault()
     const mouseX = e.pageX
     const mouseY = e.pageY
-    if (this.lastMouseX > -1 && this.enableSporesElevation) {
+    if (this.lastMouseX > -1 && this.enableSporesElevation && !this.allInteractionsAreCompleted) {
       this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY))
-      const sporesPercentage = this.sporesElevation * 100 / 16000
-      if (sporesPercentage < 150) {
-        nuxt.$emit('sporesElevation', sporesPercentage)
+      this.sporesPercentage = this.sporesElevation * 100 / 16000
+      if (this.sporesPercentage < 150) {
+        nuxt.$emit('sporesElevation', this.sporesPercentage)
       }
-      if (sporesPercentage > 100 && !this.cuddleIsCompleted) {
+      if (this.sporesPercentage > 100 && !this.cuddleIsCompleted) {
         this.note3Sound.sound.play()
         this.cuddleIsCompleted = true
       }
     }
     this.lastMouseX = mouseX
     this.lastMouseY = mouseY
-    this.inhale({ mousemove: true })
+    if (!this.allInteractionsAreCompleted && !this.isInhalingOnHold) {
+      this.inhale({ mousemove: true })
+    }
+    if (this.isCursorImmobile) {
+      setTimeout(() => {
+        nuxt.$emit('hideCursor')
+        this.time.cursorImmobile = 0
+        this.isCursorImmobile = false
+      }, 1000)
+    }
   }
 
   sporesOnMouseUp () {
@@ -444,11 +467,14 @@ export default class Desert {
     if (this.intersects.length > 0 && !store.state.desert.haveClickedOnFlower) {
       store.commit('desert/setHaveClickedOnFlowers')
       nuxt.$emit('clickOnFlowers')
+      setTimeout(() => {
+        nuxt.$emit('showCursor', 'Caresse les fleurs')
+        this.isCursorImmobile = true
+      }, 2000)
     }
   }
 
   inhale (mousemove = false) {
-    const volume = { x: 0 }
     gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
     gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
     // Movement on mousemove
@@ -466,9 +492,17 @@ export default class Desert {
       if (store.state.desert.haveClickedOnFlower && !this.sporesSoundAlreadyPlayed) {
         this.sporesSound.sound.play()
         this.sporesSoundAlreadyPlayed = true
+        this.enableSporesElevation = true
+        setTimeout(() => {
+          nuxt.$emit('toggleShowSubtitle')
+          setTimeout(() => {
+            nuxt.$emit('showProgressBar')
+          }, 1000)
+        }, 2000)
       }
     } else {
       // Movement on hold
+      this.isInhalingOnHold = true
       gsap.killTweensOf([this.spores.particles.material.uniforms.uYSpeed])
       gsap.killTweensOf([this.spores.particles.material.uniforms.uZSpeed])
       gsap.to(
@@ -478,14 +512,16 @@ export default class Desert {
           duration: store.state.durationHold,
           ease: 'power4.inOut',
           onComplete: () => {
-            this.inhaleIsCompleted = true
             if (store.state.desert.counter === 1 && store.state.desert.haveClickedOnFlower) {
               this.note1Sound.sound.play()
             } else if (store.state.desert.counter === 2 && store.state.desert.haveClickedOnFlower) {
               this.note2Sound.sound.play()
             } else if (store.state.desert.counter === 3) {
               this.note3Sound.sound.play()
+              this.allInteractionsAreCompleted = true
             }
+            this.inhaleIsCompleted = true
+            this.isInhalingOnHold = false
           }
         }
       )
@@ -536,7 +572,7 @@ export default class Desert {
       this.intersects = this.raycaster.render(this.plantsGroup)
     }
     // Indications
-    if (store.state.desert.sceneIsStarted) {
+    if (this.sceneIsStarted) {
       this.time.stationary += timeDelta
       this.time.cursorImmobile += timeDelta
       this.time.noHold += timeDelta
@@ -544,23 +580,29 @@ export default class Desert {
     }
 
     // stationary = time to wait to show the indication
-    // progression < 0.5 : indicator just in the first part of the scene.
-    // console.log('stationary : ', this.time.stationary, ' isStationary : ', this.isStationary, ' progression : ', this.progression)
-    if (this.time.stationary > 10 && !this.isStationary && this.progression < 0.5) {
+    if (this.time.stationary > 3 && !this.isStationary && this.progression < 0.9) {
       this.isStationary = true
       nuxt.$emit('showCursor', 'Scroll')
-    } else if (this.time.cursorImmobile > 10 && this.cursorDistance < 25000 && this.progression > this.enableSporesElevationAt && this.isCursorImmobile) {
-      this.isCursorImmobile = false
+      setTimeout(() => {
+        nuxt.$emit('hideCursor')
+        this.time.stationary = 0
+        this.isStationary = false
+      }, 1000)
+    } else if (!this.isStationary && this.progression > 0.9) {
+      nuxt.$emit('hideCursor')
+      this.isStationary = true
+    } else if (this.time.cursorImmobile > 3 && this.sporesPercentage < 100 && this.sporesPercentage > 30 && !this.isCursorImmobile && store.state.desert.haveClickedOnFlower) {
+      this.isCursorImmobile = true
       nuxt.$emit('showCursor', 'Caresse les fleurs')
-    } else if (this.time.noHold > 10 && this.cursorDistance > 25000 && this.progression > this.enableSporesElevationAt && !this.isHold) {
+    } else if (this.time.noHold > 3 && this.sporesPercentage >= 100 && !this.isHold) {
       this.isHold = true
       nuxt.$emit('showCursor', 'Hold')
     }
 
-    if (this.intersects.length > 0 && !this.isCursorActive && nuxt) {
+    if (this.intersects.length > 0 && !this.isCursorActive && nuxt && !store.state.desert.haveClickedOnFlower) {
       this.isCursorActive = true
       nuxt.$emit('activeCursor')
-    } else if (this.intersects.length === 0 && nuxt && this.isCursorActive) {
+    } else if (this.intersects.length === 0 && nuxt && this.isCursorActive && !store.state.desert.haveClickedOnFlower) {
       this.isCursorActive = false
       nuxt.$emit('unactiveCursor')
     }

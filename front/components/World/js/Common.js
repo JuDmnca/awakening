@@ -5,7 +5,7 @@ import Bloom from '../../Utils/js/Bloom'
 
 import Microphone from '../../Utils/js/Microphone'
 import Land from './Land'
-// import Desert from './Desert/Desert'
+import Desert from './Desert/Desert'
 import Forest from './Forest/Forest'
 
 const desertCurve = [
@@ -215,7 +215,7 @@ class Common {
 
     this.p1 = this.curves[0].points[0]
     this.progression = 0
-    this.curveNumber = 1
+    this.curveNumber = 0
   }
 
   moveCamera (e) {
@@ -335,6 +335,22 @@ class Common {
       })
     })
 
+    nuxt.$on('endDesertScene', () => {
+      this.currentScene.removeAllSound()
+      this.removeGroup(this.currentScene)
+
+      this.currentScene = new Forest({
+        camera: this.camera,
+        model: this.lands.get(1),
+        crystal: this.crystal
+      })
+      this.currentScene.microphone = this.microphone
+
+      this.curveNumber += 1
+      this.progression = 0
+      this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
+    })
+
     window.addEventListener('mousedown', () => {
       this.mouseDown()
     })
@@ -356,24 +372,7 @@ class Common {
 
     nuxt.$on('startSceneTransition', () => {
       this.pauseRender = true
-      this.removeGroup(this.currentScene)
-
-      if (store.state.sceneIndex < 2) {
-        this.currentScene.removeAllSound()
-
-        this.currentScene = new Forest({
-          camera: this.camera,
-          model: this.lands.get(1),
-          crystal: this.crystal
-        })
-        this.currentScene.init(this.scene, this.renderer, this.mixer)
-        this.currentScene.microphone = this.microphone
-
-        this.curveNumber += 1
-        this.progression = 0
-        this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
-      }
-
+      this.currentScene.stifleSounds()
       store.commit('increaseSceneIndex')
     })
 

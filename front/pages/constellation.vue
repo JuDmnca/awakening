@@ -26,8 +26,8 @@ export default {
   mounted () {
     this.getFirestore()
     // Watch the click of crystal to display a profile
-    this.$nuxt.$on('onCrystalClick', () => {
-      this.isVisible = !this.isVisible
+    this.$nuxt.$on('onCrystalClick', (resp) => {
+      this.isVisible = resp
     })
   },
   methods: {

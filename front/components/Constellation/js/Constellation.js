@@ -9,6 +9,10 @@ import gsap from 'gsap'
 import gemModel from '@/assets/models/gems_constellation/gem-1-compressed.gltf'
 import gemModel2 from '@/assets/models/gems_constellation/gem-2-compressed.gltf'
 import gemModel3 from '@/assets/models/gems_constellation/gem-3-compressed.gltf'
+import gemModel4 from '@/assets/models/gems_constellation/gem-4-compressed.gltf'
+
+import Sound from '../../Utils/js/SoundLoader'
+import musicURL from '../../../assets/sounds/constellation/music.mp3'
 
 import Camera from '../../Utils/js/Camera'
 import Loader from '../../Utils/js/Loader'
@@ -50,17 +54,18 @@ class Constellation {
 
     this.time = {
       total: null,
-      delta: null
+      delta: null,
+      noDrag: null
     }
 
-    this.gemsModels = [gemModel, gemModel2, gemModel3]
+    this.gemsModels = [gemModel, gemModel2, gemModel3, gemModel4]
 
     // General Params
     this.params = {
       light: {
         angle: Math.PI / 2,
         color: '#ffffff',
-        intensity: 0.3,
+        intensity: 0.1,
         distance: 1000
       }
     }
@@ -83,6 +88,14 @@ class Constellation {
 
     // Post Processing
     this.bloom = null
+
+    // Speed gems
+    this.connectedUserSpeed = null
+
+    // Indications
+    this.indicationIsVisible = false
+    // TO DO : SET TO TRUE WHEN PROFILE WILL BE DISPLAYED IN FIRST
+    this.profileIsOpen = false
   }
 
   init ($canvas) {
@@ -98,6 +111,7 @@ class Constellation {
     this.addRenderer($canvas)
     this.initCamera()
     this.initLight()
+    this.initAbout()
 
     // Skybox
     this.loadTexture()
@@ -107,12 +121,25 @@ class Constellation {
     this.addRaycaster()
     this.addBloom()
 
+    // Sounds
+    this.addSounds()
+
     // Listeners
     this.addResizeEvent()
     this.addClickEvent()
+    this.addMouseMoveEvent()
+    this.addOpenProfileListener()
 
     // Debug
     // this.addGUI()
+  }
+
+  initAbout () {
+    nuxt.$emit('started')
+  }
+
+  addSounds () {
+    this.music = new Sound({ camera: this.camera, audioFile: musicURL, loop: true, canToggle: true, volume: 0.02 * 3 })
   }
 
   setSize () {
@@ -199,7 +226,7 @@ class Constellation {
     })
     const normalMaterial = new THREE.MeshNormalMaterial()
     const gemMeshes = []
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
       const mesh = await new Loader({
         material: normalMaterial,
         model: this.gemsModels[i],
@@ -214,19 +241,33 @@ class Constellation {
   async generateCrystals () {
     const gemMeshes = await this.loadGems()
 
+    // Big gem for current user
+    if (store.state.user.name) {
+      this.connectedUserMesh = gemMeshes[this.getRandomInt(4)].clone()
+      const pos = new Vector3(0, 0, -3)
+      this.connectedUserMesh.position.copy(pos)
+      this.connectedUserMesh.layers.enable(1)
+      this.connectedUserMesh.userId = -1
+      this.addDataToCurrentUser(this.connectedUserMesh)
+      this.connectedUserMesh.Ydirection = Math.random() < 0.5 ? -1 : 1
+      this.scene.add(this.connectedUserMesh)
+
+      this.connectedUserSpeed = Math.random()
+    }
+
     const textureCrystals = this.texture
     textureCrystals.mapping = THREE.CubeRefractionMapping
     textureCrystals.encoding = THREE.sRGBEncoding
 
     // Generation of this.gems
     for (let i = 0; i < store.state.constellation.dataUsers.length; i++) {
-      const gemMesh = gemMeshes[this.getRandomInt(3)].clone()
+      const gemMesh = gemMeshes[this.getRandomInt(4)].clone()
       gemMesh.material = this.cubeMaterial.clone()
 
       // Get random int in range [-30, -5], [15, 30] to define position
-      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
+      const x = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
       const y = [this.getRandomArbitrary(-10, -5), this.getRandomArbitrary(5, 30)]
-      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(15, 30)]
+      const z = [this.getRandomArbitrary(-30, -5), this.getRandomArbitrary(5, 30)]
       const pos = new Vector3(x[this.getRandomInt(2)], y[this.getRandomInt(2)], z[this.getRandomInt(2)])
       gemMesh.position.copy(pos)
 
@@ -254,6 +295,19 @@ class Constellation {
 
   addData (gemMesh, i) {
     gemMesh.datas = store.state.constellation.dataUsers[i]
+    this.switchColors(gemMesh)
+  }
+
+  addDataToCurrentUser (gemMesh) {
+    gemMesh.datas = {}
+    gemMesh.datas.color = store.state.user.color
+    gemMesh.datas.sound = store.state.user.sound
+    gemMesh.datas.odeur = store.state.user.smell
+    gemMesh.datas.nom = store.state.user.name
+    this.switchColors(gemMesh)
+  }
+
+  switchColors (gemMesh) {
     switch (gemMesh.datas.color) {
       case 'blue':
         gemMesh.material.color = new THREE.Color('#2461ff')
@@ -293,18 +347,29 @@ class Constellation {
   }
 
   addBloom () {
+    this.bloomParams = {
+      exposure: 1.5,
+      bloomStrength: 2.5,
+      bloomThreshold: 0,
+      bloomRadius: 1
+    }
     this.bloom = new Bloom({
       scene: this.scene,
       camera: this.camera.camera,
       renderer: this.renderer,
       size: this.size,
-      params: {
-        exposure: 1.5,
-        bloomStrength: 2.5,
-        bloomThreshold: 0,
-        bloomRadius: 1
-      }
+      params: this.bloomParams
     })
+    let unrealBloomPass
+    if (process.client) {
+      unrealBloomPass = require('three/examples/jsm/postprocessing/UnrealBloomPass.js')
+    }
+    const bloomPass = new unrealBloomPass.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85)
+    bloomPass.threshold = this.bloomParams.bloomThreshold
+    bloomPass.strength = this.bloomParams.bloomStrength
+    bloomPass.radius = this.bloomParams.bloomRadius
+
+    this.bloom.initGUI(this.bloomParams, this.renderer, bloomPass)
   }
 
   addResizeEvent () {
@@ -316,12 +381,37 @@ class Constellation {
   addClickEvent () {
     window.addEventListener('click', () => {
       if (this.intersectedObject.length > 0) {
-        nuxt.$emit('onCrystalClick')
+        nuxt.$emit('onCrystalClick', true)
         const currentUser = {
           id: this.intersectedObject[0].object.userId,
           datas: this.intersectedObject[0].object.datas
         }
         store.commit('constellation/setCurrentUser', currentUser)
+        this.profileIsOpen = true
+      }
+
+      setTimeout(() => {
+        // Hide Indication
+        nuxt.$emit('hideCursor')
+        this.time.noDrag = 0
+        this.indicationIsVisible = false
+      }, 1000)
+    })
+  }
+
+  addOpenProfileListener () {
+    nuxt.$on('onCrystalClick', (resp) => {
+      if (resp === false) {
+        this.profileIsOpen = false
+        this.time.noDrag = 0
+      }
+    })
+  }
+
+  addMouseMoveEvent () {
+    window.addEventListener('mousemove', () => {
+      if (!this.music.sound.isPlaying) {
+        this.music.sound.play()
       }
     })
   }
@@ -348,6 +438,13 @@ class Constellation {
   render () {
     this.time.delta = this.clock.getDelta()
     this.time.total += this.time.delta
+    this.time.noDrag += this.time.delta
+
+    if (this.time.noDrag > 2 && !this.indicationIsVisible && !this.profileIsOpen) {
+      // Display indication
+      this.indicationIsVisible = true
+      nuxt.$emit('showCursor', 'Click & drag')
+    }
 
     if (store && !this.addgems) {
       this.generateCrystals()
@@ -359,35 +456,68 @@ class Constellation {
         this.gems[i].rotation.y = this.time.total * (this.randomCubesSpeed[i] + 0.1)
         this.gems[i].position.y += Math.cos(this.time.total) / ((this.randomCubesSpeed[i] + 0.2) * 150) * this.gems[i].Ydirection
       }
+
+      if (this.connectedUserMesh) {
+        this.connectedUserMesh.rotation.y = this.time.total * (this.connectedUserSpeed + 0.1)
+        this.connectedUserMesh.position.y += Math.cos(this.time.total) / ((this.connectedUserSpeed + 0.2) * 150) * this.connectedUserMesh.Ydirection
+      }
     }
 
     this.intersectedObject = this.raycaster.render(this.scene)
     if (this.intersectedObject.length > 0 && this.isIntersected === false) {
       this.lastIntersectedObject = this.intersectedObject[0]
-      gsap.killTweensOf(this.lastIntersectedObject.object.scale)
-      gsap.to(
-        this.lastIntersectedObject.object.scale,
-        {
-          x: this.cristalScale,
-          y: this.cristalScale,
-          z: this.cristalScale,
-          duration: 1,
-          ease: 'power3.out'
-        }
-      )
+      if (this.intersectedObject[0].object.datas.nom === store.state.user.name) {
+        gsap.killTweensOf(this.lastIntersectedObject.object.scale)
+        gsap.to(
+          this.lastIntersectedObject.object.scale,
+          {
+            x: 1.2,
+            y: 1.2,
+            z: 1.2,
+            duration: 1,
+            ease: 'power3.out'
+          }
+        )
+      } else {
+        gsap.killTweensOf(this.lastIntersectedObject.object.scale)
+        gsap.to(
+          this.lastIntersectedObject.object.scale,
+          {
+            x: this.cristalScale,
+            y: this.cristalScale,
+            z: this.cristalScale,
+            duration: 1,
+            ease: 'power3.out'
+          }
+        )
+      }
       this.isIntersected = true
     } else if (!this.intersectedObject.length > 0 && this.isIntersected === true) {
-      gsap.killTweensOf(this.lastIntersectedObject.object.scale)
-      gsap.to(
-        this.lastIntersectedObject.object.scale,
-        {
-          x: 1 / this.cristalScale,
-          y: 1 / this.cristalScale,
-          z: 1 / this.cristalScale,
-          duration: 1,
-          ease: 'power3.out'
-        }
-      )
+      if (this.lastIntersectedObject.object.datas.nom === store.state.user.name) {
+        gsap.killTweensOf(this.lastIntersectedObject.object.scale)
+        gsap.to(
+          this.lastIntersectedObject.object.scale,
+          {
+            x: 1 / 1.2,
+            y: 1 / 1.2,
+            z: 1 / 1.2,
+            duration: 1,
+            ease: 'power3.out'
+          }
+        )
+      } else {
+        gsap.killTweensOf(this.lastIntersectedObject.object.scale)
+        gsap.to(
+          this.lastIntersectedObject.object.scale,
+          {
+            x: 1 / this.cristalScale,
+            y: 1 / this.cristalScale,
+            z: 1 / this.cristalScale,
+            duration: 1,
+            ease: 'power3.out'
+          }
+        )
+      }
       this.lastIntersectedObject = null
       this.isIntersected = false
     }

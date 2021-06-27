@@ -3,10 +3,6 @@
     "generator": "Khronos glTF Blender I/O v1.6.16",
     "version": "2.0"
   },
-  "extensionsUsed": [
-    "KHR_materials_transmission",
-    "KHR_draco_mesh_compression"
-  ],
   "scene": 0,
   "scenes": [
     {
@@ -19,22 +15,22 @@
   "nodes": [
     {
       "mesh": 0,
-      "name": "gem-3",
-      "scale": [
-        1.1572027206420898,
-        0.4852634072303772,
-        0.9081586599349976
-      ],
-      "translation": [
-        4.228172779083252,
-        -0.03346838429570198,
-        0
-      ],
+      "name": "Cube",
       "rotation": [
         0,
+        0.7071068286895752,
+        0,
+        0.7071068286895752
+      ],
+      "scale": [
+        0.6354985237121582,
+        1.4807713031768799,
+        1.2347887754440308
+      ],
+      "translation": [
         0,
         0,
-        1
+        0
       ]
     }
   ],
@@ -42,32 +38,27 @@
     {
       "doubleSided": true,
       "emissiveFactor": [
-        0.01936756819486618,
-        0.003380879759788513,
-        0.008787456899881363
+        0.8468741774559021,
+        0.7316988110542297,
+        0.5328311920166016
       ],
-      "extensions": {
-        "KHR_materials_transmission": {
-          "transmissionFactor": 1
-        }
-      },
-      "name": "crystal",
+      "name": "gem",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.7221868634223938,
-          0.02321542240679264,
-          0.2940458357334137,
+          1,
+          1,
+          1,
           1
         ],
-        "metallicFactor": 0,
-        "roughnessFactor": 0.20000000298023224
+        "metallicFactor": 1,
+        "roughnessFactor": 1
       },
       "alphaMode": "OPAQUE"
     }
   ],
   "meshes": [
     {
-      "name": "Sphere.002",
+      "name": "Cube",
       "primitives": [
         {
           "attributes": {
@@ -95,32 +86,32 @@
   "accessors": [
     {
       "componentType": 5123,
-      "count": 474,
+      "count": 300,
       "type": "SCALAR"
     },
     {
       "componentType": 5126,
-      "count": 244,
+      "count": 156,
       "max": [
-        0.5199641486639852,
-        0.8798535003799546,
-        0.5532357207029461
+        0.6144552810866482,
+        0.9270327928652109,
+        0.626088032911158
       ],
       "min": [
-        -0.5244438781875719,
-        -0.9169492259163011,
-        -0.5472949876922716
+        -0.5665295961489023,
+        -0.9634656551470102,
+        -0.5530515554537119
       ],
       "type": "VEC3"
     },
     {
       "componentType": 5126,
-      "count": 244,
+      "count": 156,
       "type": "VEC3"
     },
     {
       "componentType": 5126,
-      "count": 244,
+      "count": 156,
       "type": "VEC2"
     }
   ],
@@ -128,17 +119,20 @@
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 884
+      "byteLength": 797
     }
   ],
   "buffers": [
     {
       "name": "gem-3-compressed",
-      "byteLength": 884,
-      "uri": "data:application/octet-stream;base64,RFJBQ08CAgEBAAAAUZ4BAp0BDQAoX5//TxNv9jyEliot3miV6hcUnq1KS1d4ha4oLcVDSwurqhaUUgotAAEBEHwgiPIz3jRdGWHSTw+GrI3zq3i3CENKPRjGc639ubsE/4H/AjZZA/8AAAABAAEAAAEACQMAAAIBAQkDAAEDAQMJAgACAgEBAQAMF5UB9QOxCGERJRZFChm6d5Na7YbOCcne24N0HfxT+wkQEpq7qr2KROaOQMwA5eNJDuqLbTxMLwlEnq7cPY6Q5RldaSssC8RGvBgCUBhsmnbe0FFCp/wpRdgUiODgloTcJRozvAhNfSGFhwtm1H7mSbAAwEMtuMtXzZm/uDA69EEn7KnBw1r8N2+/o8HwmvXCkFDP9fNGowR4QI6wUPWdPAe+ACJtTGVQgAZgcc1t5rL+5cJjT87ZbCaHvXKHpfX3PQKHJMEa1CFc3IDOuYxDNL2fPGhToSawk4NC1AfO8bQ8JAGATXNQAY++WFLv4eyYwMmBuBfDdqRE2LvjeCiQQFPT2eMSE+3q4zytaJ4TH9Pl8IrQtE4IhAogoJcAsBHDGyQPMcOg0KTzABSkJuFuuSK9N9IQeMYcuPkdOR3KB9qBwAUAAAAA/wcAAHwIBr+3g2q/DuILvyrE5T8LBgMBAQT/AeEPwRL1BqggA2QjIP///48gB4gHRCDITROLAZDSa9hzkcARlfLSj0BBqcIrFZ5xZuVYeLukDcCisElLyG4D9Oa8U9iaUhBIcPVeT1hw15A7vIV8R2zHJrNSzwBrGxuuQOXUsHJOnR+bM9umyqrMgZSbshIrljBflul0CgLJ1HILxyHlfCpX4ub8r4osePCW54dYnUS5tzrGUDPoVWg+4ePDolQVno7/AAAAfwAAAP8CX1oIBQEBAAsDlQFhAokFRQo9Dn0JiQUdB70EKQMiesza5gQQKtjdgwy2qtzdvQrgfNzhGLjGiypP5gIYDLBPgIdG+QImGqQglhMMmfknGJvwKf/dLbMyLHexZiqVmGovTU3oQG//uqxZogIqdoSCfg2wfgEhIAk9i3hXsRc03cHDJF+sziP41IDyqyPjVQaU5DN0ttBo/ysajbWxIADWDtyjIcGAI+PWJH2q3MQSxCx74ABPAAAANAl8Fy788vZpg1kAAAAA/wMAAMsy1z2kgxo+0dlXPwo="
+      "byteLength": 800,
+      "uri": "data:application/octet-stream;base64,RFJBQ08CAgEBAAAANGQCYwcAGX9s7deov1msvrYq+lBaBS0F9RSq1AqUFhQBARB7FXo61ZnUnyPuMjIaBW6mU2W8X0Wig78Sbec4R1EW6IWn2i4TjbVyFU6AA/8AAAABAAEBAAEACQMAAAIBAQkDAAEDAQMJAgACAgEBAQAMEz0BeQIDsQMVC2EXKRYQnPr4PWPVRRXjf9KDu6xSgJR0YsTW4hA647l0EyNUCUMYVVeLwOobkLbZf9YKyCkOOsbGFHs8tuU5bTXbETtL9MnzJYKKRSlgwigIkIT0A7TBYSfUmAjzNC64PQDa09MEgOQaAJzNQw7iDYDLTduSklaXI07/B5hgaigSCFEAGfmZPoA48VINMIMECQ1xhvWiABIYJRDEZB942QubRI+EBwBYZRgQFhPVs1JuvTyJFSlgfr4bABACzIigB4jIDCLJXvJzIFUfBJJ7n0AIihMKAAAAAAD/BwAAnssQvzhpdr9SWA2/Y7/xPwsGAwEBBf8BRRkpDhUDDQJxAdQ0nGgXNAM0AzT///93aGgHaGgJATQDnJwJAUEKbrYCPp0oYDkJa07fw34SS35Gi+BEPPotVj7aS8mvCG0ATQOQGtRgtwuqJKM2aO0qGfWeqd0Wk+k9CLTNwq0M5p08eGozgruJvtWJnn7KoxU5WOCmjcxHGhOnOvezDIAIrO2/5sOal/5S7i7FJoqD/wAAAH8AAAD/AuFNCAUBAQALA7S0GQL1BkUG0QsNCeUNDQl9AySt2IrjN9nO1GEqlQqRL2RoA5wOgX8iWI+Jk4Rk5y3KmgrUL5EyZp9P4zWKLb0IoAtN/EafSuxauDHDqXa1Ni9VOy6BamLCFzRL9REAvnWIqlK846heWlm+SeZUETH7YZG3RLEuTenhrHGdg9FANLEUQjCX0zpAjwSJp2Y62SvoHmoj2eGhfkf4tfWcKaDeyw/xbcjBMVlM1aZbOZcXgHE6u3ZB17FrFwaGiyyfz+mQuTdvT4CghysxY9XqrGkQAlEAAAA8CtTYKbk5CKwj84sAAAAA/wMAAEZucT7gVWQ+8t4JPwoAAAA="
     }
   ],
   "extensionsRequired": [
+    "KHR_draco_mesh_compression"
+  ],
+  "extensionsUsed": [
     "KHR_draco_mesh_compression"
   ]
 }
