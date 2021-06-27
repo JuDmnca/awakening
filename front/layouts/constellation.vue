@@ -1,6 +1,8 @@
 <template>
   <div>
-    <About v-if="about" @clicked="toggleAbout" />
+    <transition name="fade">
+      <About v-if="about" @clicked="toggleAbout" />
+    </transition>
     <UI-HoldCursor />
     <UI-About @clicked="toggleAbout" />
     <Nuxt />

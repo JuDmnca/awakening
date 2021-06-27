@@ -12,22 +12,22 @@
         </div>
         <div class="about__gems">
           <a href="https://juliedemendonca.fr" class="about__gem">
-            <img src="/yellow-gem.png" alt="Yellow Gem">
+            <img src="/gem-yellow.png" alt="Yellow Gem">
             <h3>Julie De Mendonça</h3>
             <p>Développeuse</p>
           </a>
           <a href="https://www.behance.net/pierrehatier" class="about__gem">
-            <img src="/blue-gem.png" alt="Blue Gem">
+            <img src="/gem-blue.png" alt="Blue Gem">
             <h3>Pierre Hatier</h3>
             <p>Designer</p>
           </a>
           <a href="https://www.behance.net/ppinto2oli85e9/appreciated" class="about__gem">
-            <img src="/green-gem.png" alt="Green Gem">
+            <img src="/gem-green.png" alt="Green Gem">
             <h3>Pierre Pinto De Oliveira</h3>
             <p>Développeur</p>
           </a>
           <a href="http://alexiaseve.com" class="about__gem">
-            <img src="/purple-gem.png" alt="Purple Gem">
+            <img src="/gem-purple.png" alt="Purple Gem">
             <h3>Alexia Sève</h3>
             <p>Designeuse</p>
           </a>
@@ -111,7 +111,8 @@ export default {
 }
 
 .about__gem img {
-  height: 160px;
+  height: 400px;
+  margin-top: -3rem;
 }
 
 .about__video {
@@ -147,8 +148,9 @@ h1 {
 h3 {
   color: white;
   font-size: 30px;
-  padding: 3rem 0 0.5rem 0;
+  padding: 0 0 0.5rem 0;
   font-family: 'ButlerLight';
+  margin-top: -3rem;
 }
 
 p {

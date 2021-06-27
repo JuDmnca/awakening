@@ -3,7 +3,9 @@
     <transition name="fadeOut">
       <IntroLoader v-if="loader && main" @done="hideLoader" />
     </transition>
-    <About v-if="about" @clicked="toggleAbout" />
+    <transition name="fade">
+      <About v-if="about" @clicked="toggleAbout" />
+    </transition>
     <UI-HoldCursor />
     <UI-About @clicked="toggleAbout" />
     <Nuxt />

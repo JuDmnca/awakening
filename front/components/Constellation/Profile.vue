@@ -49,6 +49,14 @@
           :height="25"
         />
       </div>
+      <div v-if="myProfile" class="profile__icon profile__icon--share border border-white rounded-full flex self-center">
+        <UI-Icons-Share
+          class="m-auto"
+          :color="'#FFF'"
+          :width="25"
+          :height="25"
+        />
+      </div>
     </div>
     <div class="profile__underlay" />
   </section>
@@ -58,7 +66,8 @@
 export default {
   data () {
     return {
-      errorMessage: null
+      errorMessage: null,
+      myProfile: false
     }
   },
   computed: {
@@ -206,7 +215,8 @@ h1 {
 }
 
 .profile__icon--close,
-.profile__icon--random {
+.profile__icon--random,
+.profile__icon--share {
   width: 60px;
   height: 60px;
 }
