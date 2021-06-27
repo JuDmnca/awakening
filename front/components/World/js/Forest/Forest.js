@@ -7,6 +7,9 @@ import Sound from '../../../Utils/js/SoundLoader'
 import birdsURL from '../../../../assets/sounds/forest/birds.mp3'
 import introURL from '../../../../assets/sounds/forest/intro.mp3'
 import introLoopURL from '../../../../assets/sounds/forest/intro-loop.mp3'
+import note1URL from '../../../../assets/sounds/desert/note-1.mp3'
+import note2URL from '../../../../assets/sounds/desert/note-2.mp3'
+import note3URL from '../../../../assets/sounds/desert/note-3.mp3'
 
 import Grass from '../Common/Grass'
 import Butterfly from './Butterfly'
@@ -102,6 +105,9 @@ export default class Forest {
     this.birdsSound = new Sound({ camera: this.camera, audioFile: birdsURL, loop: true, canToggle: true, volume: 0.01 * 3 })
     this.introLoopSound = new Sound({ camera: this.camera, audioFile: introLoopURL, loop: true, canToggle: false, volume: 0.02 * 3 })
     this.introSound = new Sound({ camera: this.camera, audioFile: introURL, loop: false, canToggle: false, volume: 0.02 * 3, onEnded: true, soundCallBack: this.introLoopSound })
+    this.note1Sound = new Sound({ camera: this.camera, audioFile: note1URL, loop: false, canToggle: false, volume: 0.5 * 3 })
+    this.note2Sound = new Sound({ camera: this.camera, audioFile: note2URL, loop: false, canToggle: false, volume: 0.5 * 3 })
+    this.note3Sound = new Sound({ camera: this.camera, audioFile: note3URL, loop: false, canToggle: false, volume: 0.5 * 3 })
   }
 
   playSounds () {
@@ -204,18 +210,38 @@ export default class Forest {
   updateButterflySpeed () {
     const step = store.state.forest.step
     if (step < 3) {
-      store.commit('forest/increaseStep')
       const step = store.state.forest.step
       this.animations[0].timeScale = step * 1.5
+      if (step === 0) {
+        this.note1Sound.sound.play()
+        nuxt.$emit('toggleShowSubtitle')
+        setTimeout(() => {
+          store.commit('setSubtitle', 'Continues')
+          nuxt.$emit('toggleShowSubtitle')
+        }, 1000)
+      }
+      if (step === 1) {
+        this.note2Sound.sound.play()
+        nuxt.$emit('toggleShowSubtitle')
+        setTimeout(() => {
+          store.commit('setSubtitle', 'Tu y es presque !')
+          nuxt.$emit('toggleShowSubtitle')
+        }, 1000)
+      }
       if (step === 2) {
+        this.note3Sound.sound.play()
+        nuxt.$emit('toggleShowSubtitle')
         setTimeout(() => {
           this.moveButterfly()
+          store.commit('setSubtitle', 'Bravo !')
+          nuxt.$emit('toggleShowSubtitle')
         }, 1000)
       } else {
         setTimeout(() => {
           this.enable = true
-        }, 1000)
+        }, 3000)
       }
+      store.commit('forest/increaseStep')
     }
   }
 
@@ -238,6 +264,7 @@ export default class Forest {
     nuxt.$emit('hideCursor')
     nuxt.$emit('startTransition', 3)
     nuxt.$emit('startSceneTransition')
+    nuxt.$emit('toggleShowSubtitle')
   }
 
   addEvents () {
@@ -251,7 +278,7 @@ export default class Forest {
     })
   }
 
-  render (timeDelta) {
+  render (timeTotal, timeDelta) {
     this.noScroll += timeDelta
 
     if (this.noScroll > 2 && !this.indicationIsVisible && this.progression < 0.5) {
@@ -271,11 +298,8 @@ export default class Forest {
       this.events = true
     }
 
-    if (this.progression >= 0.59 && !this.isClickedOnButterfly && this.subTitlesAreCompleted) {
+    if (this.progression >= 0.58 && !this.isClickedOnButterfly && this.subTitlesAreCompleted) {
       this.isClickedOnButterfly = true
-      setTimeout(() => {
-        nuxt.$emit('toggleShowSubtitle')
-      }, 3000)
     }
 
     if (this.isClickedOnButterfly && this.microphone.analyzer) {
