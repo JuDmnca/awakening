@@ -362,6 +362,7 @@ class Common {
 
     nuxt.$on('endForestScene', () => {
       this.removeGroup(this.currentScene)
+      this.currentScene.removeAllSound()
     })
 
     window.addEventListener('mousedown', () => {
@@ -385,9 +386,7 @@ class Common {
 
     nuxt.$on('startSceneTransition', () => {
       this.pauseRender = true
-      if (store.state.sceneIndex === 1) {
-        this.currentScene.stifleSounds()
-      }
+      this.currentScene.stifleSounds()
       store.commit('increaseSceneIndex')
     })
 
