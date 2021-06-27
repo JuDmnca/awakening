@@ -3,8 +3,9 @@
     <transition name="fadeOut">
       <IntroLoader v-if="loader && main" @done="hideLoader" />
     </transition>
+    <About v-if="about" @clicked="toggleAbout" />
     <UI-HoldCursor />
-    <UI-About />
+    <UI-About @clicked="toggleAbout" />
     <Nuxt />
     <World />
     <Subtitle />
@@ -23,7 +24,8 @@ export default {
   },
   data () {
     return {
-      loader: true
+      loader: true,
+      aboutStatus: false
     }
   },
   computed: {
@@ -35,11 +37,17 @@ export default {
         this.$nuxt.$emit('PauseRender')
         return false
       }
+    },
+    about () {
+      return this.aboutStatus
     }
   },
   methods: {
     hideLoader () {
       this.loader = false
+    },
+    toggleAbout () {
+      this.aboutStatus = !this.aboutStatus
     }
   }
 }

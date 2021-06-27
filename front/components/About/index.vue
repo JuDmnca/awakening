@@ -37,9 +37,9 @@
           <p>Voir la vidéo de présentation</p>
         </a>
       </div>
-      <n-link to="/">
+      <div @click="closeAbout">
         <img src="/close.png" alt="Close Button" class="about__close">
-      </n-link>
+      </div>
       <div class="about__underlay" />
     </div>
   </transition>
@@ -47,11 +47,17 @@
 
 <script>
 export default {
+  methods: {
+    closeAbout () {
+      this.$emit('clicked')
+    }
+  }
 }
 </script>
 
 <style>
 .about.container {
+  position: absolute;
   width: 100vw;
   height: 100vh;
   left: 0;

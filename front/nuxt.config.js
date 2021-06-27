@@ -29,6 +29,10 @@ export default {
     {
       path: '~/components/Bars/',
       prefix: 'Bar-'
+    },
+    {
+      path: '~/components/About/',
+      prefix: 'About'
     }
   ],
 
