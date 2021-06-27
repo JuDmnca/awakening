@@ -161,6 +161,7 @@ export default class Loader {
           gltf.scene.children.forEach((object) => {
             object.traverse(function (obj) {
               obj.frustumCulled = false
+              obj.layers.enable(1)
             })
           })
           if (gltf.animations) {

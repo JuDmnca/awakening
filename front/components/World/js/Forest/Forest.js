@@ -214,7 +214,7 @@ export default class Forest {
     })
   }
 
-  render (timeTotal, timeDelta) {
+  render (timeDelta) {
     this.noScroll += timeDelta
 
     if (this.noScroll > 2 && !this.indicationIsVisible && this.progression < 0.5) {
