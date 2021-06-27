@@ -237,6 +237,7 @@ export default class Forest {
           nuxt.$emit('toggleShowSubtitle')
         }, 1000)
       } else {
+        this.enable = false
         setTimeout(() => {
           this.enable = true
         }, 3000)
@@ -246,8 +247,9 @@ export default class Forest {
   }
 
   onClickIfMicrophoneIsDisabled () {
-    this.enable = false
-    this.updateButterflySpeed()
+    if (this.enable) {
+      this.updateButterflySpeed()
+    }
   }
 
   moveButterfly () {
