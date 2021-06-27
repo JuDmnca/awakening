@@ -278,7 +278,7 @@ class Common {
 
     // FOREST
     if (this.currentScene.name === 'Forest' && this.progression > 0.45) {
-      if (!this.currentScene.microphone.audioCtx) {
+      if (!this.currentScene.microphone.audioCtx && this.currentScene.isClickedOnButterfly) {
         this.currentScene.onClickIfMicrophoneIsDisabled()
       }
     }

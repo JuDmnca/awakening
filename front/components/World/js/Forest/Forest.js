@@ -59,6 +59,10 @@ export default class Forest {
 
     this.addButterfly(scene, mixer, this.animations)
 
+    nuxt.$on('smellSetted', () => {
+      this.addSubtitles()
+    })
+
     // this.crystal.getColor()
     // this.addColorToCrystal()
 
@@ -78,6 +82,28 @@ export default class Forest {
   addLight (scene) {
     const light = new THREE.AmbientLight(0x404040, 1)
     scene.add(light)
+  }
+
+  addSubtitles () {
+    setTimeout(() => {
+      store.commit('setSubtitle', 'Nos sens sont intimement liés à nos souvenirs.')
+      nuxt.$emit('toggleShowSubtitle')
+    }, 3000)
+    setTimeout(() => {
+      nuxt.$emit('toggleShowSubtitle')
+    }, 8000)
+    setTimeout(() => {
+      store.commit('setSubtitle', 'Votre esprit est sur le point de s’éveiller à nouveau.')
+      nuxt.$emit('toggleShowSubtitle')
+    }, 9000)
+    setTimeout(() => {
+      nuxt.$emit('toggleShowSubtitle')
+    }, 14000)
+    setTimeout(() => {
+      store.commit('setSubtitle', 'Saurez-vous lui redonner sa voix ?')
+      nuxt.$emit('toggleShowSubtitle')
+      this.subTitlesAreCompleted = true
+    }, 15000)
   }
 
   async addGrass () {
@@ -179,8 +205,11 @@ export default class Forest {
       this.addEvents()
       this.events = true
     }
-    if (this.progression >= 0.59) {
+    if (this.progression >= 0.59 && !this.isClickedOnButterfly && this.subTitlesAreCompleted) {
       this.isClickedOnButterfly = true
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 3000)
     }
 
     if (this.isClickedOnButterfly && this.microphone.analyzer) {

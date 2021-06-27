@@ -77,6 +77,7 @@ export default {
           break
         case 2:
           this.$store.commit('setUserSmell', data)
+          this.$nuxt.$emit('smellSetted')
           break
         case 3:
           this.$store.commit('setUserSound', data)
