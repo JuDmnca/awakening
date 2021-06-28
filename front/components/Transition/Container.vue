@@ -32,7 +32,7 @@ export default {
   },
   data () {
     return {
-      text: true,
+      text: false,
       end: false,
       label: '',
       placeholder: '',

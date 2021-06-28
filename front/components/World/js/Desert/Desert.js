@@ -144,36 +144,35 @@ export default class Desert {
         this.isStationary = false
       }, 2000)
 
-      // Disable for dev
-      // setTimeout(() => {
-      //   store.commit('setSubtitle', 'Notre esprit peut parfois nous sembler vide…')
-      //   nuxt.$emit('toggleShowSubtitle')
-      // }, 3000)
-      // setTimeout(() => {
-      //   nuxt.$emit('toggleShowSubtitle')
-      // }, 8000)
-      // setTimeout(() => {
-      //   store.commit('setSubtitle', 'Et la perception de nos sens affaiblie.')
-      //   nuxt.$emit('toggleShowSubtitle')
-      // }, 8500)
-      // setTimeout(() => {
-      //   nuxt.$emit('toggleShowSubtitle')
-      // }, 13500)
-      // setTimeout(() => {
-      //   store.commit('setSubtitle', 'Mais il suffit d’une stimulation singulière…')
-      //   nuxt.$emit('toggleShowSubtitle')
-      // }, 14000)
-      // setTimeout(() => {
-      //   nuxt.$emit('toggleShowSubtitle')
-      // }, 19000)
-      // setTimeout(() => {
-      //   store.commit('setSubtitle', 'Pour redonner vie à notre monde intérieur.')
-      //   nuxt.$emit('toggleShowSubtitle')
-      // }, 19500)
-      // setTimeout(() => {
-      //   nuxt.$emit('toggleShowSubtitle')
-      //   this.canClickOnFlowers = true
-      // }, 24500)
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Notre esprit peut parfois nous sembler vide…')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 1000)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 2000)
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Et la perception de nos sens affaiblie.')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 3000)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 4000)
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Mais il suffit d’une stimulation singulière…')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 5000)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+      }, 6000)
+      setTimeout(() => {
+        store.commit('setSubtitle', 'Pour redonner vie à notre monde intérieur.')
+        nuxt.$emit('toggleShowSubtitle')
+      }, 7000)
+      setTimeout(() => {
+        nuxt.$emit('toggleShowSubtitle')
+        this.canClickOnFlowers = true
+      }, 8000)
     })
 
     nuxt.$on('clickOnFlowers', () => {
@@ -428,8 +427,8 @@ export default class Desert {
     const mouseX = e.pageX
     const mouseY = e.pageY
     if (this.lastMouseX > -1 && this.enableSporesElevation && !this.allInteractionsAreCompleted) {
-      this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY)) * 4
-      this.sporesPercentage = this.sporesElevation * 100 / 10000
+      this.sporesElevation += Math.max(Math.abs(mouseX - this.lastMouseX), Math.abs(mouseY - this.lastMouseY))
+      this.sporesPercentage = this.sporesElevation * 100 / 16000
       if (this.sporesPercentage < 150) {
         nuxt.$emit('sporesElevation', this.sporesPercentage)
       }

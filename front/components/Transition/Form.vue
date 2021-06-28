@@ -153,8 +153,6 @@ export default {
           this.errorMessage = ''
           this.$emit('validation', data)
         }
-
-        this.$emit('validation', data)
       }
     }
   }

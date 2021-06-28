@@ -26,7 +26,7 @@ export default class Bloom {
 
     this.renderer = props.renderer
     this.size = props.size
-    this.currentScene = 0
+    this.currentScene = 2
 
     this.camera = props.camera
     this.scene = props.scene
@@ -93,6 +93,12 @@ export default class Bloom {
     this.gui.gui.add(params, 'bloomRadius', 0.0, 1.0).step(0.01).onChange(function (value) {
       bloomPass.radius = Number(value)
     })
+  }
+
+  updateParams () {
+    this.bloomPass.strength = 0.5
+    this.bloomPass.exposure = 1
+    this.currentScene = 2
   }
 
   setSize () {

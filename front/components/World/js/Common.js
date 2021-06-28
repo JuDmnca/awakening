@@ -5,7 +5,7 @@ import Bloom from '../../Utils/js/Bloom'
 
 import Microphone from '../../Utils/js/Microphone'
 import Land from './Land'
-// import Desert from './Desert/Desert'
+import Desert from './Desert/Desert'
 import Forest from './Forest/Forest'
 
 const desertCurve = [
@@ -123,9 +123,9 @@ class Common {
     this.addLight()
 
     this.addEventListeners()
-    // this.loadDesert()
+    this.loadDesert()
 
-    this.loadForest()
+    // this.loadForest()
 
     this.initBloom()
 
@@ -168,10 +168,10 @@ class Common {
     this.scene.add(this.light)
   }
 
-  // loadDesert () {
-  //   this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
-  //   this.currentScene.init(this.scene, this.renderer)
-  // }
+  loadDesert () {
+    this.currentScene = new Desert({ camera: this.camera, model: this.lands.get(0), crystal: this.crystal })
+    this.currentScene.init(this.scene, this.renderer)
+  }
 
   loadForest () {
     this.currentScene = new Forest({ camera: this.camera, model: this.lands.get(1), crystal: this.crystal })
@@ -216,7 +216,7 @@ class Common {
 
     this.p1 = this.curves[0].points[0]
     this.progression = 0
-    this.curveNumber = 1
+    this.curveNumber = 0
   }
 
   moveCamera (e) {
@@ -305,8 +305,8 @@ class Common {
       renderer: this.renderer,
       size: this.size,
       params: {
-        exposure: 1, // Set to one when bloom renderer actived
-        bloomStrength: 0.5,
+        exposure: 1.1, // Set to one when bloom renderer actived
+        bloomStrength: 1.8,
         bloomThreshold: 0,
         bloomRadius: 0.8
       }
@@ -353,11 +353,13 @@ class Common {
         crystal: this.crystal
       })
       this.currentScene.microphone = this.microphone
+      this.currentScene.init(this.scene, this.renderer, this.mixer)
+      nuxt.$emit('STARTFOREST')
+      this.bloom.updateParams()
 
       this.curveNumber += 1
       this.progression = 0
       this.p1 = this.curves[this.curveNumber].getPointAt(this.progression)
-      this.bloom.currentScene = 2
     })
 
     nuxt.$on('endForestScene', () => {

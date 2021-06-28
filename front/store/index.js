@@ -11,7 +11,7 @@ const state = () => ({
   },
   colorPalette: null,
   transition: false,
-  sceneIndex: 2,
+  sceneIndex: 1,
   durationHold: 1.5,
   cameraZoomed: false,
   userIsOkToSendDatas: false,

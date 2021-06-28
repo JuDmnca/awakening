@@ -72,15 +72,18 @@ export default class Forest {
 
     this.addSounds()
 
-    // nuxt.$on('smellSetted', () => {
-    //   this.addSubtitles()
-    // })
+    nuxt.$on('STARTFOREST', () => {
+      this.crystal.getColor()
+      this.addColorToCrystal()
+      this.updateMaterials()
+      this.addSubtitles()
+      this.playSounds()
 
-    // this.crystal.getColor()
-    // this.addColorToCrystal()
-
-    // this.updateMaterials()
-    // this.addGrass()
+      setTimeout(() => {
+        this.setAnimations()
+        this.addColorToButterfly()
+      }, 3000)
+    })
 
     // Raycaster
     this.raycaster.init(this.camera, renderer)
@@ -297,18 +300,6 @@ export default class Forest {
     nuxt.$emit('toggleShowSubtitle')
   }
 
-  addEvents () {
-    nuxt.$on('ColorSetted', () => {
-      this.crystal.getColor()
-      this.addColorToCrystal()
-      this.updateMaterials()
-      this.setAnimations()
-      this.addSubtitles()
-      this.playSounds()
-      this.addColorToButterfly()
-    })
-  }
-
   render (timeTotal, timeDelta) {
     this.noScroll += timeDelta
 
@@ -322,11 +313,6 @@ export default class Forest {
         nuxt.$emit('showCursor', 'RÉVEILLEZ LE PAPILLON')
         this.indicationIsVisible = true
       }, 1000)
-    }
-
-    if (nuxt && store && !this.events) {
-      this.addEvents()
-      this.events = true
     }
 
     if (this.progression >= 0.58 && !this.isClickedOnButterfly && this.subTitlesAreCompleted) {
