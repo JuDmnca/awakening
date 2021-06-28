@@ -30,6 +30,7 @@ export default class Forest {
 
     // Generals params
     this.hold = false
+    this.gui = null
 
     this.scene = null
 
@@ -91,14 +92,16 @@ export default class Forest {
 
   async addButterfly (scene, mixer, animations) {
     this.butterfly = await new Butterfly({ scene, mixer, animations })
-    nuxt.$on('swoosh', () => {
-      const butterflyMaterial = new THREE.MeshPhongMaterial({
-        color: new THREE.Color(store.state.user.color)
-      })
-      setTimeout(() => {
-        this.butterfly.butterfly.material = butterflyMaterial
-        console.log(this.butterfly.butterfly.material)
-      }, 3000)
+  }
+
+  addColorToButterfly () {
+    this.color = new THREE.Color(`#${store.state.colorPalette[0]}`)
+    this.butterfly.butterfly.children[0].children[0].children[0].children.forEach((child) => {
+      if (child.type !== 'Bone') {
+        child.material.color = this.color
+        child.material.emissive = this.color
+        child.material.emissiveIntensity = 0.2
+      }
     })
   }
 
@@ -227,7 +230,7 @@ export default class Forest {
         this.note1Sound.sound.play()
         nuxt.$emit('toggleShowSubtitle')
         setTimeout(() => {
-          store.commit('setSubtitle', 'Continues')
+          store.commit('setSubtitle', 'Continuez !')
           nuxt.$emit('toggleShowSubtitle')
         }, 1000)
       }
@@ -235,7 +238,7 @@ export default class Forest {
         this.note2Sound.sound.play()
         nuxt.$emit('toggleShowSubtitle')
         setTimeout(() => {
-          store.commit('setSubtitle', 'Tu y es presque !')
+          store.commit('setSubtitle', 'Vous y êtes presque !')
           nuxt.$emit('toggleShowSubtitle')
         }, 1000)
       }
@@ -244,7 +247,7 @@ export default class Forest {
         nuxt.$emit('toggleShowSubtitle')
         setTimeout(() => {
           this.moveButterfly()
-          store.commit('setSubtitle', 'Bravo !')
+          store.commit('setSubtitle', 'Observez...')
           nuxt.$emit('toggleShowSubtitle')
           nuxt.$emit('butterflyIsAwake')
         }, 1000)
@@ -271,10 +274,16 @@ export default class Forest {
         butterfly = children
       }
     })
+    const position = this.camera.camera.position
+    gsap.to(this.animations[0], {
+      timeScale: 1,
+      duration: 4,
+      ease: 'power3.inOut'
+    })
     gsap.to(butterfly.position, {
-      x: 14,
-      y: 3,
-      z: -1,
+      x: position.x - 0.2,
+      y: position.y,
+      z: position.z - 0.1,
       duration: 3,
       ease: 'power3.inOut',
       onComplete: this.endScene
@@ -296,6 +305,7 @@ export default class Forest {
       this.setAnimations()
       this.addSubtitles()
       this.playSounds()
+      this.addColorToButterfly()
     })
   }
 

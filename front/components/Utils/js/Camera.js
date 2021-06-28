@@ -36,6 +36,7 @@ export default class Camera {
 
   updatePerspective () {
     this.camera.fov = 50
+    this.camera.near = 0.01
   }
 
   zoomCamera () {

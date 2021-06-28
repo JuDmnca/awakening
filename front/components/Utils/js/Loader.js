@@ -168,7 +168,7 @@ export default class Loader {
             mixer.push(new THREE.AnimationMixer(gltf.scene))
             const clips = gltf.animations
             if (clips.length > 0) {
-              const clip = AnimationClip.findByName(clips, 'ArmatureAction.002')
+              const clip = AnimationClip.findByName(clips, 'ArmatureAction.002_Animation.001')
               animations.push(mixer[0].clipAction(clip))
             }
           }
