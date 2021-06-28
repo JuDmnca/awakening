@@ -145,14 +145,14 @@ export default {
         }
 
         // UNCOMMENT ON PROD
-        // if (!data) {
-        //   this.errorMessage = 'Il faut choisir une couleur pour continuer le voyage'
-        // } else if (!data) {
-        //   this.errorMessage = 'Il faut répondre pour continuer le voyage'
-        // } else if (data) {
-        //   this.errorMessage = ''
-        //   this.$emit('validation', data)
-        // }
+        if (!data) {
+          this.errorMessage = 'Il faut choisir une couleur pour continuer le voyage'
+        } else if (!data) {
+          this.errorMessage = 'Il faut répondre pour continuer le voyage'
+        } else if (data) {
+          this.errorMessage = ''
+          this.$emit('validation', data)
+        }
 
         this.$emit('validation', data)
       }

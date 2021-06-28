@@ -106,7 +106,7 @@ export default class Desert {
 
     // DEV : Set true
     // PROD : Set false
-    this.canClickOnFlowers = true
+    this.canClickOnFlowers = false
 
     this.sporesSoundAlreadyPlayed = false
     this.sceneIsStarted = false
